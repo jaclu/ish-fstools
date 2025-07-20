@@ -1,7 +1,9 @@
 ---
 
-- name: Run apps_alpine
-  ansible.builtin.import_tasks: apps_alpine.yml
+# - name: Run apps_alpine
+#   ansible.builtin.import_tasks: apps_alpine.yml
 
 - name: Run configs
   ansible.builtin.import_tasks: configs.yml
+
+# Handle CUSTOM_FILES_TEMPLATE aok: AOK/common_AOK/custom/custom_files.sh

@@ -1,5 +1,7 @@
 ---
 
+# =====   Was /opt/AOK/common_AOK/setup_common_env.sh:setup_environment()   =====
+
 - name: Install common config files to /etc
   become: true
   ansible.builtin.copy:
@@ -11,30 +13,18 @@
     - environment
     - profile-hints
 
-- name: Copy /etc/skel
-  become: true
-  ansible.builtin.copy:
-    remote_src: true
-    mode: preserve
-    src: "{{ d_all_distros }}/files/etc/skel"
-    dest: /etc
+- name: Check if /etc/login.defs exists
+  ansible.builtin.stat:
+    path: /etc/login.defs
+  register: login_defs_stat
 
-- name: Installing no-pw sudoers group
-  become: true
-  ansible.builtin.copy:
-    mode: preserve
-    remote_src: true
-    src: "{{ d_all_distros }}/files/etc/sudoers.d/sudo_no_passwd"
-    dest: /etc/sudoers.d
+- name: Set LOGIN_TIMEOUT in /etc/login.defs
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    line: 'LOGIN_TIMEOUT 0'
+    insertafter: EOF
+  when: login_defs_stat.stat.exists
 
-# user_shell
-# handle_hardcoded_tz
-# adding_runbg_service
-# removing_original_hostname_service
-# replacing_std_bins_with_aok_versions ""
-# changing_sshd_port
-
-# setup_cron_env
 
 - name: Install common /usr/local/lib
   become: true
@@ -51,6 +41,53 @@
     remote_src: true
     src: "{{ d_all_distros }}/files/usr_local_bin/"
     dest: /usr/local/bin/
+
+# AOK: disabling_default_services
+
+- name: Copy /etc/skel
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ d_all_distros }}/files/etc/skel"
+    dest: /etc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Installing no-pw sudoers group
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ d_all_distros }}/files/etc/sudoers.d/sudo_no_passwd"
+    dest: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set /etc/issue for iSH node
+  ansible.builtin.copy:
+    dest: /etc/issue
+    content: "This is an iSH node, running {{ ansible_distribution }}\n"
+    owner: root
+    group: root
+    mode: '0644'
+
+# =====   other   =====
+
+# tasks:
+#   setup_environment
+#   set_hostname
+#   setup_root_env
+#   create_user
+# Funcs:
+#   user_shell
+#   handle_hardcoded_tz
+#   adding_runbg_service
+#   removing_original_hostname_service
+#   replacing_std_bins_with_aok_versions ""
+#   changing_sshd_port
+
+# setup_cron_env
 
 - name: Install common /usr/local/sbin
   become: true

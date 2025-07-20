@@ -533,12 +533,12 @@ initiate_deploy() {
 
     manual_runbg
 
-    if fs_is_alpine; then
-        add_alpine_testing_repo # do it before the 1st apk update
-        copy_local_bins Alpine
-    else
-        copy_local_bins FamDeb
-    fi
+    # if fs_is_alpine; then
+    #     add_alpine_testing_repo # do it before the 1st apk update
+    #     copy_local_bins Alpine
+    # else
+    #     copy_local_bins FamDeb
+    # fi
 
     unset _ss_distro_name
     unset _ss_vers_info
