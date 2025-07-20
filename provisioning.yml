@@ -1,0 +1,23 @@
+---
+
+# - name: Show all gathered facts
+#   hosts: all
+#   vars_files:
+#     - vars.yml
+#   gather_facts: true
+#   tasks:
+#     - name: Display all facts
+#       debug:
+#         var: ansible_facts
+
+
+- name: Setting up iSH FS
+  hosts: "{{ target_hosts }}"
+  vars_files:
+    - vars.yml
+
+  roles:
+    - role: preparational_steps
+    - role: alpine
+      when: ansible_os_family == 'Alpine'
+    - role: all_distros

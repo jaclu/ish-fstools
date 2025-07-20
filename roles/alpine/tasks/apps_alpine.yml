@@ -1,0 +1,33 @@
+---
+
+- name: Additional packages
+  ansible.builtin.package:
+    state: present
+    name: "{{ alpine_packages }}"
+
+# no-changed-when: Commands should not change things if nothing needs doing.
+# - name: Alpine iSH-AOK packages
+#   become: true
+#   ansible.builtin.command:
+#     state: present
+#     name:
+#       - nload
+#       - nload-doc
+#   when:
+#     - is_aok_kernel
+
+# - name: Install distro specific /usr/local/bin
+#   become: true
+#   ansible.builtin.copy:
+#     mode: preserve
+#     remote_src: true
+#     src: "{{ aok_folder }}/Alpine/usr_local_bin/"
+#     dest: /usr/local/bin/
+
+# - name: Install distro specific /usr/local/sbin
+#   become: true
+#   ansible.builtin.copy:
+#     mode: preserve
+#     remote_src: true
+#     src: "{{ aok_folder }}/Alpine/usr_local_sbin/"
+#     dest: /usr/local/sbin/

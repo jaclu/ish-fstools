@@ -1,0 +1,45 @@
+---
+
+- name: Check for /proc/ish
+  ansible.builtin.stat:
+    path: /proc/ish
+  register: ish_proc
+
+- name: Set is_ish fact
+  ansible.builtin.set_fact:
+    is_ish: "{{ ish_proc.stat.exists }}"
+
+- name: Was iSH  detected
+  ansible.builtin.debug:
+    msg: "         is_ish: {{ is_ish }}"
+
+- name: Ensure iSH can run in the background
+  # set -o pipefail
+  # ps ax | grep -q /dev/location || \
+  ansible.builtin.shell: |
+    (nohup cat /dev/location > /dev/null 2>&1 </dev/null & sleep 0.1)
+  changed_when: false
+  when: is_ish
+
+- name: Package upgrade
+  ansible.builtin.package:
+    update_cache: true
+    upgrade: true
+
+- name: Ensure crucial apps are available
+  ansible.builtin.package:
+    state: present
+    #   name: "{{ item }}"  # 1st: 1m 36s  repeats: 53s + lists each pkg
+    # loop:
+    #   - git
+    #   - rsync
+    name:  # 1st: 1m 14s  repeats: 40s
+      - git
+      - rsync
+
+# - name: Checkout AOK-Filesystem-Tools (once)
+#   ansible.builtin.git:
+#     repo: https://github.com/jaclu/AOK-Filesystem-Tools.git
+#     dest: /opt/AOK
+#     version: gentoo
+#     update: false

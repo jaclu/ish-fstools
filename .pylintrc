@@ -1,0 +1,8 @@
+[MASTER]
+disable=C0103,C0114,C0115,C0116,R0902,R0913,R0914
+
+[FORMAT]
+max-line-length=92
+
+[base.py]
+disable=R0904

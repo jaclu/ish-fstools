@@ -1,0 +1,12 @@
+# ---
+
+# no-changed-when: Commands should not change things if nothing needs doing.
+# - name: Run uptime command
+#   ansible.builtin.command: uptime
+#   register: uptime_output
+#   when: is_ish
+
+# - name: Display uptime result
+#   ansible.builtin.debug:
+#     msg: "{{ uptime_output.stdout }}"
+#   when: is_ish

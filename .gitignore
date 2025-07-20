@@ -1,0 +1,12 @@
+# editor tmp files
+*~
+.*#
+
+### macOS ###
+.DS_Store
+Icon
+
+# Ignore vagrant tmp files
+.vagrant/
+
+**/.cache.olint

@@ -1,0 +1,7 @@
+---
+
+- name: Run apps_alpine
+  ansible.builtin.import_tasks: apps_alpine.yml
+
+- name: Run configs
+  ansible.builtin.import_tasks: configs.yml

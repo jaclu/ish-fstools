@@ -1,0 +1,11 @@
+---
+
+extends: default
+
+rules:
+  line-length:
+    max: 92
+    level: warning  # or 'error' if you want strict enforcement
+
+ignore: |
+  .ansible-lint.yml
