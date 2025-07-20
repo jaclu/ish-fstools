@@ -4,27 +4,28 @@
   become: true
   ansible.builtin.copy:
     mode: preserve
-    src: "files/{{ item }}"
+    remote_src: true
+    src: "{{ d_all_distros }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:
     - environment
     - profile-hints
+
+- name: Copy /etc/skel
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_all_distros }}/files/etc/skel"
+    dest: /etc
 
 - name: Installing no-pw sudoers group
   become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_common }}/etc/sudoers.d/sudo_no_passwd"
+    src: "{{ d_all_distros }}/files/etc/sudoers.d/sudo_no_passwd"
     dest: /etc/sudoers.d
-
-- name: Copy /etc/skel
-  become: true
-  ansible.builtin.copy:
-    # remote_src: true
-    mode: preserve
-    src: files/etc_skel/
-    dest: /etc/skel
 
 # user_shell
 # handle_hardcoded_tz
@@ -35,18 +36,26 @@
 
 # setup_cron_env
 
+- name: Install common /usr/local/lib
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_lib/"
+    dest: /usr/local/lib/
+
 - name: Install common /usr/local/bin
   become: true
   ansible.builtin.copy:
     mode: preserve
-    # remote_src: true
-    src: files/usr_local_bin/
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Install common /usr/local/sbin
   become: true
   ansible.builtin.copy:
     mode: preserve
-    # remote_src: true
-    src: files/usr_local_sbin/
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/

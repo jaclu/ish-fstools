@@ -1,1 +1,1 @@
-# d_all_distros={{ d_repo }}/d_all_distros
+d_all_distros: "{{ d_repo }}/roles/all_distros"

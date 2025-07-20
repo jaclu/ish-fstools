@@ -5,6 +5,8 @@ aok_user_shell: '/bin/ash'
 aok_timezone: 'Europe/Amsterdam'
 # debian_reboot_if_needed: false
 
+d_repo: /opt/ish-fstools
+
 # wait_for_hosts_to_be_reasy: false
 
 #

@@ -37,9 +37,9 @@
       - git
       - rsync
 
-# - name: Checkout AOK-Filesystem-Tools (once)
-#   ansible.builtin.git:
-#     repo: https://github.com/jaclu/AOK-Filesystem-Tools.git
-#     dest: /opt/AOK
-#     version: gentoo
-#     update: false
+- name: Checkout ish-fstools (once)
+  ansible.builtin.git:
+    repo: https://github.com/jaclu/ish-fstools.git
+    dest: /opt/ish-fstools
+    version: main
+    update: false
