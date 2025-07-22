@@ -5,7 +5,7 @@
 #
 #  License: MIT
 #
-#  Defines user & depending on shell selected root shell
+#  Defines user account
 #
 
 - name: Fail if ift_user_shell is undefined while ift_user_name is defined
@@ -15,17 +15,9 @@
     - ift_user_shell is defined
     - ift_user_name is not defined
 
-- name: Check if requested shell exists
-  ansible.builtin.stat:
-    path: "{{ ift_user_shell }}"
-  register: shell_path
-
-- name: Abort if requested shell does not exist
-  ansible.builtin.fail:
-    msg: "Shell '{{ ift_user_shell }}' does not exist"
-  when:
-    - ift_user_shell is defined
-    - not shell_path.stat.exists
+- name: Run verify_shell_exists.yml
+  ansible.builtin.import_tasks: verify_shell_exists.yml
+  when: ift_user_shell is defined
 
 - name: Find user with UID 501 different from ift_user_name
   ansible.builtin.command: >
@@ -86,7 +78,7 @@
   register: passwd_line
   changed_when: false
 
-- name: Force set shell for {{ ift_user_name }}
+- name: Set shell for {{ ift_user_name }}
   ansible.builtin.command: chsh -s "{{ ift_user_shell }}" "{{ ift_user_name }}"
   when:
     - ift_user_name is defined

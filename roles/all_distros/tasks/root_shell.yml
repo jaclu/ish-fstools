@@ -13,6 +13,10 @@
   register: root_passwd
   changed_when: false
 
+- name: Run verify_shell_exists.yml
+  ansible.builtin.import_tasks: verify_shell_exists.yml
+  when: ift_user_shell is defined
+
 - name: Update root shell if user shell is /bin/ash or /bin/bash - is:{{ ift_user_shell }}
   ansible.builtin.lineinfile:
     path: /etc/passwd

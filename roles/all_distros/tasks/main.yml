@@ -19,13 +19,13 @@
 # - name: Run disabling_default_services.yml
 #   ansible.builtin.import_tasks: disabling_default_services.yml
 
-- name: Run user_shell.yml
-  ansible.builtin.import_tasks: user_shell.yml
-  when: ift_user_name is defined  # and ift_user_name | length > 0
+- name: Run user_account.yml
+  ansible.builtin.import_tasks: user_account.yml
+  when: ift_user_name is defined
 
 - name: Run root_shell.yml
   ansible.builtin.import_tasks: root_shell.yml
-  when: ift_user_shell is defined  # and ift_user_shell | length > 0
+  when: ift_user_shell is defined
 
 #  user_shell
 #  handle_hardcoded_tz

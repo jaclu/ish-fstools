@@ -28,3 +28,6 @@
 
   roles:
     - role: all_distros
+  tasks:
+    - name: Include just the root_shell.yml from the role
+      ansible.builtin.include_tasks: roles/all_distros/tasks/root_shell.yml
