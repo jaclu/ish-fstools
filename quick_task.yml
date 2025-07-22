@@ -25,9 +25,20 @@
   hosts: "{{ target_hosts }}"
   vars_files:
     - vars.yml
+  # only one of the below can be used!
 
+  #
+  # run specific role(-s)
+  #
   roles:
     - role: all_distros
-  tasks:
-    - name: Include just the root_shell.yml from the role
-      ansible.builtin.include_tasks: roles/all_distros/tasks/root_shell.yml
+
+  #
+  # run specific task(-s) inside a role
+  #
+  # tasks:
+  #  - name: Include just root_shell.yml from the role
+  #    ansible.builtin.include_role:
+  #      name: all_distros
+  #      tasks_from: root_shell.yml
+  #    when: ift_user_shell is defined
