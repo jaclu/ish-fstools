@@ -1,0 +1,25 @@
+---
+
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Defines root shell
+#
+
+- name: Get current root line from /etc/passwd
+  ansible.builtin.command: grep '^root:' /etc/passwd
+  register: root_passwd
+  changed_when: false
+
+- name: Update root shell if user shell is /bin/ash or /bin/bash - is:{{ ift_user_shell }}
+  ansible.builtin.lineinfile:
+    path: /etc/passwd
+    regexp: '^root:'
+    line: >-
+      {{
+        root_passwd.stdout.rsplit(':', 1)[0]
+      }}:{{ ift_user_shell }}
+    backup: true
+  when: ift_user_shell in ['/bin/ash', '/bin/bash']

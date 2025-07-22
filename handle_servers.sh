@@ -1,5 +1,15 @@
 #!/bin/sh
 
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Main variables
+#
+
 log_it() {
     if [ -c /dev/stderr ]; then
         echo "$1" >/dev/stderr
@@ -27,6 +37,12 @@ do_ansible() {
     #
     #  Run the ansible playbook to deploy FS
     #
+    if [ "$1" = "quick" ]; then
+	playbook="quick_task.yml"
+    else
+	playbook="provisioning.yml"
+    fi
+
     d_ansible_folder="$(dirname "$0")"
 
     cd "$d_ansible_folder" || {
@@ -40,7 +56,7 @@ do_ansible() {
     # export PYTHONWARNINGS=ignore::UserWarning
 
     lbl_1 "Running playbook on remote servers"
-    ansible-playbook provisioning.yml -e target_hosts=servers
+    ansible-playbook "$playbook" -e target_hosts=servers
 }
 
-do_ansible
+do_ansible "$1"

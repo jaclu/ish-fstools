@@ -1,5 +1,15 @@
 ---
 
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Variables for role Alpine
+#
+
 alpine_base_packages:
   #
   #  Shells

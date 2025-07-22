@@ -1,0 +1,35 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Installs apps common for all Distros
+#
+
+- name: Install common /usr/local/lib
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_lib/"
+    dest: /usr/local/lib/
+
+- name: Install common /usr/local/bin
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+
+- name: Install common /usr/local/sbin
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/

@@ -1,5 +1,13 @@
 ---
-# disable all default tasks
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# disable all default services
 #
 
 - name: Ensure /etc/init.d/NOT exists
@@ -15,9 +23,9 @@
         lookup('pipe', 'find /etc/init.d -maxdepth 1 -type f ! -name NOT | wc -l') | int
       }}
 
-- name: Count regular files in /etc/init.d (excluding dirs, symlinks, NOT)
+- name: Count regular non-symlink files in /etc/init.d
   ansible.builtin.command: >
-    sh -c "find /etc/init.d -maxdepth 1 -type f ! -name NOT ! -lname '*' | wc -l"
+    sh -c "find /etc/init.d -maxdepth 1 -type f -exec test ! -L {} \; -print | wc -l"
   register: file_count_result
   changed_when: false
 

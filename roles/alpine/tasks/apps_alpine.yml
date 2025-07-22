@@ -1,5 +1,15 @@
 ---
 
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install selected Alpine apps
+#
+
 - name: Additional packages
   ansible.builtin.package:
     state: present

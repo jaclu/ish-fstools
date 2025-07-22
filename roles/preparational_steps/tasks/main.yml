@@ -1,5 +1,15 @@
 ---
 
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: preparational_steps - main tasks
+#
+
 - name: Check for /proc/ish
   ansible.builtin.stat:
     path: /proc/ish

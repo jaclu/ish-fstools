@@ -7,7 +7,7 @@
 #
 #  License: MIT
 #
-#  main toolbook
+#  Used to debug selected tasks
 #
 
 # - name: Show all gathered facts
@@ -27,7 +27,4 @@
     - vars.yml
 
   roles:
-    - role: preparational_steps
-    - role: alpine
-      when: ansible_os_family == 'Alpine'
     - role: all_distros

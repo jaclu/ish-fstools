@@ -1,7 +1,17 @@
 ---
 
-# - name: Run apps_alpine
-#   ansible.builtin.import_tasks: apps_alpine.yml
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: Alpine main task
+#
+
+- name: Run apps_alpine
+  ansible.builtin.import_tasks: apps_alpine.yml
 
 - name: Run configs
   ansible.builtin.import_tasks: configs.yml

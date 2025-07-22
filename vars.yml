@@ -1,8 +1,18 @@
 ---
 
-# aok_user_name: 'ish'
-aok_user_shell: '/bin/ash'
-aok_timezone: 'Europe/Amsterdam'
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Main variables
+#
+
+ift_user_name: ish
+ift_user_shell: /bin/ash
+ift_timezone: Europe/Amsterdam
 # debian_reboot_if_needed: false
 
 d_repo: /opt/ish-fstools
