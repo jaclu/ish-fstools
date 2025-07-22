@@ -1,0 +1,64 @@
+---
+# disable all default tasks
+#
+
+- name: Ensure /etc/init.d/NOT exists
+  ansible.builtin.file:
+    path: /etc/init.d/NOT
+    state: directory
+    mode: '0755'
+
+- name: Count regular files in /etc/init.d (excluding dirs, symlinks, NOT)
+  ansible.builtin.set_fact:
+    files_to_move_count: >-
+      {{
+        lookup('pipe', 'find /etc/init.d -maxdepth 1 -type f ! -name NOT | wc -l') | int
+      }}
+
+- name: Count regular files in /etc/init.d (excluding dirs, symlinks, NOT)
+  ansible.builtin.command: >
+    sh -c "find /etc/init.d -maxdepth 1 -type f ! -name NOT ! -lname '*' | wc -l"
+  register: file_count_result
+  changed_when: false
+
+- name: Move all regular files from /etc/init.d to /etc/init.d/NOT
+  ansible.builtin.shell: |
+    for f in /etc/init.d/*; do
+      case "$f" in
+        /etc/init.d/NOT) continue ;;
+      esac
+      [ -f "$f" ] && [ ! -L "$f" ] && mv "$f" /etc/init.d/NOT/
+    done
+  args:
+    executable: /bin/sh
+  when: file_count_result.stdout | int > 0
+  changed_when: true
+
+- name: Check if /etc/init.d/ish-fstools exists
+  ansible.builtin.stat:
+    path: /etc/init.d/ish-fstools
+  register: d_ift_services_stat
+
+- name: Link all files from ish-fstools into /etc/init.d
+  ansible.builtin.shell: |
+    for src in /etc/init.d/ish-fstools/*; do
+      [ -f "$src" ] || continue
+      dest="/etc/init.d/$(basename "$src")"
+      [ -e "$dest" ] || ln -s "$src" "$dest"
+    done
+  args:
+    executable: /bin/sh
+  changed_when: >
+    ansible_facts['links_to_create'] | length > 0
+  vars:
+    links_to_create: >
+      {{
+        lookup('pipe',
+          'for src in /etc/init.d/ish-fstools/*; do
+             [ -f "$src" ] || continue;
+             dest=/etc/init.d/$(basename "$src");
+             [ -e "$dest" ] || echo "$dest";
+           done'
+        ).split('\n') | select('string')
+      }}
+  when: d_ift_services_stat.stat.exists

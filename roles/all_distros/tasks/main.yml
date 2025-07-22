@@ -2,17 +2,6 @@
 
 # =====   Was /opt/AOK/common_AOK/setup_common_env.sh:setup_environment()   =====
 
-- name: Install common config files to /etc
-  become: true
-  ansible.builtin.copy:
-    mode: preserve
-    remote_src: true
-    src: "{{ d_all_distros }}/files/etc/{{ item }}"
-    dest: "/etc/{{ item }}"
-  loop:
-    - environment
-    - profile-hints
-
 - name: Check if /etc/login.defs exists
   ansible.builtin.stat:
     path: /etc/login.defs
@@ -25,24 +14,19 @@
     insertafter: EOF
   when: login_defs_stat.stat.exists
 
-
-- name: Install common /usr/local/lib
+- name: Install common config files to /etc
   become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_all_distros }}/files/usr_local_lib/"
-    dest: /usr/local/lib/
+    src: "{{ d_all_distros }}/files/etc/{{ item }}"
+    dest: "/etc/{{ item }}"
+  loop:
+    - environment
+    - profile-hints
 
-- name: Install common /usr/local/bin
-  become: true
-  ansible.builtin.copy:
-    mode: preserve
-    remote_src: true
-    src: "{{ d_all_distros }}/files/usr_local_bin/"
-    dest: /usr/local/bin/
-
-# AOK: disabling_default_services
+- name: Run disabling_default_services.yml
+  ansible.builtin.import_tasks: disabling_default_services.yml
 
 - name: Copy /etc/skel
   become: true
@@ -71,6 +55,29 @@
     owner: root
     group: root
     mode: '0644'
+
+#  user_shell
+#  handle_hardcoded_tz
+#  adding_runbg_service
+#  removing_original_hostname_service
+#  replacing_std_bins_with_aok_versions ""
+#  changing_sshd_port
+
+- name: Install common /usr/local/lib
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_lib/"
+    dest: /usr/local/lib/
+
+- name: Install common /usr/local/bin
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_all_distros }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
 
 # =====   other   =====
 
