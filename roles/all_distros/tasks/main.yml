@@ -8,8 +8,6 @@
 #  License: MIT
 #
 
-# =====   Was /opt/AOK/common_AOK/setup_common_env.sh:setup_environment()   =====
-
 - name: Common apps
   ansible.builtin.import_tasks: common_apps.yml
 
