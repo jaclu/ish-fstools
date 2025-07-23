@@ -34,11 +34,11 @@
   #  - role: all_distros
 
   #
-  # run specific task(-s) inside a role
+  # run specific task inside a role
   #
   tasks:
     - name: Include just root_shell.yml from the role
       ansible.builtin.include_role:
         name: all_distros
-        tasks_from: root_shell.yml
+        tasks_from: user_account.yml
       when: ift_user_shell is defined
