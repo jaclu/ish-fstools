@@ -9,3 +9,8 @@
 #
 
 d_all_distros: "{{ d_repo }}/roles/all_distros"
+
+d_init_d: /etc/init.d
+d_init_not: "{{ d_init_d }}/NOT"
+d_init_ift: "{{ d_init_d }}/ish-fstools"
+service_runbg: "{{ d_init_d }}/runbg"

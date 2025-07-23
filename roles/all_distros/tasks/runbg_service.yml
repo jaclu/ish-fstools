@@ -8,12 +8,18 @@
 #  Sets up runbg service
 #
 
-- name: Copy /etc/init.d/runbg
+- name: Service runbg - Copy service
   become: true
   ansible.builtin.copy:
     remote_src: true
-    src: "{{ d_all_distros }}/files/etc/init.d/runbg"
-    dest: /etc/init.d/ish-fstools
+    src: "{{ d_all_distros }}/files{{ d_init_d }}/runbg"
+    dest: "{{ d_init_ift }}/"
     owner: root
     group: root
     mode: '0755'
+
+- name: Service runbg - create symbolic link
+  ansible.builtin.file:
+    src: "{{ d_init_ift }}/runbg"
+    dest: "{{ service_runbg }}"
+    state: link
