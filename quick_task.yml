@@ -30,15 +30,15 @@
   #
   # run specific role(-s)
   #
-  roles:
-    - role: all_distros
+  # roles:
+  #  - role: all_distros
 
   #
   # run specific task(-s) inside a role
   #
-  # tasks:
-  #  - name: Include just root_shell.yml from the role
-  #    ansible.builtin.include_role:
-  #      name: all_distros
-  #      tasks_from: root_shell.yml
-  #    when: ift_user_shell is defined
+  tasks:
+    - name: Include just root_shell.yml from the role
+      ansible.builtin.include_role:
+        name: all_distros
+        tasks_from: root_shell.yml
+      when: ift_user_shell is defined

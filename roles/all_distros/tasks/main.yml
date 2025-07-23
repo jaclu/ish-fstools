@@ -10,14 +10,14 @@
 
 # =====   Was /opt/AOK/common_AOK/setup_common_env.sh:setup_environment()   =====
 
-# - name: Common apps
-#   ansible.builtin.import_tasks: common_apps.yml
+- name: Common apps
+  ansible.builtin.import_tasks: common_apps.yml
 
-# - name: Configs for /etc
-#   ansible.builtin.import_tasks: etc_configs.yml
+- name: Configs for /etc
+  ansible.builtin.import_tasks: etc_configs.yml
 
-# - name: Run disabling_default_services.yml
-#   ansible.builtin.import_tasks: disabling_default_services.yml
+- name: Run disabling_default_services.yml
+  ansible.builtin.import_tasks: disabling_default_services.yml
 
 - name: Run user_account.yml
   ansible.builtin.import_tasks: user_account.yml
