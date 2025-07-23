@@ -22,9 +22,16 @@
 
 
 - name: Setting up iSH FS
-  hosts: "{{ target_hosts }}"
+  hosts: all  # "{{ target_hosts }}"
   vars_files:
-    - vars.yml
+    - group_vars/all.yml  # default vars
+
+  pre_tasks:
+    - name: Include user override vars if present
+      ansible.builtin.include_vars:
+        file: group_vars/all.local.yml
+      when: lookup('ansible.builtin.file', 'group_vars/all.local.yml',
+                    errors='ignore') != ''
 
   roles:
     - role: preparational_steps

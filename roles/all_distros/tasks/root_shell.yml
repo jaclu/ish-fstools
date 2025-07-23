@@ -8,7 +8,7 @@
 #  Defines root shell
 #
 
-- name: Get current root line from /etc/passwd
+- name: Root_shell - get current root line from /etc/passwd
   ansible.builtin.command: grep '^root:' /etc/passwd
   register: root_passwd
   changed_when: false

@@ -48,6 +48,9 @@ target_hosts: servers
 #
 #  Defaults
 #
+
+ift_runlevel_runbg: sysinit
+
 alpine_base_packages:
   #
   #  Shells
