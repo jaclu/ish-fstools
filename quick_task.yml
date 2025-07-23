@@ -29,4 +29,4 @@
     - name: Include just root_shell.yml from the role
       ansible.builtin.include_role:
         name: all_distros
-        tasks_from: runbg_service.yml
+        tasks_from: disabling_default_services.yml

@@ -10,51 +10,45 @@
 # Disable all default services, then soft-link all servicess found in
 # /etc/init.d/ish-fstools to /etc/init.d
 #
+#  for f in /etc/init.d/*; do
 
-- name: Ensure /etc/init.d/NOT exists
+- name: "Ensure folder exists {{ d_init_not }}"
   ansible.builtin.file:
-    path: /etc/init.d/NOT
+    path: "{{ d_init_not }}"
     state: directory
     mode: '0755'
 
-- name: Count regular files in /etc/init.d (excluding dirs, symlinks, NOT)
-  ansible.builtin.set_fact:
-    files_to_move_count: >-
-      {{
-        lookup('pipe', 'find /etc/init.d -maxdepth 1 -type f ! -name NOT | wc -l') | int
-      }}
-
-- name: Count regular non-symlink files in /etc/init.d
+- name: "Count regular non-symlink files in {{ d_init_d }}"
   ansible.builtin.command: >
-    sh -c "find /etc/init.d -maxdepth 1 -type f -exec test ! -L {} \; -print | wc -l"
+    sh -c "find '{{ d_init_d }}' -maxdepth 1 -type f -exec test ! -L {} \; -print | wc -l"
   register: file_count_result
   changed_when: false
 
-- name: Move all regular files from /etc/init.d to /etc/init.d/NOT
+- name: "Move all regular service files to {{ d_init_not }}"
   ansible.builtin.shell: |
-    for f in /etc/init.d/*; do
+    for f in "{{ d_init_d }}"/*; do
       case "$f" in
-        /etc/init.d/NOT) continue ;;
+        "{{ d_init_not }}") continue ;;
       esac
-      [ -f "$f" ] && [ ! -L "$f" ] && mv "$f" /etc/init.d/NOT/
+      [ -f "$f" ] && [ ! -L "$f" ] && mv "$f" "{{ d_init_not }}"/
     done
   args:
     executable: /bin/sh
   when: file_count_result.stdout | int > 0
   changed_when: true
 
-- name: Check if /etc/init.d/ish-fstools exists
+- name: "Ensure folder exits {{ d_init_ift }}"
   ansible.builtin.stat:
-    path: /etc/init.d/ish-fstools
+    path: "{{ d_init_ift }}"
   register: d_ift_services_stat
 
-- name: Sync ish-fstools links in /etc/init.d
+- name: "Sync ish-fstools links into {{ d_init_d }}"
   ansible.builtin.shell: |
     changed=0
     # Ensure all valid targets are linked
     for src in /etc/init.d/ish-fstools/*; do
       [ -f "$src" ] || continue
-      dest="/etc/init.d/$(basename "$src")"
+      dest="{{ d_init_d }}/$(basename "$src")"
       if [ ! -e "$dest" ]; then
         ln -s "$src" "$dest"
         echo "LINKED $dest"
@@ -63,11 +57,11 @@
     done
 
     # Remove broken links pointing into ish-fstools
-    for link in /etc/init.d/*; do
+    for link in "{{ d_init_d }}"/*; do
       [ -L "$link" ] || continue
       target=$(readlink "$link")
       case "$target" in
-        /etc/init.d/ish-fstools/*)
+        "{{ d_init_ift }}"/*)
           [ -e "$target" ] && continue
           rm -f "$link"
           echo "REMOVED $link"
