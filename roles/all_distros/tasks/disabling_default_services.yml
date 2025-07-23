@@ -48,19 +48,35 @@
     path: /etc/init.d/ish-fstools
   register: d_ift_services_stat
 
-- name: Link all files from ish-fstools into /etc/init.d
+- name: Sync ish-fstools links in /etc/init.d
   ansible.builtin.shell: |
-    created=0
+    changed=0
+    # Ensure all valid targets are linked
     for src in /etc/init.d/ish-fstools/*; do
       [ -f "$src" ] || continue
       dest="/etc/init.d/$(basename "$src")"
       if [ ! -e "$dest" ]; then
         ln -s "$src" "$dest"
-        echo "$dest"
-        created=1
+        echo "LINKED $dest"
+        changed=1
       fi
     done
-    exit $created
+
+    # Remove broken links pointing into ish-fstools
+    for link in /etc/init.d/*; do
+      [ -L "$link" ] || continue
+      target=$(readlink "$link")
+      case "$target" in
+        /etc/init.d/ish-fstools/*)
+          [ -e "$target" ] && continue
+          rm -f "$link"
+          echo "REMOVED $link"
+          changed=1
+          ;;
+      esac
+    done
+
+    exit $changed
   args:
     executable: /bin/sh
   register: ish_link_output
