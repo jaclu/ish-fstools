@@ -26,7 +26,7 @@
 #   when:
 #     - is_aok_kernel
 
-- name: Install Alpine /usr/local/bin
+- name: Install Alpine additions for /usr/local/bin
   become: true
   ansible.builtin.copy:
     mode: preserve
@@ -34,7 +34,7 @@
     src: "{{ alpine_d_repo }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: Install Alpine /usr/local/sbin
+- name: Install Alpine additions for /usr/local/sbin
   become: true
   ansible.builtin.copy:
     mode: preserve
