@@ -47,9 +47,8 @@
       - git
       - rsync
 
-- name: Checkout ish-fstools
+- name: Checkout ish-fstools into /opt/ish-fstools
   ansible.builtin.git:
     repo: https://github.com/jaclu/ish-fstools.git
     dest: /opt/ish-fstools
     version: main
-    # update: false
