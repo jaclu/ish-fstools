@@ -5,7 +5,7 @@
 #
 #  License: MIT
 #
-#  Sets up runbg service
+#  Installs runbg service
 #
 
 - name: Service runbg - Copy service

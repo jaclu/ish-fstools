@@ -17,6 +17,9 @@
 - name: Run disabling_default_services.yml
   ansible.builtin.import_tasks: disabling_default_services.yml
 
+- name: Run service_runbg.yml
+  ansible.builtin.import_tasks: service_runbg.yml
+
 - name: Run user_account.yml
   ansible.builtin.import_tasks: user_account.yml
   when: ift_user_name is defined
@@ -24,14 +27,6 @@
 - name: Run root_shell.yml
   ansible.builtin.import_tasks: root_shell.yml
   when: ift_user_shell is defined
-
-- name: Run runbg_service.yml
-  ansible.builtin.import_tasks: runbg_service.yml
-
-#  adding_runbg_service
-#  removing_original_hostname_service
-#  replacing_std_bins_with_aok_versions ""
-#  changing_sshd_port
 
 # =====   other   =====
 
