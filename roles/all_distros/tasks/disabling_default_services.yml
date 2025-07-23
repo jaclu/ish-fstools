@@ -7,7 +7,8 @@
 #
 #  License: MIT
 #
-# disable all default services
+# Disable all default services, then soft-link all servicess found in
+# /etc/init.d/ish-fstools to /etc/init.d
 #
 
 - name: Ensure /etc/init.d/NOT exists
@@ -50,14 +51,13 @@
 - name: Link all files from ish-fstools into /etc/init.d
   ansible.builtin.shell: |
     for src in /etc/init.d/ish-fstools/*; do
-      [ -f "$src" ] || continue
+      [ -f "$src" ] || continue  # skip if not a file
       dest="/etc/init.d/$(basename "$src")"
       [ -e "$dest" ] || ln -s "$src" "$dest"
     done
   args:
     executable: /bin/sh
-  changed_when: >
-    ansible_facts['links_to_create'] | length > 0
+  changed_when: links_to_create | length > 0
   vars:
     links_to_create: >
       {{
