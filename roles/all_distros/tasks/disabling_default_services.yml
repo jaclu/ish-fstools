@@ -50,23 +50,20 @@
 
 - name: Link all files from ish-fstools into /etc/init.d
   ansible.builtin.shell: |
+    created=0
     for src in /etc/init.d/ish-fstools/*; do
-      [ -f "$src" ] || continue  # skip if not a file
+      [ -f "$src" ] || continue
       dest="/etc/init.d/$(basename "$src")"
-      [ -e "$dest" ] || ln -s "$src" "$dest"
+      if [ ! -e "$dest" ]; then
+        ln -s "$src" "$dest"
+        echo "$dest"
+        created=1
+      fi
     done
+    exit $created
   args:
     executable: /bin/sh
-  changed_when: links_to_create | length > 0
-  vars:
-    links_to_create: >
-      {{
-        lookup('pipe',
-          'for src in /etc/init.d/ish-fstools/*; do
-             [ -f "$src" ] || continue;
-             dest=/etc/init.d/$(basename "$src");
-             [ -e "$dest" ] || echo "$dest";
-           done'
-        ).split('\n') | select('string')
-      }}
+  register: ish_link_output
+  changed_when: ish_link_output.rc != 0
+  failed_when: false
   when: d_ift_services_stat.stat.exists
