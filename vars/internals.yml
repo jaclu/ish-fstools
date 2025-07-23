@@ -1,0 +1,41 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Main variables - not intended to be changed in order to custoomize the deploy
+#
+
+# debian_reboot_if_needed: false
+
+d_repo: /opt/ish-fstools
+
+# wait_for_hosts_to_be_ready: false
+
+#
+#  This disables the wait for the host to be responsive
+#  mostly useful for Vagrant nodes just after creation
+#
+# check_connection: false
+
+#
+#  I have tried to put the equivalent in ansible.cfg
+#  but so far it never took effect. Avoiding host keys is
+#  most useful when dealing with vagrant nodes that change
+#  often. For iSH node it might not be needed, but since
+#  they would normally only be accessed locally, it should
+#  most likely not be an issue.
+#
+ansible_ssh_common_args:
+  -o StrictHostKeyChecking=no
+  -o UserKnownHostsFile=/dev/null
+
+# if remote username does not match username on deploy host
+ansible_user: root
+
+# Default, will be overridden on cmd-line
+target_hosts: servers

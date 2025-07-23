@@ -11,12 +11,14 @@
 #
 
 - name: Setting up iSH FS
-  hosts: all  # "{{ target_hosts }}"
+  hosts: local
   vars_files:
-    - group_vars/all.yml         # default vars
-    - group_vars/all.local.yml   # user overrides
+    - vars/internal.yml
+    - vars/defaults.yml
 
+  #
   # only one of the below can be used - put the active one last
+  #
 
   #
   # run specific role(-s)

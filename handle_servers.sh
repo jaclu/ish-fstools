@@ -56,7 +56,8 @@ do_ansible() {
     # export PYTHONWARNINGS=ignore::UserWarning
 
     lbl_1 "Running playbook on remote servers"
-    ansible-playbook "$playbook" -e target_hosts=servers
+    ansible-playbook "$playbook"
+    # -e target_hosts=servers
 }
 
 do_ansible "$1"

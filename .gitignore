@@ -6,7 +6,7 @@
 .DS_Store
 Icon
 
-group_vars/all.local.yml
+# group_vars/all.yml
 
 
 # Ignore vagrant tmp files
