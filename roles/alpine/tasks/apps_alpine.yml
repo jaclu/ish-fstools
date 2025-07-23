@@ -10,7 +10,7 @@
 #  Install selected Alpine apps
 #
 
-- name: Additional packages
+- name: Install selected packages
   ansible.builtin.package:
     state: present
     name: "{{ alpine_packages }}"
@@ -25,6 +25,22 @@
 #       - nload-doc
 #   when:
 #     - is_aok_kernel
+
+- name: Install Alpine /usr/local/bin
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ alpine_d_repo }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+
+- name: Install Alpine /usr/local/sbin
+  become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ alpine_d_repo }}/files/usr_local_sbin/"
+    dest: /usr/local/bin/
 
 # - name: Install distro specific /usr/local/bin
 #   become: true

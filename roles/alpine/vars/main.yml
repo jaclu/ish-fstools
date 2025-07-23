@@ -10,6 +10,9 @@
 #  Variables for role Alpine
 #
 
+# Where is this role on dest platform
+alpine_d_repo: "{{ d_repo }}/roles/alpine"
+
 alpine_base_packages:
   #
   #  Shells
