@@ -23,3 +23,10 @@
     src: "{{ d_init_ift }}/runbg"
     dest: "{{ service_runbg }}"
     state: link
+
+- name: Ensure 'runbg' is in 'sysinit' runlevel
+  ansible.builtin.command: rc-update add runbg sysinit
+  register: rc_update_result
+  changed_when: "'Service added' in rc_update_result.stdout"
+  failed_when: rc_update_result.rc != 0 and
+               "'already in runlevel' not in rc_update_result.stdout"
