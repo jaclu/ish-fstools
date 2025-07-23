@@ -24,15 +24,15 @@
     dest: "{{ service_runbg }}"
     state: link
 
-- name: Check if 'runbg' is in 'sysinit' runlevel
+- name: "Service runbg - Check if it is in runlevel: {{ runlevel_runbg }}"
   ansible.builtin.shell: |
     set -o pipefail
-    rc-status sysinit | grep -q '^ runbg'
+    rc-status "{{ runlevel_runbg }}" | grep -q '^ runbg'
   register: runbg_check
   changed_when: false
   failed_when: false
 
-- name: Add 'runbg' to 'sysinit' if missing
-  ansible.builtin.command: rc-update add runbg sysinit
+- name: Service runbg - Activate if needed
+  ansible.builtin.command: rc-update add runbg "{{ runlevel_runbg }}"
   when: runbg_check.rc != 0
   changed_when: true
