@@ -18,15 +18,16 @@
   # only one of the below can be used - put the active one last
 
   #
-  # run specific role(-s)
-  #
-  # roles:
-  #  - role: all_distros
-  #
   # run specific task inside a role
   #
-  tasks:
-    - name: Include just root_shell.yml from the role
-      ansible.builtin.include_role:
-        name: all_distros
-        tasks_from: disabling_default_services.yml
+  # tasks:
+  #  - name: Include just root_shell.yml from the role
+  #    ansible.builtin.include_role:
+  #      name: all_distros
+  #      tasks_from: disabling_default_services.yml
+
+  #
+  # run specific role(-s)
+  #
+  roles:
+    - role: preparational_steps

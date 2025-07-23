@@ -24,8 +24,8 @@
     msg: "         is_ish: {{ is_ish }}"
 
 - name: Ensure iSH can run in the background
-  # set -o pipefail
-  # ps ax | grep -q /dev/location || \
+  # This is just for first deploy, during install a service doing this
+  # each time iSH is started will be installed
   ansible.builtin.shell: |
     (nohup cat /dev/location > /dev/null 2>&1 </dev/null & sleep 0.1)
   changed_when: false
@@ -36,7 +36,7 @@
     update_cache: true
     upgrade: true
 
-- name: Ensure crucial apps are available
+- name: Ensure crucial apps needed for 1st deploy are available
   ansible.builtin.package:
     state: present
     #   name: "{{ item }}"  # 1st: 1m 36s  repeats: 53s + lists each pkg
@@ -47,9 +47,9 @@
       - git
       - rsync
 
-- name: Checkout ish-fstools (once)
+- name: Checkout ish-fstools
   ansible.builtin.git:
     repo: https://github.com/jaclu/ish-fstools.git
     dest: /opt/ish-fstools
     version: main
-    update: false
+    # update: false
