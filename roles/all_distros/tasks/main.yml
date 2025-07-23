@@ -25,8 +25,9 @@
   ansible.builtin.import_tasks: root_shell.yml
   when: ift_user_shell is defined
 
-#  user_shell
-#  handle_hardcoded_tz
+- name: Run runbg_service.yml
+  ansible.builtin.import_tasks: runbg_service.yml
+
 #  adding_runbg_service
 #  removing_original_hostname_service
 #  replacing_std_bins_with_aok_versions ""

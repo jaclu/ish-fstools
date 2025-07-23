@@ -1,0 +1,19 @@
+---
+
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Sets up runbg service
+#
+
+- name: Copy /etc/init.d/runbg
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ d_all_distros }}/files/etc/init.d/runbg"
+    dest: /etc/init.d/ish-fstools
+    owner: root
+    group: root
+    mode: '0755'
