@@ -60,3 +60,17 @@
     owner: root
     group: root
     mode: '0644'
+
+- name: Set system timezone to {{ ift_timezone }}
+  ansible.builtin.file:
+    src: "/usr/share/zoneinfo/{{ ift_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: true
+  when:
+    - ift_timezone is defined
+    - lookup(
+        'ansible.builtin.fileglob',
+        '/usr/share/zoneinfo/' ~ ift_timezone,
+        errors='ignore'
+      ) != ''
