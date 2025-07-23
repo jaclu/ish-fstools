@@ -10,17 +10,6 @@
 #  Used to debug selected tasks
 #
 
-# - name: Show all gathered facts
-#   hosts: all
-#   vars_files:
-#     - vars.yml
-#   gather_facts: true
-#   tasks:
-#     - name: Display all facts
-#       debug:
-#         var: ansible_facts
-
-
 - name: Setting up iSH FS
   hosts: "{{ target_hosts }}"
   vars_files:
@@ -40,5 +29,5 @@
     - name: Include just root_shell.yml from the role
       ansible.builtin.include_role:
         name: all_distros
-        tasks_from: user_account.yml
+        tasks_from: disabling_default_services.yml
       when: ift_user_shell is defined
