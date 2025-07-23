@@ -13,7 +13,7 @@
 - name: Install selected packages
   ansible.builtin.package:
     state: present
-    name: "{{ alpine_packages }}"
+    name: "{{ ift_alpine_packages }}"
 
 # no-changed-when: Commands should not change things if nothing needs doing.
 # - name: Alpine iSH-AOK packages
