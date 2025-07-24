@@ -23,7 +23,7 @@
   when: login_defs_stat.stat.exists
 
 - name: Etc_configs Install common config files
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
@@ -34,7 +34,7 @@
     - profile-hints
 
 - name: Etc_configs Copy /etc/skel
-  become: true
+  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
@@ -52,7 +52,7 @@
     mode: '0644'
 
 - name: Etc_configs Installing no-pw sudoers group
-  become: true
+  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"

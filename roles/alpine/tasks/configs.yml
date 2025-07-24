@@ -11,14 +11,14 @@
 #
 
 - name: Deploy /etc/inittab
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     src: files/etc/inittab
     dest: /etc/
 
 - name: Deploy /etc/network/interfaces  # Dont think it is needed
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     src: files/etc/interfaces
@@ -35,7 +35,7 @@
 #    - is_ish
 
 - name: Add the testing repo if v3.22 or greater
-  become: true
+  # become: true
   ansible.builtin.lineinfile:
     path: /etc/apk/repositories
     line: 'https://dl-cdn.alpinelinux.org/alpine/edge/testing'

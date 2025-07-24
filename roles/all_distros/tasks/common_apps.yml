@@ -11,7 +11,7 @@
 #
 
 - name: Install common additions for /usr/local/lib
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
@@ -19,7 +19,7 @@
     dest: /usr/local/lib/
 
 - name: Install common additions for /usr/local/bin
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
@@ -27,7 +27,7 @@
     dest: /usr/local/bin/
 
 - name: Install common additions for /usr/local/sbin
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true

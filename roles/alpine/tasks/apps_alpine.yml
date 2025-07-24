@@ -35,7 +35,7 @@
 #     - is_aok_kernel
 
 - name: Install Alpine additions for /usr/local/bin
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
@@ -43,7 +43,7 @@
     dest: /usr/local/bin/
 
 - name: Install Alpine additions for /usr/local/sbin
-  become: true
+  # become: true
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
