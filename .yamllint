@@ -1,11 +1,19 @@
 ---
-
 extends: default
 
 rules:
   line-length:
     max: 92
-    level: warning  # or 'error' if you want strict enforcement
+    level: warning
 
-ignore: |
-  .ansible-lint.yml
+  comments:
+    min-spaces-from-content: 1
+
+  comments-indentation: disable
+
+  braces:
+    max-spaces-inside: 1
+
+  octal-values:
+    forbid-implicit-octal: true
+    forbid-explicit-octal: true
