@@ -34,6 +34,6 @@
   # run specific role(-s)
   #
   roles:
-    - role: preparational_steps
+    # - role: preparational_steps
     - role: alpine
       when: ansible_os_family == 'Alpine'
