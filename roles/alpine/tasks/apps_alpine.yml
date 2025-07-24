@@ -19,33 +19,10 @@
       {% endfor %}
 
 - name: Install selected packages
-  # iSH:
-  # chroot:
-  community.general.apk:
-    name: "{{ ift_alpine_packages }}"
-    state: present
-
-# - name: Install all packages in one go (no checking, fast)
-#   # iSH: 4m 32s
-#   # chroot:
-#   ansible.builtin.command:
-#     apk add --no-cache {{ ift_alpine_packages | join(' ') }}
-#   # args:
-#   #  warn: false
-#   changed_when: true
-#   tags:
-#     - skip_ansible_lint
-
-# no-changed-when: Commands should not change things if nothing needs doing.
-# - name: Alpine iSH-AOK packages
-#   become: true
-#   ansible.builtin.command:
-#     state: present
-#     name:
-#       - nload
-#       - nload-doc
-#   when:
-#     - is_aok_kernel
+  # On my iPad: 1st run 3m10s, repeat 44s
+  ansible.builtin.include_tasks: tasks/install_apk.yml
+  vars:
+    apk_packages: "{{ ift_alpine_packages }}"
 
 - name: Install Alpine additions for /usr/local/bin
   # become: true
@@ -62,19 +39,3 @@
     remote_src: true
     src: "{{ alpine_d_repo }}/files/usr_local_sbin/"
     dest: /usr/local/bin/
-
-# - name: Install distro specific /usr/local/bin
-#   become: true
-#   ansible.builtin.copy:
-#     mode: preserve
-#     remote_src: true
-#     src: "{{ aok_folder }}/Alpine/usr_local_bin/"
-#     dest: /usr/local/bin/
-
-# - name: Install distro specific /usr/local/sbin
-#   become: true
-#   ansible.builtin.copy:
-#     mode: preserve
-#     remote_src: true
-#     src: "{{ aok_folder }}/Alpine/usr_local_sbin/"
-#     dest: /usr/local/sbin/
