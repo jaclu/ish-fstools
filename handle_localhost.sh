@@ -45,7 +45,7 @@ do_ansible() {
     if [ "$1" = "quick" ]; then
 	playbook="quick_task.yml"
     else
-	playbook="provisioning-local.yml"
+	playbook="provisioning.yml"
     fi
 
     d_ansible_folder="$(dirname "$0")"

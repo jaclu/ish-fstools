@@ -8,22 +8,22 @@
 #  Defines root shell
 #
 
+- name: Run verify_shell_exists.yml
+  ansible.builtin.import_tasks: verify_shell_exists.yml
+  when: ift_shell is defined and ift_shell
+
 - name: Root_shell - get current root line from /etc/passwd
   ansible.builtin.command: grep '^root:' /etc/passwd
   register: root_passwd
   changed_when: false
 
-- name: Run verify_shell_exists.yml
-  ansible.builtin.import_tasks: verify_shell_exists.yml
-  when: ift_user_shell is defined
-
-- name: Update root shell if user shell is /bin/ash or /bin/bash - is:{{ ift_user_shell }}
+- name: Update root shell if user shell is /bin/ash or /bin/bash - is:{{ ift_shell }}
   ansible.builtin.lineinfile:
     path: /etc/passwd
     regexp: '^root:'
     line: >-
       {{
         root_passwd.stdout.rsplit(':', 1)[0]
-      }}:{{ ift_user_shell }}
+      }}:{{ ift_shell }}
     backup: true
-  when: ift_user_shell in ['/bin/ash', '/bin/bash']
+  when: ift_shell in ['/bin/ash', '/bin/bash']

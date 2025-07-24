@@ -7,11 +7,10 @@
 #
 #  License: MIT
 #
-#  Main variables intended for user customization
-#
-
+# User-customizable variables intended to be overridden in vars/overrides.yml
+# This file is listed in .gitignore and won’t be overwritten by repository updates.
 ift_user_name: ish
-ift_user_shell: /bin/ash
+ift_shell: /bin/ash
 ift_timezone: Europe/Amsterdam
 
 #

@@ -22,11 +22,11 @@
 
 - name: Run user_account.yml
   ansible.builtin.import_tasks: user_account.yml
-  when: ift_user_name is defined
+  when: ift_user_name is defined and ift_user_name
 
 - name: Run root_shell.yml
   ansible.builtin.import_tasks: root_shell.yml
-  when: ift_user_shell is defined
+  when: ift_shell is defined and ift_shell
 
 # =====   other   =====
 

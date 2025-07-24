@@ -9,10 +9,15 @@
 #
 #  User overrides
 #
-ift_user_name: jaclu
-ift_timezone: Europe/Stockholm
+ift_user_name: ""
+ift_shell: ""
 
-ift_runlevel_runbg: default
+ift_timezone: ""  # Europe/Amsterdam
 
-# Default, will be overridden on cmd-line
-target_hosts: servers
+ift_alpine_packages:
+  #
+  #  Shells
+  #
+  - bash
+  - openrc
+  # - tzdata

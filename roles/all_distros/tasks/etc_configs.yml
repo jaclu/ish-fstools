@@ -66,9 +66,9 @@
     src: "/usr/share/zoneinfo/{{ ift_timezone }}"
     dest: /etc/localtime
     state: link
-    force: true
+    # force: true
   when:
-    - ift_timezone is defined
+    - ift_timezone is defined and ift_timezone
     - lookup(
         'ansible.builtin.fileglob',
         '/usr/share/zoneinfo/' ~ ift_timezone,
