@@ -24,9 +24,10 @@
 #     state: present
 
 - name: Install all packages in one go (no checking, fast)
-  ansible.builtin.command: apk add --no-cache {{ ift_alpine_packages | join(' ') }}
-  args:
-    warn: false
+  ansible.builtin.command:
+    apk add --no-cache {{ ift_alpine_packages | join(' ') }}
+  # args:
+  #  warn: false
   changed_when: true
   tags:
     - skip_ansible_lint
