@@ -6,8 +6,7 @@
 .DS_Store
 Icon
 
-# group_vars/all.yml
-
+vars/overrides.yml
 
 # Ignore vagrant tmp files
 .vagrant/
