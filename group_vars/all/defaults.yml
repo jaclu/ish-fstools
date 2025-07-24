@@ -40,7 +40,7 @@ ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
 #  some temp variables are first used to define what packages to use
 #
 #  If the intent is just add more packages in overrides, they can be listed using
-#  the varuable extra_alpine_packages, to avoid having to duplicate the entire
+#  the variable extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
 # NOICE: put this in vars/overrides.yml
