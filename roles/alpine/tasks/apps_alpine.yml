@@ -18,10 +18,18 @@
         {{ pkg }}
       {% endfor %}
 
-- name: Install selected packages
-  ansible.builtin.package:
-    state: present
-    name: "{{ ift_alpine_packages }}"
+# - name: Install selected packages
+#   community.general.apk:
+#     name: "{{ ift_alpine_packages }}"
+#     state: present
+
+- name: Install all packages in one go (no checking, fast)
+  ansible.builtin.command: apk add --no-cache {{ ift_alpine_packages | join(' ') }}
+  args:
+    warn: false
+  changed_when: true
+  tags:
+    - skip_ansible_lint
 
 # no-changed-when: Commands should not change things if nothing needs doing.
 # - name: Alpine iSH-AOK packages
