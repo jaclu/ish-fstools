@@ -43,9 +43,10 @@ ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
 #  the varuable extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
+# NOICE: put this in vars/overrides.yml
 # extra_alpine_packages:
-#   - mtm
-#   - dvtm
+#   - gcc
+#   - strace
 #
 
 _tmp_alpine_base_packages:
