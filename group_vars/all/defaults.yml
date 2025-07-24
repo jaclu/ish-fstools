@@ -43,7 +43,7 @@ ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
 #  the variable extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
-# NOICE: put this in vars/overrides.yml
+# NOTICE: put this in vars/overrides.yml
 # extra_alpine_packages:
 #   - gcc
 #   - strace
