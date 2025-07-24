@@ -25,10 +25,10 @@
   # # run specific task inside a role
   # #
   # tasks:
-  #   - name: Include just root_shell.yml from the role
+  #   - name: Use just one task file from the role
   #     ansible.builtin.include_role:
-  #       name: all_distros
-  #       tasks_from: service_runbg.yml
+  #       name: alpine
+  #       tasks_from: apps_alpine.yml
 
   #
   # run specific role(-s)
