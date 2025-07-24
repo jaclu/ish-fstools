@@ -1,0 +1,37 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Used to debug selected tasks
+#
+
+- name: Setting up iSH FS
+  hosts: "{{ target_hosts | default('localhost') }}"
+
+  pre_tasks:
+    - name: Load override variables
+      ansible.builtin.import_tasks: tasks/load_overrides.yml
+
+  #
+  # only one of the below can be used - put the active one last
+  #
+
+  #
+  # run specific role(-s)
+  #
+  # roles:
+  #  - role: preparational_steps
+
+  #
+  # run specific task inside a role
+  #
+  tasks:
+    - name: Include just root_shell.yml from the role
+      ansible.builtin.include_role:
+        name: all_distros
+        tasks_from: service_runbg.yml

@@ -15,7 +15,7 @@
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_all_distros }}/files/usr_local_lib/"
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
 
 - name: Install common additions for /usr/local/bin
@@ -23,7 +23,7 @@
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_all_distros }}/files/usr_local_bin/"
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Install common additions for /usr/local/sbin
@@ -31,5 +31,5 @@
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_all_distros }}/files/usr_local_sbin/"
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/

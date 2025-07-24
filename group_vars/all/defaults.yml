@@ -8,97 +8,135 @@
 #  License: MIT
 #
 # User-customizable variables intended to be overridden in vars/overrides.yml
-# This file is listed in .gitignore and won’t be overwritten by repository updates.
-ift_user_name: ish
-ift_shell: /bin/ash
-ift_timezone: Europe/Amsterdam
+# to fine-tune the deployment. The file vars/overrides.yml is listed in .gitignore,
+# so it won't be affected by repository updates.
+#
+# Variables prefixed with ift_ are intended for user customization.
+# Some temporary variables prefixed with _tmp are used internally
+# to construct the final ift_ variables.
+#
 
 #
-#  Defaults
+#  Create a user account (will be given no password sudo privs)
+#  Be aware that only Alpine supports the /bin/ash shell
+#  If a shell is defined root will also use this shell
 #
+ift_user_name: ish  # set to "" to disable
+ift_shell: /bin/ash  # set to "" to disable
 
-ift_runlevel_runbg: sysinit
+#
+#  Use tzdata for timezone naming, such as Europe/Amsterdam EST
+#  set to "" if no system timezone should be defined
+#
+ift_timezone: ""
 
-alpine_base_packages:
+#
+#  Runlevel for runbg - service that ensures iSH continues to run in the background
+#
+ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
+
+#
+#  ift_alpine_packages - defines what Alpine packages will be installed if FS is Alpine
+#  some temp variables are first used to define what packages to use
+#
+#  If the intent is just add more packages in overrides, they can be listed using
+#  the varuable extra_alpine_packages, to avoid having to duplicate the entire
+#  ift_alpine_packages
+#
+# extra_alpine_packages:
+#   - mtm
+#   - dvtm
+#
+_tmp_alpine_base_packages:
   #
   #  Shells
   #
-  - bash
-  - zsh
-  - bash-completion
-  - zsh-completions
+  - bash  # The GNU Bourne Again shell
+  - bash-completion  # Command-line tab-completion for bash
+  - zsh  # Very advanced and programmable command interpreter (shell)
+  - zsh-completions  # Additional completion definitions for Zsh (packaged as a plugin)
 
   #
   #  Tools
   #
-  - busybox-extras
-  - coreutils
-  - procps
-  - util-linux
-  - sudo
-  - shadow
-  - shadow-login
-  - musl-locales
-  - tzdata
-  # - man-db
-  - findutils
-  - sed
-  - tar
-  - pigz
-  - file
-  - gawk
-  - grep
-  - htop
-  - less
-  - sqlite
-  - py3-pip
-  - ncdu
-  # - fzf
+  - busybox-extras  # Additional binaries of Busybox
+  - coreutils  # The basic file, shell and text manipulation utilities
+  - procps  # Utilities for monitoring your system and processes on your system
+  - util-linux  # Random collection of Linux utilities
+  - sudo  # Give certain users the ability to run some commands as root
+  - findutils  # GNU utilities for finding files
+  # - sed  # GNU stream editor
+  # - tar  # Utility used to store, backup, and transport files
+  - pigz  # Parallel implementation of gzip
+  - file  # File type identification utility
+  - gawk  # GNU awk pattern-matching language
+  # - grep  # Searches input files for lines containing a match to a specified pattern
+  - shadow  # PAM-using login and passwd utilities (usermod, useradd, ...)
+  - shadow-login  # Login utils from shadow package
+  - musl-locales  # Locales support for musl
+  - tzdata  # Timezone data
+  # - man-db  # The man command and related utilities for examining on-line help files
+  - htop  # Interactive process viewer
+  # - less  # File pager
+  - sqlite  # Popular minimal sql engine
+  - py3-pip  # Installs both Python3 and all that is needed for pip
+  - ncdu  # Text-based disk usage viewer
+  # - fzf  # A command-line fuzzy finder
 
   #
   #  Services
   #
-  - openrc
-  - dcron
-  # - dcron-openrc
-
-  #
-  #  Networking Tools
-  #
-  - ssl_client
-  - openssh
-  # - git
-  # - rsync
-  - curl
-  - wget
-  - elinks
-  - mosh
-  - mtr
+  - openrc  # OpenRC manages the services, startup and shutdown of a host
+  - dcron  # dillon's lightweight cron daemon
+  - dcron-openrc  # dillon's lightweight cron daemon (OpenRC init scripts)
 
   #
   #  Editors
   #
-  - vim
-  - nano
-  - mg
-  - ed
+  - vim  # advanced text editor, with GUI
+  - mg  # microscopic EMACS style editor
+  - nano  # Enhanced clone of the Pico text editor
+
+  #
+  #  Networking Tools
+  #
+  # - git  # Already installed in role preparational_steps
+  # - rsync  # Already installed in role preparational_steps
+  - openssh  # Port of OpenBSD's free SSH release
+  - curl  # URL retrieval utility and library
+  - wget  # Network utility to retrieve files from the Web
+  - mosh  # Mobile shell surviving disconnects with local echo and line editing
+  - mtr  # Full screen ncurses traceroute tool
+
+  #
+  #  Text mode browsers
+  #
+  - w3m  # text-based web & gopher browser, as well as pager
+  # - elinks  # Advanced and well-established feature-rich text mode web browser
+  # - lynx  # Cross-platform text-based browser
+
   #
   #  Text-UI
   #
-  - ncurses
-  - newt
-  - tmux
-  - bat
+  # - ncurses  # Console display library
+  - newt  # Redhat's Newt windowing toolkit development files - proveds whiptail
+  - tmux  # Tool to control multiple terminals from a single terminal
+  # - mtm  # Perhaps the smallest useful terminal multiplexer in the world
+  # - dvtm  # Dynamic virtual terminal manager
+  - bat  # cat(1) clone with wings
 
-  # =============
+#
+#  Version dependent packages, 3.17 is ancient by now, but i keep this here as
+#  a template, if later other version dependent deploy decisions might be needed
+#
+_tmp_alpine_min_317:
+  - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
-  #
-  #  Other
-  #
-  # - fortune
-alpine_version_dependent_packages:
-  - lsb-release-minimal
-ift_alpine_packages: "{{ alpine_base_packages +
-  (alpine_version_dependent_packages
-  if ansible_distribution_version is version('3.17', '>='))
+#
+#  Generate ift_alpine_packages
+#
+ift_alpine_packages: "{{ _tmp_alpine_base_packages +
+  (
+    _tmp_alpine_min_317 if ansible_distribution_version is version('3.17', '>=')
+  )
   | default([]) }}"

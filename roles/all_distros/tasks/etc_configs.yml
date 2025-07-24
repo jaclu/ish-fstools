@@ -27,7 +27,7 @@
   ansible.builtin.copy:
     mode: preserve
     remote_src: true
-    src: "{{ d_all_distros }}/files/etc/{{ item }}"
+    src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:
     - environment
@@ -37,7 +37,7 @@
   become: true
   ansible.builtin.copy:
     remote_src: true
-    src: "{{ d_all_distros }}/files/etc/skel"
+    src: "{{ d_repo_all_distros_role }}/files/etc/skel"
     dest: /etc
     owner: root
     group: root
@@ -55,7 +55,7 @@
   become: true
   ansible.builtin.copy:
     remote_src: true
-    src: "{{ d_all_distros }}/files/etc/sudoers.d/sudo_no_passwd"
+    src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
     dest: /etc/sudoers.d
     owner: root
     group: root

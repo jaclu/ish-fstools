@@ -8,7 +8,7 @@
 #  Variables for role: all_distros
 #
 
-d_all_distros: "{{ d_repo }}/roles/all_distros"
+d_repo_all_distros_role: "{{ d_repo }}/roles/all_distros"
 
 d_init_d: /etc/init.d
 d_init_not: "{{ d_init_d }}/NOT"

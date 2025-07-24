@@ -8,51 +8,51 @@
 #  Defines user account
 #
 
-- name: Fail if ift_shell is undefined while ift_user_name is defined
+- name: User acct - Fail if ift_shell is undefined while ift_user_name is defined
   ansible.builtin.fail:
     msg: "ift_shell must be defined when ift_user_name is set"
   when:
     - ift_shell is defined
     - ift_user_name is not defined
 
-- name: Run verify_shell_exists.yml
+- name: User acct - Run verify_shell_exists.yml
   ansible.builtin.import_tasks: verify_shell_exists.yml
   when: ift_shell is defined
 
-- name: Find user with UID 501 different from ift_user_name
+- name: User acct - Find user with UID 501 different from ift_user_name
   ansible.builtin.command: >
     awk -F: -v user="{{ ift_user_name }}" '
     $3 == 501 && $1 != user { print $1 }' /etc/passwd
   register: conflicting_user
   changed_when: false
 
-- name: Fail if UID 501 is already used by another user
+- name: User acct - Fail if UID 501 is already used by another user
   ansible.builtin.fail:
     msg: >
       UID 501 is already assigned to user(s):
       {{ conflicting_user.stdout_lines | join(", ") }}
   when: conflicting_user.stdout != ""
 
-- name: Find group with GID 501 different from ift_user_name
+- name: User acct - Find group with GID 501 different from ift_user_name
   ansible.builtin.command: >
     awk -F: -v group="{{ ift_user_name }}" '
     $3 == 501 && $1 != group { print $1 }' /etc/group
   register: conflicting_group
   changed_when: false
 
-- name: Fail if GID 501 is already used by another group
+- name: User acct - Fail if GID 501 is already used by another group
   ansible.builtin.fail:
     msg: >
       GID 501 is already assigned to group(s):
       {{ conflicting_group.stdout_lines | join(", ") }}
   when: conflicting_group.stdout != ""
 
-- name: Ensure 'sudo' group exists (Alpine-compatible)
+- name: User acct - Ensure 'sudo' group exists (Alpine-compatible)
   ansible.builtin.group:
     name: sudo
     state: present
 
-- name: "Ensure group with GID 501 exists: {{ ift_user_name }}"
+- name: "User acct - Ensure group with GID 501 exists: {{ ift_user_name }}"
   ansible.builtin.group:
     name: "{{ ift_user_name }}"
     gid: 501
@@ -60,7 +60,7 @@
     force: true
   when: ift_user_name is defined
 
-- name: Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
+- name: User acct - Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
   ansible.builtin.user:
     name: "{{ ift_user_name }}"
     uid: 501
@@ -73,12 +73,12 @@
     - ift_user_name is defined
     - ift_shell is defined
 
-- name: Check current shell for {{ ift_user_name }}
+- name: User acct - Check current shell for {{ ift_user_name }}
   ansible.builtin.command: getent passwd "{{ ift_user_name }}"
   register: passwd_line
   changed_when: false
 
-- name: Set shell for {{ ift_user_name }}
+- name: User acct - Set shell for {{ ift_user_name }}
   ansible.builtin.command: chsh -s "{{ ift_shell }}" "{{ ift_user_name }}"
   when:
     - ift_user_name is defined

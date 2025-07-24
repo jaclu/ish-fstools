@@ -42,12 +42,11 @@ do_ansible() {
     #
     #  Run the ansible playbook to deploy FS
     #
-    if [ "$1" = "quick" ]; then
-	playbook="quick_task.yml"
+    if [ "$dbg_mode" -eq 1 ]; then
+	    playbook="debug_task.yml"
     else
-	playbook="provisioning.yml"
+	    playbook="provisioning.yml"
     fi
-
     d_ansible_folder="$(dirname "$0")"
 
     cd "$d_ansible_folder" || {
@@ -60,9 +59,20 @@ do_ansible() {
     # export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # macOS/iSH/Termux workaround
     # export PYTHONWARNINGS=ignore::UserWarning
 
-    lbl_1 "Running playbook on localhost"
+    lbl_1 "Running $playbook on localhost"
     ansible-playbook "$playbook" -e target_hosts=local
 }
+
+dbg_mode=0
+
+case "$1" in
+"") ;; # no param
+"dbg") dbg_mode=1 ;;
+*)
+    log_it
+    err_msg "Optional param:  dbg to run a limited task"
+    ;;
+esac
 
 [ -d /proc/ish ] && err_msg "Can't be run on iSH for now"
 
@@ -72,4 +82,4 @@ grep -q " / / " /proc/self/mountinfo && {
 }
 
 install_ansible
-do_ansible "$1"
+do_ansible
