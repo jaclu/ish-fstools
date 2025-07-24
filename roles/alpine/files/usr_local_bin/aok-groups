@@ -162,7 +162,8 @@ process_items() {
 
 prog_name=$(basename "$0")
 
-. /opt/AOK/tools/utils.sh
+# shellcheck source=/opt/ish-fstools/roles/all_distros/files/usr_local_lib/ift-utils.sh
+. /usr/local/lib/ift-utils.sh
 
 create_aok_groups
 

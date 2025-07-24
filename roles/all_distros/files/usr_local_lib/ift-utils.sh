@@ -1174,3 +1174,7 @@ f_logins_continuous="$d_aok_etc"/login-continuous
 f_hostname_aok_suffix="$d_aok_etc"/hostname-aok-suffix
 f_pts_0_as_console="$d_aok_etc"/pts_0_as_console
 f_profile_hints="$d_aok_etc"/show_profile_hints
+
+VNC_APKS="x11vnc x11vnc-doc xvfb xterm xorg-server xf86-video-dummy \
+    i3wm i3wm-doc i3lock i3lock-doc i3status i3status-doc xdpyinfo \
+    xdpyinfo-doc ttf-dejavu"
