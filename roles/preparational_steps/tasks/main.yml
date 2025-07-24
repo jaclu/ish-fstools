@@ -39,11 +39,7 @@
 - name: Ensure crucial apps needed for 1st deploy are available
   ansible.builtin.package:
     state: present
-    #   name: "{{ item }}"  # 1st: 1m 36s  repeats: 53s + lists each pkg
-    # loop:
-    #   - git
-    #   - rsync
-    name:  # 1st: 1m 14s  repeats: 40s
+    name:
       - git
       - rsync
 
