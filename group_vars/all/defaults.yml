@@ -63,8 +63,9 @@ _tmp_alpine_base_packages:
   #
   - coreutils  # The basic file, shell and text manipulation utilities
   - util-linux  # Random collection of Linux utilities
-  - procps  # Utilities for monitoring your system and processes on your system
-  - busybox-extras  # Additional binaries of Busybox
+  # - procps  # Utilities for monitoring your system and processes on your system
+  # procps results in /usr/bin/uptime triggering Seg Fault
+  # provides ok pkill & pgrep
   - findutils  # GNU utilities for finding files
   # - git  # Already installed in role preparational_steps
   # - rsync  # Already installed in role preparational_steps
