@@ -10,14 +10,14 @@
 #  Configure Alpine F
 #
 
-- name: Update /etc/inittab
+- name: Deploy /etc/inittab
   become: true
   ansible.builtin.copy:
     mode: preserve
     src: files/etc/inittab
     dest: /etc/
 
-- name: Update /etc/network/interfaces  # Dont think it is needed
+- name: Deploy /etc/network/interfaces  # Dont think it is needed
   become: true
   ansible.builtin.copy:
     mode: preserve
