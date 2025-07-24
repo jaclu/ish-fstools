@@ -15,7 +15,8 @@ if [ "$(whoami)" != "root" ]; then
     exit 0
 fi
 
-[ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
+# shellcheck source=/opt/ish-fstools/roles/all_distros/files/usr_local_lib/ift-utils.sh
+[ -z "$d_aok_etc" ] && . /usr/local/lib/ift-utils.sh
 
 msg_1 "Making sure System is fully updated"
 
