@@ -30,7 +30,9 @@
   # This is just for first deploy, during install a service doing this
   # each time iSH is started will be installed
   ansible.builtin.shell: |
-    [ -d /proc/ish ] && (nohup cat /dev/location > /dev/null 2>&1 </dev/null & sleep 0.1)
+    if [ -d /proc/ish ]; then
+      (nohup cat /dev/location > /dev/null 2>&1 </dev/null & sleep 0.1)
+    fi
   changed_when: false
   # when: is_ish
 
