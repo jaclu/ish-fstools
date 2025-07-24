@@ -37,7 +37,7 @@ do_ansible() {
     #
     #  Run the ansible playbook to deploy FS
     #
-    if [ "$dbg_mode" -eq 1 ]; then
+    if [ "$quick_mode" -eq 1 ]; then
 	    playbook="debug_task.yml"
     else
 	    playbook="provisioning.yml"
@@ -59,12 +59,14 @@ do_ansible() {
     ansible-playbook "$playbook" -e target_hosts=servers
 }
 
+quick_mode=0
+
 case "$1" in
 "") ;; # no param
-"dbg") dbg_mode=1 ;;
+"q") quick_mode=1 ;;
 *)
     log_it
-    err_msg "Optional param:  dbg to run a limited task"
+    err_msg "Optional param:  q to run quick-mode - a limited deploy"
     ;;
 esac
 
