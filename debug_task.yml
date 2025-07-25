@@ -10,7 +10,7 @@
 #  Used to debug selected tasks
 #
 
-- name: Setting up iSH FS
+- name: Setting up iSH FS - limited dbg process
   hosts: "{{ target_hosts | default('localhost') }}"
 
   pre_tasks:
