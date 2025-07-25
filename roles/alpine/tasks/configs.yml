@@ -33,12 +33,3 @@
 #    state: link
 #  when:
 #    - is_ish
-
-- name: Add the testing repo if v3.22 or greater
-  # become: true
-  ansible.builtin.lineinfile:
-    path: /etc/apk/repositories
-    line: 'https://dl-cdn.alpinelinux.org/alpine/edge/testing'
-    insertafter: EOF
-  when:
-    - ansible_distribution_version is version('3.22', '>=')

@@ -22,6 +22,16 @@
     fi
   changed_when: false
 
+- name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
+  # become: true
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: 'https://dl-cdn.alpinelinux.org/alpine/edge/testing'
+    insertafter: EOF
+  when:
+    - ansible_os_family == 'Alpine'
+    - ansible_distribution_version is version(ift_alpine_testing_repo_minv, '>=')
+
 - name: Package upgrade
   ansible.builtin.package:
     update_cache: true
