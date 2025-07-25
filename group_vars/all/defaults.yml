@@ -34,7 +34,7 @@ ift_timezone: ""
 #  Runlevel for runbg - service that ensures iSH continues to run in the background
 #
 ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
-ift_runlevel_sshd: sysinit   # set to "" if this service is not wanted
+ift_runlevel_sshd: default   # set to "" if this service is not wanted
 #
 #  ift_alpine_packages - defines what Alpine packages will be installed if FS is Alpine
 #  some temp variables are first used to define what packages to use
