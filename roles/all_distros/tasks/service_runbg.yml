@@ -75,9 +75,9 @@
 #     msg: "{{ is_chrooted }}"
 
 
-- name: Abort the playbook
-  ansible.builtin.fail:
-    msg: "Playbook manually aborted at this step."
+# - name: Abort the playbook
+#   ansible.builtin.fail:
+#     msg: "Playbook manually aborted at this step."
 
 - name: Service runbg - Force OpenRC softlevel and restart service
   ansible.builtin.shell: >
