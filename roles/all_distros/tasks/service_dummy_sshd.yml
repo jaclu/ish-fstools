@@ -1,0 +1,16 @@
+---
+
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Installs runbg service
+#
+
+- name: Service dummy sshd
+  ansible.builtin.shell: >
+    cp -av /etc/init.d/NOT/sshd "{{ d_init_ift }}"
+    ln -sf "{{ d_init_ift }}/sshd" "{{ d_init_d }}"
+    ln -sf  "{{ d_init_ift }}/sshd" "/etc/runlevel/{{ ift_runlevel_sshd }}"
+  changed_when: true
