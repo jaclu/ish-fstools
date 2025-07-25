@@ -33,3 +33,7 @@
   ansible.builtin.set_fact:
     is_chrooted: "{{ (is_chrooted_check.rc == 0) }}"
   when: is_chrooted_check is defined and not is_chrooted_check.skipped | default(false)
+
+- name: Is this chrooted
+  ansible.builtin.debug:
+    msg: "         is_chrooted: {{ is_chrooted }}"
