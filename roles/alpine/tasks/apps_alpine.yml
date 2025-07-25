@@ -10,7 +10,7 @@
 #  Install selected Alpine apps
 #
 
-- name: Display all Alpine packages being installed
+- name: Display all packages being installed
   ansible.builtin.debug:
     msg: |
       Alpine packets to be installed:
