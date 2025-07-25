@@ -49,4 +49,4 @@
   ansible.builtin.shell: >
     touch /run/openrc/softlevel && rc-service runbg restart
   changed_when: true
-  when: is_chrooted is defined and is_chrooted['rc'] != 0
+  when: is_chrooted is defined and not is_chrooted
