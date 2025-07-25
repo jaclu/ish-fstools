@@ -22,3 +22,4 @@
     ln -sf "{{ d_init_ift }}/sshd" "{{ d_init_d }}" &&
     ln -sf "{{ d_init_ift }}/sshd" "/etc/runlevels/{{ ift_runlevel_sshd }}"
   when: not stat_sshd_file.stat.exists
+  changed_when: true
