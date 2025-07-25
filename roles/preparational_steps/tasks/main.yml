@@ -12,9 +12,9 @@
 
 # skipping iSH check for now, atm nothing in deploy needs it, but will leave it in
 # since it might be handy later
-- name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
+# - name: Check if this is iSH
+#   ansible.builtin.include_tasks: tasks/is_ish.yml
+#   when: vars['is_ish'] is not defined
 
 - name: Ensure iSH can run in the background
   # This is just for first deploy, during install a service doing this
