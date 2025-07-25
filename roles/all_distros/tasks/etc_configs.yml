@@ -10,19 +10,19 @@
 # Various Distro neutral /etc configs
 #
 
-- name: Etc_configs Check if /etc/login.defs exists
+- name: Configs /etc - Check if /etc/login.defs exists
   ansible.builtin.stat:
     path: /etc/login.defs
   register: login_defs_stat
 
-- name: Etc_configs Set LOGIN_TIMEOUT in /etc/login.defs
+- name: Configs /etc - Set LOGIN_TIMEOUT in /etc/login.defs
   ansible.builtin.lineinfile:
     path: /etc/login.defs
     line: 'LOGIN_TIMEOUT 0'
     insertafter: EOF
   when: login_defs_stat.stat.exists
 
-- name: Etc_configs Install common config files
+- name: Configs /etc - Install common config files
   # become: true
   ansible.builtin.copy:
     mode: preserve
@@ -33,7 +33,7 @@
     - environment
     - profile-hints
 
-- name: Etc_configs Copy /etc/skel
+- name: Configs /etc - Copy /etc/skel
   # become: true
   ansible.builtin.copy:
     remote_src: true
@@ -43,7 +43,7 @@
     group: root
     mode: '0644'
 
-- name: Etc_configs Set /etc/issue for iSH node
+- name: Configs /etc - Set /etc/issue for iSH node
   ansible.builtin.copy:
     dest: /etc/issue
     content: "This is an iSH node, running {{ ansible_distribution }}\n"
@@ -51,7 +51,7 @@
     group: root
     mode: '0644'
 
-- name: Etc_configs Installing no-pw sudoers group
+- name: Configs /etc - Installing no-pw sudoers group
   # become: true
   ansible.builtin.copy:
     remote_src: true
@@ -61,7 +61,7 @@
     group: root
     mode: '0644'
 
-- name: Etc_configs Set system timezone to {{ ift_timezone }}
+- name: Configs /etc - Set system timezone to {{ ift_timezone }}
   ansible.builtin.file:
     src: "/usr/share/zoneinfo/{{ ift_timezone }}"
     dest: /etc/localtime

@@ -8,7 +8,7 @@
 #  Defines root shell
 #
 
-- name: Run verify_shell_exists.yml
+- name: Root_shell - Run verify_shell_exists.yml
   ansible.builtin.import_tasks: verify_shell_exists.yml
   when: ift_shell is defined and ift_shell
 
@@ -17,7 +17,7 @@
   register: root_passwd
   changed_when: false
 
-- name: Update root shell if user shell is /bin/ash or /bin/bash - is:{{ ift_shell }}
+- name: Root_shell - Use user shell if /bin/ash or /bin/bash - is:{{ ift_shell }}
   ansible.builtin.lineinfile:
     path: /etc/passwd
     regexp: '^root:'

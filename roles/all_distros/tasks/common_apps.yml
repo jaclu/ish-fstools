@@ -10,7 +10,7 @@
 #  Installs apps common for all Distros
 #
 
-- name: Install common additions for /usr/local/lib
+- name: Common apps - Install to /usr/local/lib
   # become: true
   ansible.builtin.copy:
     mode: preserve
@@ -18,7 +18,7 @@
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
 
-- name: Install common additions for /usr/local/bin
+- name: Common apps - Install to  /usr/local/bin
   # become: true
   ansible.builtin.copy:
     mode: preserve
@@ -26,7 +26,7 @@
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: Install common additions for /usr/local/sbin
+- name: Common apps - Install to  /usr/local/sbin
   # become: true
   ansible.builtin.copy:
     mode: preserve

@@ -12,19 +12,19 @@
 #
 #  for f in /etc/init.d/*; do
 
-- name: "Ensure folder exists {{ d_init_not }}"
+- name: "Def services - Ensure folder exists {{ d_init_not }}"
   ansible.builtin.file:
     path: "{{ d_init_not }}"
     state: directory
     mode: '0755'
 
-- name: "Count regular non-symlink files in {{ d_init_d }}"
+- name: "Def services - Count regular non-symlink files in {{ d_init_d }}"
   ansible.builtin.command: >
     sh -c "find '{{ d_init_d }}' -maxdepth 1 -type f -exec test ! -L {} \; -print | wc -l"
   register: file_count_result
   changed_when: false
 
-- name: "Move all regular service files to {{ d_init_not }}"
+- name: "Def services - Move all regular service files to {{ d_init_not }}"
   ansible.builtin.shell: |
     for f in "{{ d_init_d }}"/*; do
       case "$f" in
@@ -37,12 +37,12 @@
   when: file_count_result.stdout | int > 0
   changed_when: true
 
-- name: "Check if folder exits {{ d_init_ift }}"
+- name: "Def services - Check if folder exits {{ d_init_ift }}"
   ansible.builtin.stat:
     path: "{{ d_init_ift }}"
   register: d_ift_services_stat
 
-- name: "Sync ish-fstools links into {{ d_init_d }}"
+- name: "Def services - Sync ish-fstools links into {{ d_init_d }}"
   ansible.builtin.shell: |
     changed=0
     # Ensure all valid targets are linked
