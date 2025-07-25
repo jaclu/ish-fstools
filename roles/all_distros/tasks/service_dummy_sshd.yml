@@ -10,6 +10,7 @@
 
 - name: Service dummy sshd
   ansible.builtin.shell: >
+    mkdir -p "{{ d_init_ift }} &&
     cp -av /etc/init.d/NOT/sshd "{{ d_init_ift }}" &&
     ln -sf "{{ d_init_ift }}/sshd" "{{ d_init_d }}" &&
     ln -sf "{{ d_init_ift }}/sshd" "/etc/runlevel/{{ ift_runlevel_sshd }}"
