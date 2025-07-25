@@ -35,9 +35,10 @@ ift_timezone: ""
 #
 ift_runlevel_runbg: sysinit  # set to "" if this service is not wanted
 ift_runlevel_sshd: default   # set to "" if this service is not wanted
+
 #
 #  ift_alpine_packages - defines what Alpine packages will be installed if FS is Alpine
-#  some temp variables are first used to define what packages to use
+#  some temp variables are first used to define what packages to use.
 #
 #  If the intent is just add more packages in overrides, they can be listed using
 #  the variable ift_extra_alpine_packages, to avoid having to duplicate the entire
@@ -49,7 +50,7 @@ ift_runlevel_sshd: default   # set to "" if this service is not wanted
 #   - strace
 #
 
-_tmp_alpine_base_packages:
+_tmp_alpine_base_packages: # part of ift_alpine_packages
   #
   #  Shells
   #
@@ -65,7 +66,7 @@ _tmp_alpine_base_packages:
   - util-linux  # Random collection of Linux utilities
   # - procps  # Utilities for monitoring your system and processes on your system
   # procps results in /usr/bin/uptime triggering Seg Fault
-  # provides ok pkill & pgrep
+  #  but it provides ok pkill & pgrep
   - findutils  # GNU utilities for finding files
   # - git  # Already installed in role preparational_steps
   # - rsync  # Already installed in role preparational_steps
@@ -147,7 +148,7 @@ _tmp_alpine_base_packages:
 #  Version dependent packages, 3.17 is ancient by now, but i keep this here as
 #  a template, if later other version dependent deploy decisions might be needed
 #
-_tmp_alpine_min_317:
+_tmp_alpine_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
 #
@@ -158,3 +159,10 @@ ift_alpine_packages: "{{ _tmp_alpine_base_packages +
     _tmp_alpine_min_317 if ansible_distribution_version is version('3.17', '>=')
   )
   | default([]) }}"
+
+
+#
+#  Min Alpine version when to include the testing repo, typically current and
+#  perhaps one two prior. If this is intended, set it to a version such as 3.22
+#
+ift_alpine_testing_repo_minv: 999 # set to 999 to disable the testing repo
