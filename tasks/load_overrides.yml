@@ -39,7 +39,7 @@
   ansible.builtin.set_fact:
     ift_alpine_packages: >-
       {{ (ift_alpine_packages | default([])) +
-         (__override_vars.extra_alpine_packages | default([])) }}
+         (__override_vars.ift_extra_alpine_packages | default([])) }}
   when: __override_vars is defined
   delegate_to: localhost
   run_once: true

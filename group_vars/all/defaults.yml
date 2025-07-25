@@ -40,11 +40,11 @@ ift_runlevel_sshd: default   # set to "" if this service is not wanted
 #  some temp variables are first used to define what packages to use
 #
 #  If the intent is just add more packages in overrides, they can be listed using
-#  the variable extra_alpine_packages, to avoid having to duplicate the entire
+#  the variable ift_extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
 # NOTICE: put this in vars/overrides.yml
-# extra_alpine_packages:
+# ift_extra_alpine_packages:
 #   - gcc
 #   - strace
 #
