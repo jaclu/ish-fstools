@@ -22,6 +22,15 @@
   #
 
   # #
+  # # run specific task inside a role
+  # #
+  # tasks:
+  #   - name: Use just one task file from the role
+  #     ansible.builtin.include_role:
+  #       name: all_distros
+  #       tasks_from: service_runbg.yml
+
+  # #
   # # run specific role(-s)
   # #
   # roles:
@@ -30,10 +39,8 @@
   #     when: ansible_os_family == 'Alpine'
 
   #
-  # run specific task inside a role
+  # run specific task file
   #
   tasks:
-    - name: Use just one task file from the role
-      ansible.builtin.include_role:
-        name: all_distros
-        tasks_from: service_runbg.yml
+    - name: Run specific task file
+      ansible.builtin.include_tasks: tasks/is_chrooted.yml
