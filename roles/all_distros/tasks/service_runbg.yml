@@ -32,7 +32,11 @@
   changed_when: false
   failed_when: false
 
-- name: Service runbg - Activate if needed
+- name: Service runbg - Add to runlevel if needed
   ansible.builtin.command: rc-update add runbg "{{ ift_runlevel_runbg }}"
   when: runbg_check.rc != 0
+  changed_when: true
+
+- name: Service runbg - Restart it
+  ansible.builtin.command: rc-service runbg restart
   changed_when: true

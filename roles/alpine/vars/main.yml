@@ -11,4 +11,6 @@
 #
 
 # Where is this role on dest platform
+# Used for much faster installs of files, compared
+# to transfer from deploy host
 alpine_d_repo: "{{ d_repo }}/roles/alpine"
