@@ -8,27 +8,6 @@
 #  Installs runbg service
 #
 
-- name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
-
-
-- name: Set is_chrooted false when is_ish is true
-  ansible.builtin.set_fact:
-    is_chrooted: { "rc": 1, "stdout": "Skipped on is_ish", "stderr": "" }
-  when: is_ish | default(false)
-
-- name: Check if chrooted
-  ansible.builtin.command: >
-    sh -c '[ "$(uname -s)" != "Linux" ] && exit 1; ! grep -q " / / " /proc/self/mountinfo'
-  register: is_chrooted
-  changed_when: false
-  when: not (is_ish | default(false))
-
-- name: Was chrooted
-  ansible.builtin.debug:
-    msg: "{{ is_chrooted }}"
-
 - name: Service runbg - install service
   # become: true
   ansible.builtin.copy:
@@ -58,7 +37,50 @@
   when: runbg_check.rc != 0
   changed_when: true
 
-- name: Service runbg - Restart it
-  ansible.builtin.command: rc-service runbg restart
+#
+#  Only start runbg service if this is running on iSH
+#
+# ---
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
+- name: Set is_chrooted false when is_ish is true
+  ansible.builtin.set_fact:
+    is_chrooted:
+      rc: 1
+      stdout: "Skipped on is_ish"
+      stderr: ""
+  when: is_ish | default(false)
+
+# - name: Before check is_chrooted
+#   ansible.builtin.debug:
+#     msg: "{{ is_chrooted }}"
+
+- name: Check if chrooted
+  ansible.builtin.command: >
+    sh -c '[ "$(uname -s)" != "Linux" ] && exit 1; ! grep -q " / / " /proc/self/mountinfo'
+  register: is_chrooted_check
+  changed_when: false
+  # when: not (is_ish | default(false))
+  when: is_chrooted is not defined
+
+- name: Set is_chrooted from real check
+  ansible.builtin.set_fact:
+    is_chrooted: "{{ is_chrooted_check }}"
+  when: is_chrooted_check is defined and not is_chrooted_check.skipped | default(false)
+
+# - name: After check is_chrooted
+#   ansible.builtin.debug:
+#     msg: "{{ is_chrooted }}"
+
+
+- name: Abort the playbook
+  ansible.builtin.fail:
+    msg: "Playbook manually aborted at this step."
+
+- name: Service runbg - Force OpenRC softlevel and restart service
+  ansible.builtin.shell: >
+    touch /run/openrc/softlevel && rc-service runbg restart
   changed_when: true
-  when: is_chrooted.rc != 0
+  when: is_chrooted is defined and is_chrooted['rc'] != 0
