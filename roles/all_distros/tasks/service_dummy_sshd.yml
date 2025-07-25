@@ -12,13 +12,13 @@
 
 - name: Check if sshd service is installed
   ansible.builtin.stat:
-    path: "{{ d_init_d }}/sshd"
+    path: "{{ d_init_ift }}/sshd"
   register: stat_sshd_file
 
-- name: Enable dummy sshd service
+- name: Register sshd service
   ansible.builtin.shell: >
     mkdir -p "{{ d_init_ift }}" &&
-    cp -av /etc/init.d/NOT/sshd "{{ d_init_ift }}" &&
+    cp -av "{{ d_init_not }}"/sshd "{{ d_init_ift }}" &&
     ln -sf "{{ d_init_ift }}/sshd" "{{ d_init_d }}" &&
     ln -sf "{{ d_init_ift }}/sshd" "/etc/runlevels/{{ ift_runlevel_sshd }}"
   when: not stat_sshd_file.stat.exists
