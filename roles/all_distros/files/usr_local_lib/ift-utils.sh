@@ -1086,7 +1086,7 @@ check_if_host_or_dest_fs() {
 
 # these must be done before local variables assignments,
 # since some of them depend on variables defined by them
-read_config
+# read_config
 check_if_host_or_dest_fs
 
 TMPDIR="${TMPDIR:-/tmp}"
