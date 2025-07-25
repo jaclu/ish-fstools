@@ -1,0 +1,4 @@
+# shellcheck source=/opt/ish-fstools/roles/all_distros/files/usr_local_lib/ift-utils.sh
+. /usr/local/lib/ift-utils.sh
+
+is_fs_chrooted
