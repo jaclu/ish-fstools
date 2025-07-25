@@ -16,10 +16,7 @@
 
 - name: Set is_chrooted false when is_ish is true
   ansible.builtin.set_fact:
-    is_chrooted:
-      rc: 1
-      stdout: "Skipped on is_ish"
-      stderr: ""
+    is_chrooted: false
   when: is_ish | default(false)
 
 - name: Check if chrooted
