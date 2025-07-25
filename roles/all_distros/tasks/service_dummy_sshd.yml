@@ -5,7 +5,9 @@
 #
 #  License: MIT
 #
-#  Installs runbg service
+#  Installs basic sshd service
+#  This is a hack to make deploy on iSH much quicker, since doing it as  separate
+#  tasks takes for ever and a day - see service_runbg.yml
 #
 
 - name: Check if sshd service is installed
