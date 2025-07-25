@@ -8,6 +8,27 @@
 #  Installs runbg service
 #
 
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
+
+- name: Set is_chrooted false when is_ish is true
+  ansible.builtin.set_fact:
+    is_chrooted: { "rc": 1, "stdout": "Skipped on is_ish", "stderr": "" }
+  when: is_ish | default(false)
+
+- name: Check if chrooted
+  ansible.builtin.command: >
+    sh -c '[ "$(uname -s)" != "Linux" ] && exit 1; ! grep -q " / / " /proc/self/mountinfo'
+  register: is_chrooted
+  changed_when: false
+  when: not (is_ish | default(false))
+
+- name: Was chrooted
+  ansible.builtin.debug:
+    msg: "{{ is_chrooted }}"
+
 - name: Service runbg - install service
   # become: true
   ansible.builtin.copy:
@@ -40,3 +61,4 @@
 - name: Service runbg - Restart it
   ansible.builtin.command: rc-service runbg restart
   changed_when: true
+  when: is_chrooted.rc != 0
