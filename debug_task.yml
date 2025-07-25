@@ -22,18 +22,18 @@
   #
 
   # #
-  # # run specific task inside a role
+  # # run specific role(-s)
   # #
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     ansible.builtin.include_role:
-  #       name: alpine
-  #       tasks_from: apps_alpine.yml
+  # roles:
+  #   # - role: preparational_steps
+  #   - role: alpine
+  #     when: ansible_os_family == 'Alpine'
 
   #
-  # run specific role(-s)
+  # run specific task inside a role
   #
-  roles:
-    # - role: preparational_steps
-    - role: alpine
-      when: ansible_os_family == 'Alpine'
+  tasks:
+    - name: Use just one task file from the role
+      ansible.builtin.include_role:
+        name: all_distros
+        tasks_from: service_runbg.yml
