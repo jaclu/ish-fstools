@@ -17,7 +17,7 @@
   register: root_passwd
   changed_when: false
 
-- name: Root_shell - Use user shell if /bin/ash or /bin/bash - is:{{ ift_shell }}
+- name: "Root_shell - Use user shell if /bin/ash or /bin/bash - is: {{ ift_shell }}"
   ansible.builtin.lineinfile:
     path: /etc/passwd
     regexp: '^root:'
