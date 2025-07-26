@@ -13,6 +13,13 @@
 # skipping iSH check here, since on iSH it is really slow, and not needed in
 # this playbook
 
+- name: Check if 'cat /dev/location' is running
+  ansible.builtin.shell: |
+    pgrep -af 'cat /dev/location$'
+  register: cat_location_proc
+  changed_when: false
+  failed_when: false
+
 - name: Ensure iSH can run in the background
   # This is just for first deploy, during install a service doing this
   # each time iSH is started will be installed & started
@@ -21,6 +28,7 @@
       (nohup cat /dev/location > /dev/null 2>&1 </dev/null & sleep 0.1)
     fi
   changed_when: false
+  when: cat_location_proc.stdout == ''
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   # become: true
