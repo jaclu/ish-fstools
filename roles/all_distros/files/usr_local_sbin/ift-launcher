@@ -323,7 +323,7 @@ boot_up() {
 
 runlevel_wait() {
     trap 'set_abort_runlevel_wait' INT
-    log_display "runlevel_wait()"
+    # log_display "runlevel_wait()"
     while true; do
         sleep 2
         recovery_mode_probe runlevel-wait
@@ -371,7 +371,7 @@ update_deb_log_kill_cmd() {
     #  Since the cmd_tail might change, always
     #  update the kill cmd to its current definition
     #
-    log_display "update_deb_log_kill_cmd()"
+    # log_display "update_deb_log_kill_cmd()"
     cmd_kill_tail_logging=/usr/local/sbin/kill_tail_logging
     #region kill_tail_logging cmd
     echo "#!/bin/sh
@@ -398,7 +398,7 @@ kill_console_tail() {
     #  Only usable by Alpine, Debian uses console-restart, since the tail
     #  cmd isn't properly tied to /dev/pts/0 and thus can't receive Ctrl-C
     #
-    log_display "kill_console_tail()"
+    # log_display "kill_console_tail()"
     [ -z "$cmd_tail" ] && {
         error_msg "kill_console_tail() - no cmd_tail defined"
         return 1
@@ -414,7 +414,7 @@ kill_console_tail() {
 }
 
 select_log_files_to_monitor() {
-    log_display "select_log_files_to_monitor()"
+    # log_display "select_log_files_to_monitor()"
     [ -z "$cmd_tail" ] && {
         error_msg "select_log_files_to_monitor() - no cmd_tail defined"
         return 1
@@ -445,7 +445,7 @@ handle_custom_console_monitor() {
     #  $f_inittab_can_start once it is setup, so that inittab
     #  can commence its run
     #
-    log_display "handle_custom_console_monitor() - running $cmd_custom_console_monitor"
+    # log_display "handle_custom_console_monitor() - running $cmd_custom_console_monitor"
     $cmd_custom_console_monitor
     #
     #  Should not get here...
@@ -457,7 +457,7 @@ handle_custom_console_monitor() {
 }
 
 monitor_log_files() {
-    log_display "monitor_log_files()"
+    # log_display "monitor_log_files()"
     initial_console_run=true
 
     echo "Console tailing of /var/log/* - non text-files will be ignored"
@@ -504,7 +504,7 @@ monitor_log_files() {
 #---------------------------------------------------------------
 
 handle_logins() {
-    log_display "handle_logins()"
+    # log_display "handle_logins()"
     while true; do
         #
         #  Ensure params are tried for each login attempt, in case they
@@ -566,12 +566,12 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    log_display "login_with_param_check()"
+    # log_display "login_with_param_check() ignore_login_params"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
 
-        log_display "><> ignore_login_params not 1"
+        # log_display "><> ignore_login_params not 1"
         def_user="$(cat "$f_login_default_user")"
         [ -n "$def_user" ] && {
             cut -d: -f 1 /etc/passwd | grep -qw "$def_user" || {
@@ -619,8 +619,15 @@ login_with_param_check() {
             login_with_param_check
             return
         }
+    elif is_fs_chrooted; then
+        # log_display "Chrooted, no login params used"
+        "$f_login_prog" -f root || {
+            login_ex_code="$?"
+            _s="$f_login_prog -f root - exited with: $login_ex_code"
+            error_msg "$_s"
+        }
     else
-        log_display "Using bare bones login with no parameters"
+        # log_display "Using bare bones login with no parameters"
         handle_etc_issue
         log_display "Starting login with no params" noecho
         #log_display "><> $(date) login no params: $f_login_prog"
