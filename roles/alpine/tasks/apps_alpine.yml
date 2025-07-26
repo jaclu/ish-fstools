@@ -38,4 +38,4 @@
     mode: preserve
     remote_src: true
     src: "{{ alpine_d_repo }}/files/usr_local_sbin/"
-    dest: /usr/local/bin/
+    dest: /usr/local/sbin/
