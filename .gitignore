@@ -7,7 +7,7 @@
 Icon
 
 vars/overrides.yml
-
+inventory.ini
 # Ignore vagrant tmp files
 .vagrant/
 
