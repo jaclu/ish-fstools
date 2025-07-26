@@ -19,10 +19,5 @@
 #  that things might already be in a started state.
 #
 
-#
-#  Skip this on iSH-AOK
-#
-grep -qi aok /proc/ish/version 2>/dev/null || {
-    rm /run/* -rf
-    /usr/local/bin/logger reset-run-dir cleared /run
-}
+rm /run/* -rf
+/usr/local/bin/logger reset-run-dir cleared /run

@@ -81,13 +81,7 @@ calculate_ios_uptime() {
     $dbg && echo ">calculate_ios_uptime()" >/dev/stderr
     uptime_raw=$(cut -d' ' -f1 </proc/uptime)
 
-    if [ -d /proc/ish ] && grep -qiv aok /proc/ish/version 2>/dev/null; then
-        raw_s_hundreds=$(echo "$uptime_raw" | cut -d. -f1)
-        raw_s=$(echo "$uptime_raw" | cut -d. -f2)
-        uptime_seconds=$(echo "$raw_s_hundreds * 100 + $raw_s" | bc)
-    else
-        uptime_seconds=$(echo "$uptime_raw" | awk '{print int($1)}')
-    fi
+    uptime_seconds=$(echo "$uptime_raw" | awk '{print int($1)}')
 }
 
 calculate_uptime() {
