@@ -14,16 +14,6 @@
 - name: Configs for /etc
   ansible.builtin.import_tasks: etc_configs.yml
 
-# - name: Ensure /var/log/syslog exists
-#   #  This task ensures that the syslog file exists, othewise the ift custom uptime
-#   #  will
-#   ansible.builtin.file:
-#     path: /var/log/syslog
-#     state: touch
-#     owner: root
-#     group: root
-#     mode: '0644'
-
 - name: Run timezone.yml
   ansible.builtin.import_tasks: timezone.yml
   when: ift_timezone is defined and ift_timezone
