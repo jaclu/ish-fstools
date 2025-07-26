@@ -85,14 +85,6 @@ syslog() {
 #
 #---------------------------------------------------------------
 
-this_is_fs_with_aok() {
-    #
-    #  This system is using AOK FS extensions, prevents stuff
-    #  from running on Linux outside chroot
-    #
-    test -f "$f_ift_fs_release"
-}
-
 this_is_ish() {
     test -d /proc/ish
 }
@@ -130,7 +122,6 @@ TMPDIR="${TMPDIR:-/tmp}"
 #
 
 #  Placeholder, to store what version of AOK that was used to build FS
-f_ift_fs_release=/etc/ift-fs-release
 
 # d_aok_etc="$d_build_root/$d_aok_etc"
 d_ift_etc_opt=/etc/opt/ift

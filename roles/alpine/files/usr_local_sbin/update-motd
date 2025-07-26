@@ -23,7 +23,6 @@
 
 f_motd="/etc/motd"
 f_motd_template="/etc/motd_template"
-f_ift_fs_release=/etc/ift-fs-release
 alp_rel="$(grep VERSION_ID /etc/os-release | cut -d'=' -f2)"
 
 if [ -d /proc/ish ]; then
@@ -32,11 +31,6 @@ else
     ish_rel="Can't be detected whilst chrooted"
 fi
 
-f_obsolete="/etc/aok-release"
-[ -f "$f_obsolete" ] && {
-    echo "renaming obsolete $f_obsolete > $f_ift_fs_release"
-    mv "$f_obsolete" "$f_ift_fs_release"
-}
 
 #  create initial LF
 echo >"$f_motd"
@@ -46,10 +40,6 @@ if [ -f "$f_motd_template" ]; then
 fi
 
 /usr/local/bin/aok-versions >>"$f_motd"
-
-#if [ -e "$f_ift_fs_release" ]; then
-#    echo "[35mAOK-FS release:  $(cat "$f_ift_fs_release")[0m" >>"$f_motd"
-#fi
 
 #(
 #    echo "[35mAlpine release:  $alp_rel[0m"

@@ -188,12 +188,6 @@ force_ios_uptime=false
 display_mode="default"
 dbg=false
 
-f_ift_fs_release=/etc/ift-fs-release
-
-test -f "$f_ift_fs_release" || {
-    error_msg "Should only be run on ish-fstools installations!"
-}
-
 while [ -n "$1" ]; do
     case "$1" in
     -h | --help) show_help ;;

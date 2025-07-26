@@ -131,12 +131,6 @@ sudo_check() {
 
 f_etc_hostname=/etc/hostname
 f_hostname_source_fname=/etc/opt/ift/hostname_source_fname
-f_ift_fs_release=/etc/ift-fs-release
-
-test -f "$f_ift_fs_release" || {
-    error_msg "Should only be run on AOK installations!"
-}
-
 while [ -n "$1" ]; do
 
     case "$1" in
