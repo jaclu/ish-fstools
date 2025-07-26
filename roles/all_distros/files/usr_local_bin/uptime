@@ -93,9 +93,13 @@ calculate_ios_uptime() {
 calculate_uptime() {
     startup_notice="===  System startup  ==="
     $dbg && echo ">calculate_uptime()" >/dev/stderr
-    time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
-        tail -n 1 |
-        awk '{print $1" "$2}')"
+    if [ -f /var/log/syslog ]; then
+        time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
+            tail -n 1 |
+            awk '{print $1" "$2}')"
+    else
+        time_stamp_boot_up=""
+    fi
     if [ -n "$time_stamp_boot_up" ] && ! $force_ios_uptime; then
         calculate_ish_uptime
     else
