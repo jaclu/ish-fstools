@@ -8,6 +8,9 @@ Icon
 
 vars/overrides.yml
 inventory.ini
+
+.ansible
+
 # Ignore vagrant tmp files
 .vagrant/
 
