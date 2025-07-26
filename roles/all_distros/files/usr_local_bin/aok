@@ -10,7 +10,6 @@
 #
 
 show_help() {
-    msg_1 "show_help()"
     txt="Management of ish-fstools FS specific setting.
 
 Without options, current settings are displayed.
@@ -483,9 +482,6 @@ hide_run_as_root=1 . /usr/local/bin/ift-run-as-root.sh
 
 prog_name=$(basename "$0")
 launch_cmd_ift='[ "/usr/local/sbin/aok_launcher" ]'
-
-
-msg_1 "$prog_name - ift FS configuration tool - starting"
 
 [ -z "$1" ] && {
     echo "For help use: $prog_name -h"
