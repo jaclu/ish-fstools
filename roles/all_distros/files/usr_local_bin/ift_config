@@ -69,7 +69,7 @@ current_settings() {
 set_defaults() {
     opts=""
     if this_is_ish; then
-        eval aok "$opts -C off -b default -l default"
+        eval "$prog_name" "$opts -C off -b default -l default"
     else
         echo "No options can be defaulted when chrooted"
     fi
@@ -481,7 +481,7 @@ hide_run_as_root=1 . /usr/local/bin/ift-run-as-root.sh
 . /usr/local/lib/ift-utils.sh
 
 prog_name=$(basename "$0")
-launch_cmd_ift='[ "/usr/local/sbin/aok_launcher" ]'
+launch_cmd_ift='[ "/usr/local/sbin/ift_launcher" ]'
 
 [ -z "$1" ] && {
     echo "For help use: $prog_name -h"

@@ -37,7 +37,7 @@ prog_name=$(basename "$0")
 
 # remove some stat files
 
-state_prefix=/etc/opt/AOK
+state_prefix=/etc/opt/ift
 f_inittab_can_start="$state_prefix"/inittab_can_start
 
 [ -f "$f_inittab_can_start" ] && {

@@ -13,6 +13,7 @@
 # debian_reboot_if_needed: false
 
 d_repo: /opt/ish-fstools
+d_etc_ift: /etc/opt/ift
 
 # wait_for_hosts_to_be_ready: false
 

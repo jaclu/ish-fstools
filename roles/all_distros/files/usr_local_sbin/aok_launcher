@@ -733,7 +733,7 @@ is_alpine_3_20() {
 #  Just set the bare min variables needed for recovery mode, in order
 #  to hopefully capture inittab before it takes any action
 #
-# state_prefix=/etc/opt/AOK
+# state_prefix=/etc/opt/ift
 # f_recovery_mode="$state_prefix"/recovery-mode
 # f_pts_0_as_console="$state_prefix"/pts_0_as_console
 # cmd_logger=/usr/local/bin/logger

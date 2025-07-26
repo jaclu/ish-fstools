@@ -1,103 +1,61 @@
-#!/usr/bin/env bash
+#!/bin/sh
+#
+# Copyright (c) 2024-2025: Jacob.Lundqvist@gmail.com
+# License: MIT
 #
 #  Part of https://github.com/jaclu/ish-fstool
 #
-#  Copyright (c) 2023: Jacob.Lundqvist@gmail.com
-#
-#  License: MIT
-#
-#  Displays local and public IPs - this only works on iSH-AOK!
+# Displays default GW and some related networking info
+# Works on: Linux, Darwin, iSH & Android (Termux)
 #
 
-#
-#  This usually works fine, but in some cases when I use a VPN and it
-#  fails to route ip6  the curl -6 hangs for ever with no error output
-#  so until that is figured out use the old style check for now
-#
-# pubip4="$(curl -f -s -4 https://ifconfig.me)"
-# pubip6="$(curl -f -s -6 https://ifconfig.me)"
+[ -d /proc/ish ] && {
+    echo "ERROR: Not supported on iSH"
+    exit 1
+}
 
-# [[ -n "$pubip4" ]] && printf 'Public IPv4: %s\n' "$pubip4"
-# [[ -n "$pubip6" ]] && printf 'Public IPv6: %s\n' "$pubip6"
+if [ "$(uname)" = "Darwin" ]; then
+    ifconfig en0 | grep -q 'status: active' && {
+        ssid="$(networksetup -getairportnetwork en0 | cut -d: -f2)"
+        ssid=${ssid# } # remove leading space
 
-# if [[ -z "$pubip4" ]] && [[ -z "$pubip4" ]]; then
-#     #  Fallback, trying http instead
-printf 'Public IP:  '
-if curl -s https://ifconfig.me; then
+        # Get the IP address
+        ip_address=$(ifconfig en0 | awk '/inet / {print $2}')
+        # ip6_address=$(ifconfig en0 | awk '/inet6 / {print $2}')
+        echo "WiFi (en0): $ssid - $ip_address"
+        echo
+    }
+    route_info="$(ip route get default)"
+    gw_node="$(echo "$route_info" | awk '{ print $3 }')"
+    gw_dev="$(echo "$route_info" | awk '{ print $5 }')"
+else
+    if [ "$(uname -o)" = "Android" ]; then
+        cmd="ip route get to 8.8.8.8"
+    else
+        cmd="ip route show default"
+    fi
+    gw_node="$($cmd | awk '{print $3}')"
+    gw_dev="$($cmd | awk '{print $5}')"
+fi
+echo "GW device:  $gw_dev"
+
+if [ "$(uname -o)" = "Android" ]; then
+    gw_ip="$(ip address | grep global | awk '{print $2}' | cut -d'/' -f 1)"
+else
+    gw_ip="$(ifconfig "$gw_dev" | grep 'inet ' | awk '{print $2}')"
+fi
+echo "my GW IP:   $gw_ip"
+[ "$gw_dev" != "$gw_node" ] && echo "GW address: $gw_node"
+
+printf "Public IP:  "
+if curl -s -4 https://ifconfig.me || curl -s https://ifconfig.me; then
     printf '\n'
 else
     echo "Error: Unable to determine"
 fi
-# fi
-
-if ! grep -qi aok /proc/ish/version 2>/dev/null; then
-    echo "Not running on iSH-AOK, can not check local networking. Exiting."
-    exit 1
-fi
-
-#  Not really needed, but makes code easier to read if arrays are initialized
-ipv4s=()
-ipv6s=()
-
-if [[ -f "/proc/ish/ips" ]]; then
-    while read -r line; do
-        dev_name="$(echo "$line" | awk '{ print $1 }')"
-        if [[ "$dev_name" = "pdp_ip0" ]]; then
-            dev_type="Cellular"
-        elif [[ $dev_name == utun* ]]; then
-            dev_type="VPN utun"
-        elif [[ $dev_name == ipsec* ]]; then
-            dev_type="VPN IPsec"
-        elif [[ $dev_name == en* ]]; then
-            dev_type="Wi-Fi"
-        else
-            #  loopback, personal hotspot and some oddities are ignored
-            continue
-        fi
-        ip="$(echo "$line" | awk '{ print $2 }')"
-        #  this is aligned with Unknown warning
-        new_item="$(printf '%-11s %s' "$dev_type" "$ip")"
-
-        if [[ $line =~ ^en.*INET6 ]]; then
-            ipv6s+=("$new_item")
-        elif [[ $line =~ ^.*INET\  ]]; then
-            ipv4s+=("$new_item")
-        fi
-    done <"/proc/ish/ips"
-else
-    echo "ERROR: /proc/ish/ips not found!"
-    exit 1
-    # idev_ip no longer works, since it depends on gethostbyname()
-    # LOCAL_IP=$(idev_ip 2>/dev/null | cut -d: -f2)
-    # if [[ -z "$LOCAL_IP" ]]; then
-    #     LOCAL_IP="Unknown"
-    # fi
-fi
-
 echo
-printf 'Local IPv4:'
-if [[ ${#ipv4s[@]} -gt 0 ]]; then
-    echo #  Force new line
-    for ipv4 in "${ipv4s[@]}"; do
-        printf '  %s\n' "$ipv4"
-    done
-elif [[ ${#ipv6s[@]} -gt 0 ]]; then
-    #  If the other type is defined, this is probably a positive absence
-    printf ' None defined\n'
+if [ "$(uname -o)" = "Android" ]; then
+    echo "No name-server info available on Termux!"
 else
-    printf ' Unknown\n'
-fi
-
-printf 'Local IPv6:'
-if [[ ${#ipv6s[@]} -gt 0 ]]; then
-    echo #  Force new line
-    for ipv6 in "${ipv6s[@]}"; do
-        printf '  %s\n' "$ipv6"
-    done
-elif [[ ${#ipv4s[@]} -gt 0 ]]; then
-    #  If the other type is defined, this is probably a positive absence
-    printf ' None defined\n'
-else
-    #  Neither found, hard to tell if this is no network or error
-    printf ' Unknown\n'
+    grep nameserver /etc/resolv.conf | awk '{ print "Namerver:   "$2 }'
 fi

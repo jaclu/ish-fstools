@@ -64,7 +64,7 @@ if [[ -f $HOME/.no-sysload-available ]]; then
     use_static_bash_prompt
 else
     #
-    #  Use either one, dynamic will display sysload and on ish-AOK batt-lvl
+    #  Use either one, dynamic will display sysload
     #
     use_dynamic_bash_prompt
     # use_static_bash_prompt

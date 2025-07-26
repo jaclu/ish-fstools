@@ -219,13 +219,13 @@ Not handled by this - in that case this is left to be configured manually.
 #  If a nav-key is defined, this file will contain a tmux config snippet
 #  that the default .tmux.conf (/etc/skel/.tmux.conf) will source
 #
-f_tmux_nav_key_handling="/etc/opt/AOK/tmux_nav_key_handling"
+f_tmux_nav_key_handling="/etc/opt/ift/tmux_nav_key_handling"
 #
-#  This is not used directly by AOK, it just indicates the current nav-key
+#  This is not used directly by ish-fstools, it just indicates the current nav-key
 #  It can be used to inform remote nodes about iSH nav-key handling.
 #  For more details check Docs/NavKey.md
 #
-f_tmux_nav_key="/etc/opt/AOK/tmux_nav_key"
+f_tmux_nav_key="/etc/opt/ift/tmux_nav_key"
 
 clear_nav_key_usage
 

@@ -11,7 +11,7 @@
 #  used, this will return right away.
 #
 
-state_prefix=/etc/opt/AOK
+state_prefix=/etc/opt/ift
 f_inittab_can_start="$state_prefix"/inittab_can_start
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode

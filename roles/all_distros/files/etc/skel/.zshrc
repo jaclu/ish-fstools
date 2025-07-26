@@ -80,23 +80,15 @@ _user_host_name="%F{$PCOL_USERNAME}%n%F{$PCOL_GREY}@%F{$PCOL_HOSTNAME}$_hn"
 PROMPT="%(?..%F{red}?%?)%F{$PCOL_CWD}%~%f%b%# "
 
 #
-#  set to false if you don't want a dynamic rprompt displaying
-#  sysload and (on ish-aok) battery lvl
+#  set to false if you don't want a dynamic rprompt displaying sysload
 #
 if true; then
     update_prompt_content() {
-        if grep -qi aok /proc/ish/version 2>/dev/null; then
-            _s="$_user_host_name $(get_sysload_lvl)$(get_battery_info zsh)"
-            _s="$_s %F{$PCOL_GREY}%*%f"
-            RPROMPT="$_s"
-            unset _s
+        if [ -f /etc/alpine-release ]; then
+            RPROMPT="$_user_host_name $(get_sysload_lvl) %F{$PCOL_GREY}%*%f"
         else
-            if [ -f /etc/alpine-release ]; then
-                RPROMPT="$_user_host_name $(get_sysload_lvl) %F{$PCOL_GREY}%*%f"
-            else
-                # iSH Debian doesn't provide sysload
-                RPROMPT="$_user_host_name %F{$PCOL_GREY}%*%f"
-            fi
+            # iSH Debian doesn't provide sysload
+            RPROMPT="$_user_host_name %F{$PCOL_GREY}%*%f"
         fi
         return 0
     }
