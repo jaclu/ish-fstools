@@ -130,7 +130,7 @@ sudo_check() {
 #===============================================================
 
 f_etc_hostname=/etc/hostname
-f_hostname_source_fname="$d_ift_etc_opt"/hostname_source_fname
+f_hostname_source_fname=/etc/opt/ift/hostname_source_fname
 f_ift_fs_release=/etc/ift-fs-release
 
 test -f "$f_ift_fs_release" || {

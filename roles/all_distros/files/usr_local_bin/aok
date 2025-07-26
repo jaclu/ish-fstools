@@ -46,6 +46,7 @@ Boot Cmd & Launch Cmd have very strict syntax requirements for custom_cmd.
                    default: '$launch_cmd_default'
 "
     }
+}
 
 show_on_off_by_file() {
     [ -z "$1" ] && {
@@ -231,7 +232,7 @@ set_kernel_default() {
     _f="/proc/ish/defaults/$_fname"
     [ -f "$_f" ] || error_msg "set_kernel_default($_fname) - No such file: $_f"
     is_fs_chrooted && {
-        error_msg "set_kernel_default($_fnamem) not available when chrooted" -1
+        error_msg "set_kernel_default($_fname) not available when chrooted" -1
     }
 
     [ -n "$_lbl" ] && msg_3 "$_lbl"
