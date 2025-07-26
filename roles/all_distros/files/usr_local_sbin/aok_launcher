@@ -353,94 +353,6 @@ set_abort_runlevel_wait() {
 
 #---------------------------------------------------------------
 #
-#   Handling final steps of AOK deploy
-#
-#---------------------------------------------------------------
-
-deploy_aok() {
-    #
-    #  During deploy triggered by aok, you can hit Ctrl-C to get a shell
-    #  if you need to inspect something
-    #
-    # trap 'set_deploy_aok_abort' INT # << seems to trigger by something
-    #
-    #  This is a new AOK-FS that has not yet completed its setup
-    #  continue the deploy
-    #
-    recovery_mode_disable
-    echo
-    echo "******************************************************"
-    echo "*                                                    *"
-    echo "*   AOK-FS deploy has not completed, continuing it   *"
-    echo "*                                                    *"
-    echo "*   Deploy can be aborted by pressing Ctrl-C         *"
-    echo "*                                                    *"
-    echo "******************************************************"
-    echo
-
-    da_depl_step="$(cat "$f_deploy_state")"
-    /usr/local/bin/logger aok_launcher Triggering deploy step: "$da_depl_step"
-    #  AOK-FS uses /etc/profile as placeholder for deploy steps
-    echo
-    echo "aok_launcher will run /etc/profile...."
-    echo
-    /bin/sh /etc/profile
-    echo
-    echo "aok_launcher /etc/profile completed..."
-    echo
-    /usr/local/bin/logger aok_launcher Deploy completed - "$da_depl_step"
-    unset da_depl_step
-    trap '' INT # abort capturing Ctrl-C
-
-    if [ -f "$f_deploy_state" ]; then
-        echo
-        echo "A new deploy state has been reached: $(cat "$f_deploy_state")"
-        echo
-        echo "It is recommended to reboot at this point"
-        echo "to let the next step be processed."
-        echo
-        set_deploy_aok_abort
-    fi
-
-    echo
-    echo "******************************************************"
-    echo "*                                                    *"
-    echo "*   Returned from deploy, resuming this Launch cmd   *"
-    echo "*                                                    *"
-    echo "*   A reboot is recommended, to ensure all services   *"
-    echo "*   are running.                                     *"
-    echo "*                                                    *"
-    echo "******************************************************"
-    echo
-    #  Ensure nothing that shouldn't be there was installed
-    sleep 3
-}
-
-new_deploy_vterm() {
-    echo "New vterm started during deploy - $(tty)"
-    if [ -f /bin/ash ]; then
-        echo "Using /bin/ash"
-        /bin/ash
-    elif [ -f /bin/bash ]; then
-        echo "Using /bin/bash"
-        /bin/bash
-    else
-        echo "Neither bash nor ash available - starting /bin/sh"
-        /bin/sh
-    fi
-}
-
-set_deploy_aok_abort() {
-    trap '' INT # abort capturing Ctrl-C
-    echo
-    print_log "***  Aborting deploy, dropping to shell ***"
-    echo
-    /bin/bash
-    exit 1
-}
-
-#---------------------------------------------------------------
-#
 #   Console mode - using /dev/pts/0 as console only
 #
 #---------------------------------------------------------------
@@ -802,7 +714,6 @@ is_alpine_3_20() {
 #  Continue with variable definitions
 state_prefix=/etc/opt/AOK
 f_inittab_can_start="$state_prefix"/inittab_can_start
-f_deploy_state="$state_prefix"/deploy_state
 f_logins_continuous="$state_prefix"/login-continuous
 f_login_default_user="$state_prefix"/login-default-username
 f_profile_hints="$state_prefix"/show_profile_hints
@@ -855,17 +766,7 @@ recovery_mode_probe main1
 verify_devs
 recovery_mode_probe main2
 
-#  If deploy has not completed - handle it
-[ -f "$f_deploy_state" ] && {
-    if $this_is_pts0; then
-        deploy_aok
-    else
-        new_deploy_vterm
-        exit # kill this extra vterm
-    fi
-}
-
-if $this_is_pts0; then
+if is_fs_chrooted || $this_is_pts0; then
     boot_up # if /dev/console is used, pts/0 will not exit this
 else
     # it works directly as user session starts, but not here, on iSH.
