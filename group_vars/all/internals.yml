@@ -26,6 +26,11 @@ f_app_ift_config: /usr/local/bin/ift-config
 #
 # check_connection: false
 
+crucial_apps:
+  - git
+  - rsync
+  - bash
+
 #
 #  I have tried to put the equivalent in ansible.cfg
 #  but so far it never took effect. Avoiding host keys is
