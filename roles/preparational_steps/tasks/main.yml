@@ -20,9 +20,9 @@
   changed_when: false
   failed_when: false
 
-- name: Display cat_location_proc
-  ansible.builtin.debug:
-    msg: "{{ cat_location_proc }}"
+# - name: Display cat_location_proc
+#   ansible.builtin.debug:
+#     msg: "{{ cat_location_proc }}"
 
 - name: Ensure iSH can run in the background
   # This is just for first deploy, during install a service doing this
