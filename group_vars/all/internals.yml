@@ -15,6 +15,8 @@
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
 
+f_app_ift_launcher: /usr/local/sbin/ift-launcher
+
 # wait_for_hosts_to_be_ready: false
 
 #

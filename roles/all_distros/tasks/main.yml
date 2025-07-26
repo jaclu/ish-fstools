@@ -37,18 +37,18 @@
   ansible.builtin.import_tasks: root_shell.yml
   when: ift_shell is defined and ift_shell
 
-  tasks:
-    - name: Run tasks/is_chrooted.yml
-      ansible.builtin.include_tasks: tasks/is_chrooted.yml
+- name: Check if this is chrooted
+  ansible.builtin.include_tasks: tasks/is_chrooted.yml
+  when: vars['is_chrooted'] is not defined
 
-- name: Set chroot default command
+- name: "Set chroot default command: {{ f_app_ift_launcher }}"
   ansible.builtin.copy:
-    content: "/usr/local/sbin/ift-launcher\n"
-    dest: "/.chroot_default_cmd"
+    dest: /.chroot_default_cmd
+    content: "{{f_app_ift_launcher }}\n"
     owner: root
     group: root
     mode: '0644'
-    when: is_chrooted
+  when: is_chrooted
 
 # =====   other   =====
 

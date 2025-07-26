@@ -29,19 +29,19 @@
   #     ansible.builtin.include_tasks: tasks/is_chrooted.yml
 
   # #
-  # # run specific role(-s)
+  # # run specific task inside a role
   # #
-  # roles:
-  #   # - role: preparational_steps
-  #   # - role: alpine
-  #   #   when: ansible_os_family == 'Alpine'
-  #   - role: all_distros
+  # tasks:
+  #   - name: Use just one task file from the role
+  #     ansible.builtin.include_role:
+  #       name: all_distros
+  #       tasks_from: user_account.yml
 
   #
-  # run specific task inside a role
+  # run specific role(-s)
   #
-  tasks:
-    - name: Use just one task file from the role
-      ansible.builtin.include_role:
-        name: all_distros
-        tasks_from: user_account.yml
+  roles:
+    # - role: preparational_steps
+    # - role: alpine
+    #   when: ansible_os_family == 'Alpine'
+    - role: all_distros
