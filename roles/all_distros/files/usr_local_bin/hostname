@@ -36,12 +36,6 @@ show_help() { # Multi OK 1
     echo "Usage: hostname [-h] [-U] [ -S /full/path/to/sourcefile ]
 
 hostname version able to pick up hostname via syncfile.
-This automates hostname allocation if you run iSH on multiple devices,
-or run both iSH and iSH-AOK on the same device.
-
-If $f_hostname_aok_suffix is present,
-instances running the kernel iSH-AOK will have the suffix -aok to appended
-to their hostname, unless already present.
 
 Available options:
 
@@ -59,10 +53,6 @@ Custom options for this hostname implementation:
 -U  --update       If source file is not /etc/hosts - re-read sourcefile.
                    Last line of this file will be copied to /etc/hosts
                    and used as hostname.
-                   If kernel is iSH-AOK, and the file:
-                     $f_hostname_aok_suffix
-                   is present, -aok will be added as suffix to hostname,
-                   unless already in hostname.
                    Finally the new hostname will be added to /etc/hosts
                    if not already present.
 
@@ -85,23 +75,6 @@ get_sync_file_fn() {
     else
         cat "$f_hostname_source_fname"
     fi
-}
-
-fn_handle_aok_suffix() {
-    #
-    #  Not used ATM
-    #
-    hn_suffix="-aok"
-    hn_current="$(cat /etc/hostname)"
-
-    #  Only do this if this hint file exists
-    [ -f "$f_hostname_aok_suffix" ] || return
-    #  If hostname -s already ends with $hn_suffix, nothing needs to be done
-    echo "$hn_current" | grep -q '\-aok' && {
-        return
-    }
-
-    echo "${hn_current}${hn_suffix}" | sudo tee /etc/hostname >/dev/null
 }
 
 read_syncfile() {
@@ -138,8 +111,6 @@ read_syncfile() {
         mv /tmp/sync_file "$fn_sync_file" 2>/dev/null
     fi
 
-    fn_handle_aok_suffix
-
     sudo /usr/local/bin/logger hostname "set to: $(cat /etc/hostname)"
 
     sudo /usr/local/sbin/ensure-hostname-in-host-file
@@ -159,11 +130,10 @@ sudo_check() {
 #===============================================================
 
 f_etc_hostname=/etc/hostname
-f_hostname_source_fname=/etc/opt/AOK/hostname_source_fname
-f_hostname_aok_suffix=/etc/opt/AOK/hostname-aok-suffix
-f_aok_fs_release=/etc/aok-fs-release
+f_hostname_source_fname="$d_ift_etc_opt"/hostname_source_fname
+f_ift_fs_release=/etc/ift-fs-release
 
-test -f "$f_aok_fs_release" || {
+test -f "$f_ift_fs_release" || {
     error_msg "Should only be run on AOK installations!"
 }
 

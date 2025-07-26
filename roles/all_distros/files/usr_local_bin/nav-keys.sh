@@ -148,22 +148,7 @@ in the first place inside tmux.
 }
 
 select_nav_key_type() {
-    if this_is_aok_kernel; then
-        text="
-With the iSH-AOK kernel, you can use modifiers for using the arrow keys as
-Nav-Keys (PageUp/PageDown & Home/End)
-
-Select modifier:
-0 - Do not use a nav-key work-arround
-1 - Escape prefix, then arrows, actual Escape requires Escape double tap
-2 - <prefix> arrows - pane navigation is done vim-style: <prefix> hjkl
-3 - Shift arrows
-4 - Ctrl  arrows
-5 - Alt arrows - comes with iSH-AOK versions after:  1.3 (485)
-
-"
-    else
-        text="
+    text="
 Chose how Nav-Keys (PageUp/PageDown & Home/End) are handled
 
 Select modifier:
@@ -180,7 +165,6 @@ Esc as prefix then an arrow key, freeing up <prefix> arrow for pane navigation
 Not handled by this - in that case this is left to be configured manually.
 
 "
-    fi
     if [[ -n "$1" ]]; then
         selection="$1"
     else

@@ -46,28 +46,6 @@ Boot Cmd & Launch Cmd have very strict syntax requirements for custom_cmd.
                    default: '$launch_cmd_default'
 "
     }
-    this_is_aok_kernel && {
-        txt="${txt}
-iSH-AOK options:
-
--e --extra_locking  Use kernel extralocking [on|off]
-                    Switching it on may improve stability but impacts
-                    performance  WARNING: turning this off sometimes causes
-                    session to hang, but change did happen!
--m --multicore      Switch multicore processing [on|off]
-                    Switching it off improves stability but impacts performance
-"
-    }
-    this_is_aok_kernel && {
-        txt="${txt}$(
-            extralocking_display
-            multicore_display
-        )
-
-"
-    }
-    echo "$txt"
-}
 
 show_on_off_by_file() {
     [ -z "$1" ] && {
@@ -85,15 +63,10 @@ current_settings() {
     autologin_display
     continuous_sessions_display
     profile_hints_display
-    aok_suffix_display
     this_is_ish && {
         console_mode_display
         boot_cmd_display
         launch_cmd_display
-        this_is_aok_kernel && {
-            extralocking_display
-            multicore_display
-        }
     }
 }
 
@@ -221,6 +194,68 @@ continuous_sessions_display() {
 
 #---------------------------------------------------------------
 #
+#   Kernel Defaults
+#
+#---------------------------------------------------------------
+
+
+launch_cmd_AOK='[ "/usr/local/sbin/aok_launcher" ]'
+
+get_kernel_default() {
+    #
+    #  It is reported as a multiline, here it is wrapped into a one-line
+    #  notation, to make it easier to compare vs the launch_md_XXX
+    #  templates
+    #
+    [ -z "$1" ] && error_msg "get_kernel_default() - missing 1st param"
+    _f=/proc/ish/defaults/"$1"
+    [ -f "$_f" ] || error_msg "get_kernel_default() - Not found: $_f"
+    is_fs_chrooted && {
+        error_msg "get_kernel_default() not available when chrooted" -1
+    }
+    this_is_ish || error_msg "get_kernel_default($1) - this is not iSH" -1
+
+    tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/'
+
+    unset _f
+}
+
+set_kernel_default() {
+    _fname="$1"
+    _param="$2"
+    _lbl="$3"
+    _silent="$4"
+
+    [ -z "$_fname" ] && error_msg "set_kernel_default() - missing param 1 _fname"
+    [ -z "$_param" ] && error_msg "set_kernel_default($_fname) - missing param 2 _param"
+    _f="/proc/ish/defaults/$_fname"
+    [ -f "$_f" ] || error_msg "set_kernel_default($_fname) - No such file: $_f"
+    is_fs_chrooted && {
+        error_msg "set_kernel_default($_fnamem) not available when chrooted" -1
+    }
+
+    [ -n "$_lbl" ] && msg_3 "$_lbl"
+    echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
+    [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
+        error_msg "set_kernel_default($_fname,v$_param, $_lbl) - param 4 ($_silent) must be unset or silent"
+    }
+
+    _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
+    if [ "$_setting" = "$_param" ]; then
+        [ "$_silent" != "silent" ] && msg_4 "$_fname set to: $_setting"
+    else
+        error_msg "value is <$_setting> - expected <$_param>"
+    fi
+
+    unset _fname
+    unset _param
+    unset _lbl
+    unset _f
+}
+
+
+#---------------------------------------------------------------
+#
 #       Boot Cmd
 #
 #---------------------------------------------------------------
@@ -336,41 +371,6 @@ profile_hints_display() {
 
 #---------------------------------------------------------------
 #
-#       aok suffix
-#
-#---------------------------------------------------------------
-
-aok_suffix_change() {
-    use_suffix="$1"
-    [ -z "$use_suffix" ] && {
-        error_msg "aok_suffix_change() - no param given, options are on/off"
-    }
-    case "$use_suffix" in
-    "on") touch "$f_hostname_aok_suffix" ;;
-    "off") rm -f "$f_hostname_aok_suffix" ;;
-    *)
-        error_msg "aok_suffix_change() - options are on/off"
-        ;;
-    esac
-    aok_suffix_display syslog
-}
-
-aok_suffix_setting() {
-    show_on_off_by_file "$f_hostname_aok_suffix"
-}
-
-aok_suffix_display() {
-    _m="aoksuffix:     $(aok_suffix_setting)"
-    if [ "$1" = "syslog" ]; then
-        syslog "$_m"
-    else
-        echo "$_m"
-    fi
-    unset _m
-}
-
-#---------------------------------------------------------------
-#
 #       console mode
 #
 #---------------------------------------------------------------
@@ -475,108 +475,6 @@ console_mode_display() {
     unset _m
 }
 
-#---------------------------------------------------------------
-#
-#       kernel extralocking - iSH-AOK only setting
-#
-#---------------------------------------------------------------
-
-extralocking_change() {
-    do_elock="$1"
-
-    [ -z "$do_elock" ] && {
-        error_msg "extralocking_change() - no param given, options are on/off"
-    }
-    this_is_ish || error_msg "Can't change extra_locking on chrooted system"
-    this_is_aok_kernel || {
-        error_msg "extralocking_change() only usable on iSH-AOK kernels"
-    }
-
-    case "$do_elock" in
-    "on") echo "true" >"$f_elock" ;;
-    "off") echo "false" >"$f_elock" ;;
-    *)
-        error_msg "extralocking_change() - options are on/off"
-        ;;
-    esac
-    extralocking_display syslog
-}
-
-extralocking_setting() {
-    this_is_aok_kernel || {
-        error_msg "extralocking_setting() only usable on iSH-AOK kernels"
-    }
-    [ -f "$f_elock" ] || error_msg "Not found: $f_elock"
-    case "$(cat "$f_elock")" in
-    "true") echo "on" ;;
-    "false") echo "off" ;;
-    *) error_msg "Unknown state in $f_elock" ;;
-    esac
-}
-
-extralocking_display() {
-    _m="extralocking:  $(extralocking_setting)"
-    if [ "$1" = "syslog" ]; then
-        syslog "$_m"
-    else
-        echo "$_m"
-    fi
-    unset _m
-}
-
-f_elock=/proc/ish/defaults/enable_extralocking
-
-#---------------------------------------------------------------
-#
-#       multicore processing - iSH-AOK only setting
-#
-#---------------------------------------------------------------
-
-multicore_change() {
-    do_multicore="$1"
-
-    [ -z "$do_multicore" ] && {
-        error_msg "multicore_change() - no param given, options are on/off"
-    }
-    this_is_ish || error_msg "Can't change multicore on chrooted system"
-    this_is_aok_kernel || {
-        error_msg "multicore_change() only usable on iSH-AOK kernels"
-    }
-
-    case "$do_multicore" in
-    "on") echo "true" >"$f_multicore" ;;
-    "off") echo "false" >"$f_multicore" ;;
-    *)
-        error_msg "multicore_change() - options are on/off"
-        ;;
-    esac
-    multicore_display syslog
-}
-
-multicore_setting() {
-    this_is_aok_kernel || {
-        error_msg "multicore_setting() only usable on iSH-AOK kernels"
-    }
-    [ -f "$f_multicore" ] || error_msg "Not found: $f_multicore"
-    case "$(cat "$f_multicore")" in
-    "true") echo "on" ;;
-    "false") echo "off" ;;
-    *) error_msg "Unknown state in $f_multicore" ;;
-    esac
-}
-
-multicore_display() {
-    _m="multicore:     $(multicore_setting)"
-    if [ "$1" = "syslog" ]; then
-        syslog "$_m"
-    else
-        echo "$_m"
-    fi
-    unset _m
-}
-
-f_multicore=/proc/ish/defaults/enable_multicore
-
 #===============================================================
 #
 #   Main
@@ -649,18 +547,6 @@ while [ -n "$1" ]; do
 
     "-d" | "--defaults") set_defaults ;;
 
-    "-e" | "--extra_locking")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_aok_kernel; then
-                extralocking_change "$2"
-            else
-                msg_4 "Can only set extra_locking on iSH-AOK systems"
-            fi
-            shift # get rid of extra option
-        fi
-        this_is_aok_kernel && extralocking_display
-        ;;
-
     "-l" | "--launch-cmd")
         if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
             if this_is_ish; then
@@ -671,26 +557,6 @@ while [ -n "$1" ]; do
             shift # get rid of extra option
         fi
         this_is_ish && launch_cmd_display
-        ;;
-
-    "-m" | "--multicore")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            if this_is_aok_kernel; then
-                multicore_change "$2"
-            else
-                msg_4 "Can only set multicore on iSH-AOK systems"
-            fi
-            shift # get rid of extra option
-        fi
-        this_is_aok_kernel && multicore_display
-        ;;
-
-    "-s" | "--aoksuffix")
-        if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
-            aok_suffix_change "$2"
-            shift # get rid of extra option
-        fi
-        aok_suffix_display
         ;;
 
     "-H" | "--profile-hints")

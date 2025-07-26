@@ -188,10 +188,10 @@ force_ios_uptime=false
 display_mode="default"
 dbg=false
 
-f_aok_fs_release=/etc/aok-fs-release
+f_ift_fs_release=/etc/ift-fs-release
 
-test -f "$f_aok_fs_release" || {
-    error_msg "Should only be run on AOK installations!"
+test -f "$f_ift_fs_release" || {
+    error_msg "Should only be run on ish-fstools installations!"
 }
 
 while [ -n "$1" ]; do
