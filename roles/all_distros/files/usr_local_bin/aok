@@ -10,7 +10,8 @@
 #
 
 show_help() {
-    txt="Management of AOK FS specific setting.
+    msg_1 "show_help()"
+    txt="Management of ish-fstools FS specific setting.
 
 Without options, current settings are displayed.
 
@@ -22,18 +23,12 @@ Available options:
                    username - Will auto-login as username
 -c --continuous     New login prompt after vterm logout [on|off]
 -H --profile-hints Show env hints in /etc/profile [on|off]
--s --aoksuffix     Ensure -aok is added as suffix to hostname
-                   on iSH-AOK kernels [on|off]
-                   Ignored on regular iSH
 "
     this_is_ish && {
         txt="${txt}-d --defaults      Set defaults where applicable
 -C --console       Use first vterm (/dev/pts/0) as console,
                    disabling logins on this vterm
-"
-    }
-    this_is_ish && {
-        txt="${txt}
+
 Boot Cmd & Launch Cmd have very strict syntax requirements for custom_cmd.
   1. wrap it in '[ ]'
   2. Each statement/param must be wrapped in \"\"
@@ -42,10 +37,11 @@ Boot Cmd & Launch Cmd have very strict syntax requirements for custom_cmd.
 -b --boot-cmd      Choose Init cmd: $boot_cmd_options
                    default: '$boot_cmd_default'
 -l --launch-cmd    Choose Launch cmd: $launch_cmd_options
-                   aok:     '$launch_cmd_AOK'
+                   ifs:     '$launch_cmd_ift'
                    default: '$launch_cmd_default'
 "
     }
+    echo "$txt"
 }
 
 show_on_off_by_file() {
@@ -200,8 +196,6 @@ continuous_sessions_display() {
 #---------------------------------------------------------------
 
 
-launch_cmd_AOK='[ "/usr/local/sbin/aok_launcher" ]'
-
 get_kernel_default() {
     #
     #  It is reported as a multiline, here it is wrapped into a one-line
@@ -313,7 +307,7 @@ launch_cmd_change() {
             echo
         }
         ;;
-    "aok") set_kernel_default launch_command "$launch_cmd_AOK" ;;
+    "ift") set_kernel_default launch_command "$launch_cmd_ift" ;;
 
     *) set_kernel_default launch_command "$lnch_cmd" ;;
     esac
@@ -330,7 +324,7 @@ launch_cmd_display() {
     unset _m
 }
 
-launch_cmd_options="aok|default|'[ \"custom_cmd\" ]'"
+launch_cmd_options="ift|default|'[ \"custom_cmd\" ]'"
 launch_cmd_default='[ "/bin/login", "-f", "root" ]'
 
 #---------------------------------------------------------------
@@ -488,12 +482,16 @@ hide_run_as_root=1 . /usr/local/bin/ift-run-as-root.sh
 . /usr/local/lib/ift-utils.sh
 
 prog_name=$(basename "$0")
+launch_cmd_ift='[ "/usr/local/sbin/aok_launcher" ]'
+
+
+msg_1 "$prog_name - ift FS configuration tool - starting"
 
 [ -z "$1" ] && {
     echo "For help use: $prog_name -h"
     echo
     current_settings
-    exit
+    exit 0
 }
 
 while [ -n "$1" ]; do
