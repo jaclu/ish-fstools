@@ -44,7 +44,7 @@
 - name: "Set chroot default command: {{ f_app_ift_launcher }}"
   ansible.builtin.copy:
     dest: /.chroot_default_cmd
-    content: "{{f_app_ift_launcher }}\n"
+    content: "{{ f_app_ift_launcher }}\n"
     owner: root
     group: root
     mode: '0644'

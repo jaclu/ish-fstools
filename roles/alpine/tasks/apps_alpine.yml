@@ -19,7 +19,6 @@
       {% endfor %}
 
 - name: Install selected packages
-  # On my iPad: 1st run 3m10s, repeat 44s
   ansible.builtin.include_tasks: tasks/install_apk.yml
   vars:
     apk_packages: "{{ ift_alpine_packages }}"

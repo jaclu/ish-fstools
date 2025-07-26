@@ -37,19 +37,19 @@
   changed_when: backgrounding_task.rc == 43
   failed_when: backgrounding_task.rc not in [0, 43]
 
-- name: "Ensure  directory exists: {{ d_etc_ift }}"
+- name: "Ensure ish-fstools status folder exists: {{ d_etc_ift }}"
   ansible.builtin.file:
     path: "{{ d_etc_ift }}"
     state: directory
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   # become: true
   ansible.builtin.lineinfile:
     path: /etc/apk/repositories
-    line: 'https://dl-cdn.alpinelinux.org/alpine/edge/testing'
+    line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     insertafter: EOF
   when:
     - ansible_os_family == 'Alpine'
