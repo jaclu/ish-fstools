@@ -7,7 +7,7 @@
 #  Copyright (c) 2024: Jacob.Lundqvist@gmail.com
 #
 #  To allow monitoring of logs etc during boot up inittab holds until
-#  given the go-ahead. If aok_launcher is not in console mode, or not
+#  given the go-ahead. If ift-launcher is not in console mode, or not
 #  used, this will return right away.
 #
 
@@ -19,8 +19,8 @@ f_recovery_mode="$state_prefix"/recovery-mode
 cmd_logger=/usr/local/bin/logger
 this_app="$(basename "$0")"
 
-#  If Launcher is not aok_launcher, exit right away
-pgrep -f aok_launcher >/dev/null || return
+#  If Launcher is not ift-launcher, exit right away
+pgrep -f ift-launcher >/dev/null || return
 
 #  If not using console mode, exit (almost) right away
 [ ! -f "$f_pts_0_as_console" ] && {

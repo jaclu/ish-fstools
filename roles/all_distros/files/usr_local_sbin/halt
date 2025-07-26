@@ -59,9 +59,9 @@ sleep 1
 #  Halting the system, different methods in falling priorities
 #
 
-# kill aok_launcher
-key_pids="$(pgrep -f aok_launcher)"
-[ -n "$key_pids" ] && do_shutdown aok_launcher
+# kill ift-launcher
+key_pids="$(pgrep -f ift-launcher)"
+[ -n "$key_pids" ] && do_shutdown ift-launcher
 
 if [ -f /etc/alpine-release ]; then
     #

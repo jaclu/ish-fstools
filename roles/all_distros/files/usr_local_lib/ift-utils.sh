@@ -131,7 +131,7 @@ d_ift_etc_opt=/etc/opt/ift
 
 
 #
-#  For automated logins used by aok anf aok_launcher
+#  For automated logins used by aok anf ift-launcher
 #
 f_login_default_user="$d_ift_etc_opt"/login-default-username
 f_logins_continuous="$d_ift_etc_opt"/login-continuous

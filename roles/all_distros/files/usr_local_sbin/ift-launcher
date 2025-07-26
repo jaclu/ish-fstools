@@ -264,7 +264,7 @@ display_header() {
     fi
 
     echo
-    echo "aok_launcher - AOK: $aok_vers - Filesystem: $fs_name"
+    echo "$prog_name - AOK: $aok_vers - Filesystem: $fs_name"
     header_msg=""
     [ -f "$f_pts_0_as_console" ] && {
         header_msg="/dev/pts/0 is used as /dev/console"
@@ -376,7 +376,7 @@ update_deb_log_kill_cmd() {
     #region kill_tail_logging cmd
     echo "#!/bin/sh
 #  Called from /usr/local/bin/console-restart
-#  Replaced by /usr/local/sbin/aok_launcher during each reboot
+#  Replaced by /usr/local/sbin/$prog_name during each reboot
 
 (
     echo
@@ -554,7 +554,7 @@ handle_logins() {
         fi
     done
 
-    _s="===  Fell out of infinite aok_launcher login loop -"
+    _s="===  Fell out of infinite $prog_name login loop -"
     _s="$_s Should really not happen!"
     log_display "$_s"
     unset _s
@@ -755,8 +755,6 @@ f_rel_debian=/etc/debian_version
 
 f_issue_file="/etc/issue"
 f_login_prog="/bin/login"
-
-# f_status_log="/var/log/aok_launcher.log"
 
 expected_runlevel="default"
 recovery_mode_active=false

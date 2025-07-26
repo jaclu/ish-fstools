@@ -5,7 +5,7 @@
 # R-check checks if recovery mode has been selected, if so that action
 # is not done, and it is logged as skipped in /var/log/recovery-mode.log
 #
-# recovery-mode is a feature of aok_launcher, allowing safe recovery if
+# recovery-mode is a feature of ift-launcher, allowing safe recovery if
 # something is messed up in the environment
 #
 
