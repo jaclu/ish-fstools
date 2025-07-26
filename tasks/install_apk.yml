@@ -25,9 +25,19 @@
     msg: "This role only supports Alpine Linux"
   when: ansible_os_family != 'Alpine'
 
+- name: Fail if no packages are defined
+  ansible.builtin.fail:
+    msg: "No packages defined to install. Please set apk_packages variable."
+  when: apk_packages is not defined or apk_packages | length == 0
+
+- name: List what will be installed
+  ansible.builtin.debug:
+    msg:
+      "{{ apk_packages }}"
+
 - name: Install selected packages using apk directly (much faster)
   ansible.builtin.command: >
-    apk add --no-progress {{ ift_alpine_packages | join(' ') }}
+    apk add --no-progress {{ apk_packages | join(' ') }}
   register: apk_result
   changed_when: "'Installing' in apk_result.stdout"
   failed_when: "'ERROR' in apk_result.stderr"
