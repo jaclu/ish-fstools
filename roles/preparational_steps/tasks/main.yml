@@ -13,9 +13,9 @@
 # skipping iSH check here, since on iSH it is really slow, and not needed in
 # this playbook
 
-- name: Check if 'cat /dev/location' is running
+- name: Check if iSH is background enabled
   ansible.builtin.shell: |
-    pgrep -af 'cat /dev/location'
+    [ -d /proc/ish ] && pgrep -af 'cat /dev/location'
   register: cat_location_proc
   changed_when: false
   failed_when: false
@@ -55,6 +55,7 @@
     name:
       - git
       - rsync
+      - bash
 
 - name: Checkout ish-fstools into /opt
   ansible.builtin.git:
