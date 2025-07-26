@@ -574,7 +574,7 @@ handle_logins() {
         ignore_login_params=0
         login_with_param_check
         [ "$login_ex_code" != "0" ] && {
-            error_msg "$f_login_prog exited with#3: $login_ex_code"
+            error_msg "handle_logins() - $f_login_prog exited with: $login_ex_code"
         }
 
         #
@@ -663,7 +663,8 @@ login_with_param_check() {
             login_ex_code="$?"
             echo
             # print_log "><> $(date) login failed"
-            _s="ERROR: $f_login_prog exited with#1: $login_ex_code,"
+            _s="ERROR: login_with_param_check($login_params) -"
+            _s="$_s $f_login_prog exited with: $login_ex_code,"
             _s="$_s trying to use params: $login_params"
             print_log "$_s"
             print_log "reverting to basic no params login"
@@ -685,7 +686,8 @@ login_with_param_check() {
         "$f_login_prog" || {
             login_ex_code="$?"
             # print_log "><> $(date) login failed"
-            error_msg "login exited with#2: $login_ex_code"
+            _s="login_with_param_check(no params) - login exited with: $login_ex_code"
+            error_msg "$_s"
         }
         # print_log "><> $(date) post login no params"
     fi
