@@ -34,6 +34,14 @@
   changed_when: false
   when: cat_location_proc.stdout == ''
 
+- name: "Ensure  directory exists: {{ d_etc_ift }}"
+  ansible.builtin.file:
+    path: "{{ d_etc_ift }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   # become: true
   ansible.builtin.lineinfile:
