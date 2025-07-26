@@ -85,3 +85,18 @@
     - ift_shell is defined
     - passwd_line.stdout.split(':')[6] != ift_shell
   changed_when: true
+
+- name: User acct - Enable autologin for {{ ift_user_name }}
+  ansible.builtin.shell: |
+    set -o pipefail
+    if aok | grep autologin | grep -qv "{{ ift_user_name }}"; then
+      aok -a "{{ ift_user_name }}"
+    else
+      exit 2
+    fi
+  args:
+    executable: /bin/bash
+  when: ift_user_name is defined
+  register: autologin_result
+  changed_when: "autologin_result.rc == 0"
+  failed_when: "'ERROR' in autologin_result.stdout"
