@@ -60,13 +60,17 @@
     update_cache: true
     upgrade: true
 
-- name: Ensure crucial apps needed for 1st deploy are available
+- name: Install crucial apps needed for deploy (Alpine)
+  ansible.builtin.include_tasks: tasks/install_apk.yml
+  vars:
+    apk_packages: "{{ crucial_apps }}"
+  when: ansible_os_family == 'Alpine'
+
+- name: Install crucial apps needed for deploy
   ansible.builtin.package:
     state: present
-    name:
-      - git
-      - rsync
-      - bash
+    name: "{{ crucial_apps }}"
+  when: ansible_os_family != 'Alpine'
 
 - name: Checkout ish-fstools into /opt
   ansible.builtin.git:
