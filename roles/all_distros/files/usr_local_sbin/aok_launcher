@@ -29,6 +29,7 @@
 #---------------------------------------------------------------
 
 fix_stdio_device() {
+    log_display "fix_stdio_device()"
     fsd_src="$1"
     fsd_name="/dev/$2"
 
@@ -39,7 +40,7 @@ fix_stdio_device() {
         error_msg "fix_stdio_device($1, $2) can not be used when chrooted"
     }
     [ -c "$fsd_name" ] || {
-        print_log "Fixing $fsd_name"
+        log_display "Fixing $fsd_name"
         rm -f "$fsd_name"
         ln -sf "$fsd_src" "$fsd_name"
     }
@@ -48,6 +49,11 @@ fix_stdio_device() {
 }
 
 check_for_bad_null() {
+    log_display "check_for_bad_null()"
+    [ -z "$1" ] && {
+        error_msg "check_for_bad_null() - no param"
+        return 1
+    }
     bad_null="$1"
     [ -z "$bad_null" ] && {
         error_msg "call to check_for_bad_null() with no param"
@@ -55,7 +61,7 @@ check_for_bad_null() {
     [ -f "$bad_null" ] && {
         echo
         echo
-        print_log "WARNING: $bad_null found - typo in /dev/null redirect?"
+        log_display "WARNING: $bad_null found - typo in /dev/null redirect?"
         echo
     }
     unset bad_null
@@ -63,6 +69,7 @@ check_for_bad_null() {
 }
 
 verify_device() {
+    log_display "verify_device()"
     vd_dev_name="$1"
     vd_maj="$2"
     vd_min="$3"
@@ -83,7 +90,7 @@ verify_device() {
     fi
     [ -c "$vd_dev_name" ] || {
         rm -f "$vd_dev_name" && mknod -m 666 "$vd_dev_name" c "$vd_maj" "$vd_min"
-        print_log "Fixed $vd_dev_name"
+        log_display "Fixed $vd_dev_name"
     }
     unset vd_dev_name vd_maj vd_min
     unset maj_min maj_act min_act
@@ -92,6 +99,7 @@ verify_device() {
 }
 
 verify_devs() {
+    log_display "verify_devs()"
     #
     #  Make sure all /dev entries are reasonable
     #
@@ -137,7 +145,7 @@ verify_devs() {
 #---------------------------------------------------------------
 
 recovery_mode_enable() {
-    # print_log "recovery_mode_enable()"
+    # log_display "recovery_mode_enable()"
     # Save current stty settings
     org_stty=$(stty -g)
 
@@ -151,7 +159,7 @@ recovery_mode_enable() {
 }
 
 recovery_mode_disable() {
-    # print_log "recovery_mode_disable()"
+    # log_display "recovery_mode_disable()"
     $recovery_mode_active || return
     recovery_mode_probe final # one last check
     recovery_mode_active=false
@@ -168,7 +176,7 @@ recovery_mode_disable() {
 }
 
 recovery_mode_probe() {
-    # print_log "recovery_mode_probe()"
+    # log_display "recovery_mode_probe()"
     $recovery_mode_active || return
     key=$(dd bs=1 count=1 2>/dev/null)
     case "$key" in
@@ -182,7 +190,7 @@ recovery_mode_probe() {
 recovery_mode_trigger() {
     # First do urgent tasks that are somewhat time sensitive
     touch "$f_recovery_mode"
-    print_log "recovery_mode_trigger()"
+    log_display "recovery_mode_trigger()"
     $recovery_mode_active || {
         error_msg "recovery_mode_trigger($1) - called when recovery is not active"
         return
@@ -230,6 +238,7 @@ EOF
 #---------------------------------------------------------------
 
 display_header() {
+    # log_display "display_header()"
     if [ -f "$f_aok_release" ]; then
         aok_vers="$(cat "$f_aok_release" 2>/dev/null)" ||
             aok_vers="*** Failed to read $f_aok_release ***"
@@ -276,7 +285,7 @@ display_header() {
 
 boot_up() {
     # at boot up also log it
-    # print_log "boot_up()"
+    log_display "boot_up()"
 
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
@@ -314,7 +323,7 @@ boot_up() {
 
 runlevel_wait() {
     trap 'set_abort_runlevel_wait' INT
-    # print_log "runlevel_wait()"
+    log_display "runlevel_wait()"
     while true; do
         sleep 2
         recovery_mode_probe runlevel-wait
@@ -327,7 +336,7 @@ runlevel_wait() {
 
         _s="current runlevel is $_current_runlevel - waiting for"
         _s="$_s $expected_runlevel - press Ctrl-C to abort wait"
-        print_log "$_s"
+        log_display "$_s"
         # clear before potential exit
         unset _current_runlevel _s
 
@@ -336,7 +345,7 @@ runlevel_wait() {
         [ "$abort_runlevel_wait" = "1" ] && break
     done
     trap '' INT # abort capturing Ctrl-C
-    print_log "runlevel_wait completed, runlevel is now: $(rc-status -r)"
+    log_display "runlevel_wait completed, runlevel is now: $(rc-status -r)"
 
 }
 
@@ -345,7 +354,7 @@ set_abort_runlevel_wait() {
     echo
     _s="***  Ctrl-C captured - aborting wait for runlevel"
     _s="$_s $expected_runlevel  ***"
-    print_log "$_s"
+    log_display "$_s"
     unset _s
     echo
     abort_runlevel_wait=1
@@ -362,6 +371,7 @@ update_deb_log_kill_cmd() {
     #  Since the cmd_tail might change, always
     #  update the kill cmd to its current definition
     #
+    log_display "update_deb_log_kill_cmd()"
     cmd_kill_tail_logging=/usr/local/sbin/kill_tail_logging
     #region kill_tail_logging cmd
     echo "#!/bin/sh
@@ -388,6 +398,15 @@ kill_console_tail() {
     #  Only usable by Alpine, Debian uses console-restart, since the tail
     #  cmd isn't properly tied to /dev/pts/0 and thus can't receive Ctrl-C
     #
+    log_display "kill_console_tail()"
+    [ -z "$cmd_tail" ] && {
+        error_msg "kill_console_tail() - no cmd_tail defined"
+        return 1
+    }
+    [ ! -x "$cmd_tail" ] && {
+        error_msg "kill_console_tail() - cmd_tail is not executable: $cmd_tail"
+        return 1
+    }
     echo
     echo "Console tailing of /var/log/* will be restarted"
     echo "Non text-files will be ignored"
@@ -395,6 +414,15 @@ kill_console_tail() {
 }
 
 select_log_files_to_monitor() {
+    log_display "select_log_files_to_monitor()"
+    [ -z "$cmd_tail" ] && {
+        error_msg "select_log_files_to_monitor() - no cmd_tail defined"
+        return 1
+    }
+    [ ! -x "$cmd_tail" ] && {
+        error_msg "select_log_files_to_monitor() - cmd_tail is not executable: $cmd_tail"
+        return 1
+    }
     #
     #  Add all text files in logdir
     #
@@ -417,7 +445,7 @@ handle_custom_console_monitor() {
     #  $f_inittab_can_start once it is setup, so that inittab
     #  can commence its run
     #
-    # print_log "><> running $cmd_custom_console_monitor"
+    log_display "handle_custom_console_monitor() - running $cmd_custom_console_monitor"
     $cmd_custom_console_monitor
     #
     #  Should not get here...
@@ -429,7 +457,7 @@ handle_custom_console_monitor() {
 }
 
 monitor_log_files() {
-    # print_log "monitor_log_files()"
+    log_display "monitor_log_files()"
     initial_console_run=true
 
     echo "Console tailing of /var/log/* - non text-files will be ignored"
@@ -476,7 +504,7 @@ monitor_log_files() {
 #---------------------------------------------------------------
 
 handle_logins() {
-    # print_log "handle_logins()"
+    log_display "handle_logins()"
     while true; do
         #
         #  Ensure params are tried for each login attempt, in case they
@@ -496,7 +524,7 @@ handle_logins() {
         if is_fs_chrooted; then
             _s="This is chrooted, always terminating on logout,"
             _s="$_s this should also exit the chroot"
-            print_log "$_s"
+            log_display "$_s"
             exit 0
         fi
 
@@ -504,7 +532,7 @@ handle_logins() {
             echo
             _s="Will spawn a new login session. If this is not requested,"
             _s="$_s run aok"
-            print_log "$_s"
+            log_display "$_s"
             unset _s
             echo
             sleep 1
@@ -519,7 +547,7 @@ handle_logins() {
                 sleep 30 # give shutdown plenty of time to complete
                 exit     # this will insta-kill iSH
             else
-                print_log "Terminating vterm $(tty)"
+                log_display "Terminating vterm $(tty)"
                 sleep 2
                 exit
             fi
@@ -528,7 +556,7 @@ handle_logins() {
 
     _s="===  Fell out of infinite aok_launcher login loop -"
     _s="$_s Should really not happen!"
-    print_log "$_s"
+    log_display "$_s"
     unset _s
     echo "will sleep forever, please shutdown iSH"
     /bin/sleep infinity
@@ -538,7 +566,7 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    # echo "><> login_with_param_check()"
+    log_display "login_with_param_check()"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
@@ -549,8 +577,8 @@ login_with_param_check() {
                 echo
                 _s="ERROR: default user for autologin: $def_user"
                 _s="$_s is not valid"
-                print_log "$_s"
-                print_log "reverting to basic no params login"
+                log_display "$_s"
+                log_display "reverting to basic no params login"
                 echo
                 ignore_login_params=1
                 #
@@ -561,25 +589,25 @@ login_with_param_check() {
                 return
             }
         }
-        print_log "auto-login as: $def_user - can be changed by running: aok"
+        log_display "auto-login as: $def_user - can be changed by running: aok"
         handle_etc_issue
         login_params="-f $def_user"
         unset def_user
 
         recovery_mode_disable login_param_checks
-        print_log "Starting login with params: [$login_params]" noecho
-        #print_log "><> $(date) login with params: $f_login_prog $login_params"
+        log_display "Starting login with params: [$login_params]" noecho
+        #log_display "><> $(date) login with params: $f_login_prog $login_params"
         # /usr/local/bin/network-check
         # shellcheck disable=SC2086  # in this case variable should expand
         $f_login_prog $login_params || {
             login_ex_code="$?"
             echo
-            # print_log "><> $(date) login failed"
+            # log_display "><> $(date) login failed"
             _s="ERROR: login_with_param_check($login_params) -"
             _s="$_s $f_login_prog exited with: $login_ex_code,"
             _s="$_s trying to use params: $login_params"
-            print_log "$_s"
-            print_log "reverting to basic no params login"
+            log_display "$_s"
+            log_display "reverting to basic no params login"
             echo
             unset login_params _s
             ignore_login_params=1
@@ -591,22 +619,23 @@ login_with_param_check() {
             return
         }
     else
-        # print_log "Using bare bones login with no parameters"
+        # log_display "Using bare bones login with no parameters"
         handle_etc_issue
-        print_log "Starting login with no params" noecho
-        #print_log "><> $(date) login no params: $f_login_prog"
+        log_display "Starting login with no params" noecho
+        #log_display "><> $(date) login no params: $f_login_prog"
         "$f_login_prog" || {
             login_ex_code="$?"
-            # print_log "><> $(date) login failed"
+            # log_display "><> $(date) login failed"
             _s="login_with_param_check(no params) - login exited with: $login_ex_code"
             error_msg "$_s"
         }
-        # print_log "><> $(date) post login no params"
+        # log_display "><> $(date) post login no params"
     fi
-    # print_log "><> $(date) logged out from login with params"
+    # log_display "><> $(date) logged out from login with params"
 }
 
 handle_etc_issue() {
+    log_display "handle_etc_issue()"
     #
     #  I haven't managed to get /etc/issue to display on console sessions.
     #  so manual handling
@@ -649,7 +678,7 @@ log_it() {
     fi
 }
 
-print_log() {
+log_display() {
     #
     #  In case of boot up issues, this output is both displayed
     #  and logged to a file, so that it can be reviewed
@@ -712,7 +741,7 @@ is_alpine_3_20() {
 # recovery_mode_enable
 
 #  Continue with variable definitions
-state_prefix=/etc/opt/AOK
+state_prefix=/etc/opt/ift
 f_inittab_can_start="$state_prefix"/inittab_can_start
 f_logins_continuous="$state_prefix"/login-continuous
 f_login_default_user="$state_prefix"/login-default-username
