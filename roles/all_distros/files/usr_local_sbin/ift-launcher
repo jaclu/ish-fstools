@@ -590,7 +590,8 @@ login_with_param_check() {
                 return
             }
         }
-        log_display "auto-login as: $def_user - can be changed by running: aok"
+        _s="auto-login as: $def_user - can be changed by running: {{ f_app_ift_config }}"
+        log_display "$_s"
         handle_etc_issue
         login_params="-f $def_user"
         unset def_user
