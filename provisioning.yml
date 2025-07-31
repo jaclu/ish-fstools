@@ -1,0 +1,34 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  main toolbook
+#
+
+# - name: Show all gathered facts
+#   hosts: all
+#   vars_files:
+#     - vars.yml
+#   gather_facts: true
+#   tasks:
+#     - name: Display all facts
+#       debug:
+#         var: ansible_facts
+
+- name: Setting up iSH FS
+  hosts: "{{ target_hosts | default('localhost') }}"
+
+  pre_tasks:
+    - name: Load override variables
+      ansible.builtin.import_tasks: tasks/load_overrides.yml
+
+  roles:
+    - role: preparational_steps
+    - role: alpine
+      when: ansible_os_family == 'Alpine'
+    - role: all_distros

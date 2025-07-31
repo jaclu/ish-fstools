@@ -1,0 +1,35 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Configure Alpine F
+#
+
+- name: Deploy /etc/inittab
+  # become: true
+  ansible.builtin.copy:
+    mode: preserve
+    src: files/etc/inittab
+    dest: /etc/
+
+- name: Deploy /etc/network/interfaces  # Dont think it is needed
+  # become: true
+  ansible.builtin.copy:
+    mode: preserve
+    src: files/etc/interfaces
+    dest: /etc/network/
+
+# Dont think it is needed
+# - name: Alpine link /etc/init.d/devfs /etc/init.d/dev
+#  become: true
+#  ansible.builtin.file:
+#    src: /etc/init.d/devfs
+#    dest: /etc/init.d/dev
+#    state: link
+#  when:
+#    - is_ish

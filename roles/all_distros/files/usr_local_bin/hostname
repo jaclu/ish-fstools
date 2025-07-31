@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/ish-fstool
+#
+#  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Custom hostname, solving that iOS >= 17 no longer provides hostname
+#  to Apps.
+#
+#  Working around regular iSH inability to use /etc/hostname with the native
+#  hostname command.
+#  Ensure this is in your PATH, before /bin
+#
+
+show_help() { # Multi OK 1
+    [ -d /proc/ish ] || {
+        echo
+        echo "WARNING: this is only meaningful on iSH"
+        echo
+    }
+    echo "Usage: hostname [-F|--file filename] [hostname]
+
+Available options:
+
+-h  --help         Print this help and exit
+
+-F  --file         Read the host name from the specified file.
+
+All other options are ignored, for compatibility with the default hostnme"
+}
+
+error_msg() {
+    echo
+    echo "ERROR[$0]: $1"
+    echo
+
+    exit 1
+}
+
+root_check() {
+    [ "$(id -u)" -eq 0 ] || {
+        error_msg "hostname: you must be root to change the host name"
+    }
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+f_etc_hostname=/etc/hostname
+
+while [ -n "$1" ]; do
+
+    case "$1" in
+
+    "-h" | "--help")
+        show_help
+        exit 0
+        ;;
+
+    "-F" | "--file")
+        root_check
+        f_new_hostname="$2"
+        [ -z "$f_new_hostname" ] && {
+            error_msg "No file specified for option '$1'!"
+        }
+        [ -f "$f_new_hostname" ] || {
+            error_msg "No such file '$f_new_hostname'!"
+        }
+        [ -s "$f_new_hostname" ] || {
+            error_msg "File '$f_new_hostname' is empty!"
+        }
+        wc -l "$f_new_hostname" | grep -q '^1 ' || {
+            error_msg "File '$f_new_hostname' must contain exactly one line!"
+        }
+        cp "$f_new_hostname" "$f_etc_hostname" || {
+            error_msg "Failed to copy '$f_new_hostname' to '$f_etc_hostname'!"
+        }
+        exit 0
+        ;;
+    -*) ;; # Ignore all other options, for compatibility with default hostname
+
+
+    *) new_hostname="$1"
+        root_check
+        echo "$new_hostname" >"$f_etc_hostname" || {
+            error_msg "Failed to write '$new_hostname' to '$f_etc_hostname'!"
+        }
+        exit 0
+        ;;
+
+    esac
+    shift
+done
+
+cat /etc/hostname

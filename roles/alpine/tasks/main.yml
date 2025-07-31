@@ -1,0 +1,27 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: Alpine main task
+#
+
+- name: Run apps_alpine
+  ansible.builtin.import_tasks: apps_alpine.yml
+
+- name: Run configs
+  ansible.builtin.import_tasks: configs.yml
+
+- name: Service sshd - install service supporting iSH logging
+  # become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ alpine_d_repo }}/files{{ f_srvc_sshd }}"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
+# Handle CUSTOM_FILES_TEMPLATE aok: AOK/common_AOK/custom/custom_files.sh

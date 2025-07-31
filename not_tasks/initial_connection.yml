@@ -1,0 +1,19 @@
+---
+
+#
+#  Vagrant nodes sometimes need a few seconds before they are ready.
+#  This should take care of that, for nodes responding right away
+#  this should not cause any delay.
+#  This assumes the playbook uses
+#  gather_facts: false
+#
+
+- name: Wait for SSH to become available
+  ansible.builtin.wait_for:
+    host: "{{ inventory_hostname }}"
+    connect_timeout: 1
+    sleep: 1
+    timeout: 1
+  register: result
+  until: result is succeeded
+  retries: 10  # Number of retries

@@ -1,0 +1,174 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# User-customizable variables intended to be overridden in vars/overrides.yml
+# to fine-tune the deployment. The file vars/overrides.yml is listed in .gitignore,
+# so it won't be affected by repository updates.
+#
+# Variables prefixed with ift_ are intended for user customization.
+# Some temporary variables prefixed with _tmp are used internally
+# to construct the final ift_ variables.
+#
+
+#
+#  If unspecified it will default to iSH
+#
+# ift_hostname: NameOfDevice
+
+#
+#  Create a user account (will be given no password sudo privs)
+#  Be aware that only Alpine supports the /bin/ash shell
+#  If a shell is defined root will also use this shell
+#
+ift_user_name: ish  # set to "" to disable
+ift_shell: /bin/ash  # set to "" to disable
+
+#
+#  Use tzdata for timezone naming, such as Europe/Amsterdam EST
+#  set to "" if no system timezone should be defined
+#
+ift_timezone: ""
+
+#
+#  Runlevel for runbg - service that ensures iSH continues to run in the background
+#
+ift_runlevel_runbg: default   # set to "" if this service is not wanted
+ift_runlevel_sshd: default   # set to "" if this service is not wanted
+
+ift_port_sshd: 2022  # set to "" if port should not be set
+
+#
+#  ift_alpine_packages - defines what Alpine packages will be installed if FS is Alpine
+#  some temp variables are first used to define what packages to use.
+#
+#  If the intent is just add more packages in overrides, they can be listed using
+#  the variable ift_extra_alpine_packages, to avoid having to duplicate the entire
+#  ift_alpine_packages
+#
+# NOTICE: put this in vars/overrides.yml
+# ift_extra_alpine_packages:
+#   - gcc
+#   - strace
+#
+
+_tmp_alpine_base_packages: # part of ift_alpine_packages
+  #
+  #  Shells
+  #
+  - bash  # The GNU Bourne Again shell
+  - bash-completion  # Command-line tab-completion for bash
+  - zsh  # Very advanced and programmable command interpreter (shell)
+  - zsh-completions  # Additional completion definitions for Zsh (packaged as a plugin)
+
+  #
+  #  Core utils
+  #
+  - coreutils  # The basic file, shell and text manipulation utilities
+  - util-linux  # Random collection of Linux utilities
+  # - procps  # Utilities for monitoring your system and processes on your system
+  # procps results in /usr/bin/uptime triggering Seg Fault
+  #  but it provides ok pkill & pgrep
+  - findutils  # GNU utilities for finding files
+  # - git  # Already installed in role preparational_steps
+  # - rsync  # Already installed in role preparational_steps
+  - file  # File type identification utility
+  - gawk  # GNU awk pattern-matching language
+  - less  # File pager
+  - diffutils  # Show differences among files
+  - patch  # Utility to apply diffs to files
+  - psmisc  # set of some small useful utilities that use the proc filesystem
+  - strace  # Diagnostic, debugging and instructional userspace tracer
+  - pigz  # Parallel implementation of gzip
+  # - bat  # cat(1) clone with wings
+
+  #
+  #  Access
+  #
+  - sudo  # Give certain users the ability to run some commands as root
+  - shadow  # PAM-using login and passwd utilities (usermod, useradd, ...)
+  - musl-locales  # Locales support for musl
+  - gettext  # GNU locale utilities - redundant??
+  - tzdata  # Timezone data
+
+  #
+  #  Editors
+  #
+  - vim  # advanced text editor, with GUI
+  - mg  # microscopic EMACS style editor
+  - nano  # Enhanced clone of the Pico text editor
+
+  #
+  #  Remote
+  #
+  - openssh  # Port of OpenBSD's free SSH release
+  - mosh  # Mobile shell surviving disconnects with local echo and line editing
+  - mtr  # Full screen ncurses traceroute tool
+
+  #
+  #  Web Tools
+  #
+  - curl  # URL retrieval utility and library
+  - wget  # Network utility to retrieve files from the Web
+  - w3m  # text-based web & gopher browser, as well as pager
+  # - elinks  # Advanced and well-established feature-rich text mode web browser
+  # - lynx  # Cross-platform text-based browser
+
+  #
+  #  System info
+  #
+  - htop  # Interactive process viewer
+  - ncdu  # Text-based disk usage viewer
+
+  #
+  #  Scripting
+  #
+  - py3-pip  # Installs both Python3 and all that is needed for pip
+  - sqlite  # Popular minimal sql engine
+
+  #
+  #  Terminal / session management
+  #
+  - tmux  # Tool to control multiple terminals from a single terminal
+  - mtm  # Perhaps the smallest useful terminal multiplexer in the world
+  - dvtm  # Dynamic virtual terminal manager
+  - abduco  # Session management in a clean and simple way
+
+  #
+  #  Services
+  #
+  - openrc  # OpenRC manages the services, startup and shutdown of a host
+  # - dcron  # dillon's lightweight cron daemon
+  # - dcron-openrc  # dillon's lightweight cron daemon (OpenRC init scripts)
+
+  #
+  #  Trust
+  #
+  - ca-certificates  # Common CA certificates PEM files from Mozilla
+
+#
+#  Version dependent packages, 3.17 is ancient by now, but i keep this here as
+#  a template, if later other version dependent deploy decisions might be needed
+#
+_tmp_alpine_min_317:  # potentially part of ift_alpine_packages
+  - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
+
+#
+#  Generate ift_alpine_packages
+#
+ift_alpine_packages: "{{ _tmp_alpine_base_packages +
+  (
+    _tmp_alpine_min_317 if ansible_distribution_version is version('3.17', '>=')
+  )
+  | default([]) }}"
+
+#
+#  Min Alpine version when to include the testing repo, typically current and
+#  perhaps one two prior. If this is intended, set it to a version such as 3.22
+#
+ift_alpine_testing_repo_minv: 999 # set to 999 to disable the testing repo

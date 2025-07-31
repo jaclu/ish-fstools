@@ -1,0 +1,20 @@
+# editor tmp files
+*~
+.*#
+
+### macOS ###
+.DS_Store
+Icon
+
+/vars/
+/my-ish-fs/
+/inventory.ini
+
+/.ansible
+
+/.vscode
+
+# Ignore vagrant tmp files
+.vagrant/
+
+**/.cache.olint

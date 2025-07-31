@@ -1,0 +1,132 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: preparational_steps - main tasks
+#
+
+- name: Ensure iSH can run in the background
+  # This is just needed until first reboot, during install a service doing this
+  # each time iSH is started will be installed
+  ansible.builtin.shell: |
+    if [ -d /proc/ish ]; then
+        tmp_file=/tmp/proc-list
+        gps_device=/dev/location
+
+        if [ ! -c "$gps_device" ]; then
+            echo "No such device: $gps_device"
+            exit 1
+        fi
+        ps >"$tmp_file"  # busybox ps lacks have the normal options
+        if grep -q "cat $gps_device\$" "$tmp_file"; then
+            echo "backgrounding already active"
+            ex_code=0
+        else
+            nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
+            ex_code=43
+            echo "backgrounding started"
+        fi
+        rm -f "$tmp_file"
+        exit "$ex_code"
+    fi
+  register: preparational_steps_backgrounding_task
+  changed_when: preparational_steps_backgrounding_task.rc == 43
+  failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
+
+- name: Ensure required directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop:
+    - "{{ d_etc_ift }}"
+    - "{{ d_init_ift }}"
+
+# Still fails
+# - name: Ensure required directories exist
+#   ansible.builtin.file:
+#     path: "{{ item.path }}"
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: "{{ item.mode }}"
+#   loop:
+#     - { path: "{{ d_etc_ift }}", mode: "0755" }
+#     - { path: "{{ d_init_ift }}", mode: "0755" }
+#     - { path: "/iCloud", mode: "0700" }
+
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
+- name: Ensure /iCloud exist if not on iSH
+  ansible.builtin.file:
+    path: /iCloud
+    state: directory
+    owner: 501
+    group: 501
+    mode: "0700"
+  when:
+    - not is_ish
+
+- name: Set /etc/hostname to {{ ift_hostname | default('iSH') | trim }}
+  ansible.builtin.copy:
+    content: "{{ (ift_hostname | default('iSH') | trim) + '\n' }}"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: "0644"
+  when:
+    - not is_ish
+
+- name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
+  # become: true
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
+    insertafter: EOF
+  when:
+    - ansible_os_family == 'Alpine'
+    - ansible_distribution_version is version(ift_alpine_testing_repo_minv, '>=')
+
+- name: Package upgrade
+  ansible.builtin.package:
+    update_cache: true
+    upgrade: true
+
+- name: Install crucial apps needed for deploy (Alpine)
+  ansible.builtin.include_tasks: tasks/install_apk.yml
+  vars:
+    apk_packages: "{{ crucial_apps }}"
+  when: ansible_os_family == 'Alpine'
+
+- name: Install crucial apps needed for deploy
+  ansible.builtin.package:
+    state: present
+    name: "{{ crucial_apps }}"
+  when: ansible_os_family != 'Alpine'
+
+# - name: "Checkout custom repo into {{ ift_custom_repo }}"
+#   ansible.builtin.git:
+#     repo: "{{ ift_custom_repo }}"
+#     dest: "/opt/{{ ift_custom_repo | basename | regex_replace('\\.git$', '') }}"
+#     version: main
+#   when: ift_custom_repo is defined and ift_custom_repo != ''
+
+# - name: "Checkout custom repo into {{ ift_custom_repo }}"
+#   ansible.builtin.copy:
+#     src: "/root/ish-fstools/{{ ift_custom_repo }}"
+#     dest: "/opt/{{ ift_custom_repo }}"
+#   when: ift_custom_repo is defined and ift_custom_repo != ''
+
+- name: Checkout ish-fstools into /opt
+  ansible.builtin.git:
+    repo: https://github.com/jaclu/ish-fstools.git
+    dest: "{{ d_repo }}"
+    version: main

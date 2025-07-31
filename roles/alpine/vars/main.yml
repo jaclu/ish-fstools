@@ -1,0 +1,15 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Variables for role Alpine
+#
+
+# Where is this role on dest platform
+# Used for much faster installs of files, compared
+# to transfer from deploy host
+alpine_d_repo: "{{ d_repo }}/roles/alpine"

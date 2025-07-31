@@ -1,0 +1,41 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install selected Alpine apps
+#
+
+- name: Display all packages being installed
+  ansible.builtin.debug:
+    msg: |
+      Alpine packets to be installed:
+      {% for pkg in ift_alpine_packages %}
+        {{ pkg }}
+      {% endfor %}
+
+- name: Install selected packages
+  ansible.builtin.include_tasks: tasks/install_apk.yml
+  vars:
+    apk_packages: "{{ ift_alpine_packages }}"
+  when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
+
+- name: Install Alpine additions for /usr/local/bin
+  # become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ alpine_d_repo }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+
+- name: Install Alpine additions for /usr/local/sbin
+  # become: true
+  ansible.builtin.copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ alpine_d_repo }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/

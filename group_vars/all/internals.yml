@@ -1,0 +1,57 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Main variables - not intended to be changed in order to custoomize the deploy
+#
+
+# debian_reboot_if_needed: false
+
+ift_release: 0.7
+
+d_repo: /opt/ish-fstools
+d_etc_ift: /etc/opt/ift
+
+d_init_d: /etc/init.d
+d_init_ift: "{{ d_init_d }}/ish-fstools"
+f_srvc_sshd: "{{ d_init_d }}/sshd"
+
+f_app_ift_launcher: /usr/local/sbin/ift-launcher
+f_app_ift_config: /usr/local/bin/config-ift
+
+# wait_for_hosts_to_be_ready: false
+
+#
+#  This disables the wait for the host to be responsive
+#  mostly useful for Vagrant nodes just after creation
+#
+# check_connection: false
+
+crucial_apps:
+  - git
+  - rsync
+  - bash
+  - tar  # busybox tar is just too limited, and often fails for ansible.builtin.unarchive
+
+#
+#  I have tried to put the equivalent in ansible.cfg
+#  but so far it never took effect. Avoiding host keys is
+#  most useful when dealing with vagrant nodes that change
+#  often. For iSH node it might not be needed, but since
+#  they would normally only be accessed locally, it should
+#  most likely not be an issue.
+#
+ansible_ssh_common_args:
+  -o StrictHostKeyChecking=no
+  -o UserKnownHostsFile=/dev/null
+
+# if remote username does not match username on deploy host
+ansible_user: root
+
+# Default, will be overridden on cmd-line
+target_hosts: servers

@@ -1,0 +1,36 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Detects if this is chrooted
+#
+
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
+- name: Set is_chrooted false when is_ish is true
+  ansible.builtin.set_fact:
+    is_chrooted: false
+  when: is_ish | default(false)
+
+- name: Check if chrooted
+  ansible.builtin.command: >
+    sh -c '[ "$(uname -s)" != "Linux" ] && exit 1; ! grep -q " / / " /proc/self/mountinfo'
+  register: is_chrooted_check
+  changed_when: false
+  when: is_chrooted is not defined
+
+- name: Normalize is_chrooted to boolean
+  ansible.builtin.set_fact:
+    is_chrooted: "{{ (is_chrooted_check.rc == 0) }}"
+  when: is_chrooted_check is defined and not is_chrooted_check.skipped | default(false)
+
+- name: Is this chrooted
+  ansible.builtin.debug:
+    msg: "         is_chrooted: {{ is_chrooted }}"

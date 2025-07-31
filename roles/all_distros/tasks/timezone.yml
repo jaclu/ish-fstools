@@ -1,0 +1,40 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Set timezone if ift_timezone is defined
+#
+
+#
+# The first two tasks should normally be used, to prevent avoidable errors.
+# However, since each task has an ovehead of something like 10 seconds when doing
+# a remote deploy to an iSH node, they are commented out.
+# The last task is the one that actually sets the timezone. when run standalone
+# it will fail if tzdata is not installed.
+#
+
+# - name: Timezone - Check if tzdata is installed
+#   ansible.builtin.stat:
+#     path: /usr/share/zoneinfo
+#   register: all_distros_tzdata
+
+# - name: Timezone - Fail if timezone set but tzdata missing
+#   ansible.builtin.fail:
+#     msg: "Timezone {{ ift_timezone }} set but tzdata missing. Install tzdata."
+#   when:
+#     - ift_timezone is defined and ift_timezone != ""
+#     - not all_distros_tzdata.stat.exists
+
+- name: Timezone - Set system timezone to {{ ift_timezone }}
+  ansible.builtin.file:
+    src: "/usr/share/zoneinfo/{{ ift_timezone }}"
+    dest: /etc/localtime
+    state: link
+  when:
+    - ift_timezone is defined and ift_timezone
+    # - all_distros_tzdata.stat.exists

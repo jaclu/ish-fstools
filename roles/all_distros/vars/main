@@ -1,0 +1,14 @@
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Variables for role: all_distros
+#
+
+d_repo_all_distros_role: "{{ d_repo }}/roles/all_distros"
+
+d_init_not: "{{ d_init_d }}/NOT"
+service_runbg: "{{ d_init_d }}/runbg"

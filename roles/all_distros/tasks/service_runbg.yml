@@ -1,0 +1,38 @@
+---
+
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Installs runbg service
+#
+
+- name: Service runbg - install service
+  # become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
+    dest: "{{ d_init_ift }}/"
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Service runbg - create symbolic link
+  ansible.builtin.file:
+    src: "{{ d_init_ift }}/runbg"
+    dest: "{{ service_runbg }}"
+    state: link
+
+- name: "Service runbg - Check if it is in runlevel: {{ ift_runlevel_runbg }}"
+  ansible.builtin.shell: |
+    set -o pipefail
+    rc-status "{{ ift_runlevel_runbg }}" | grep -q '^ runbg'
+  register: all_distros_runbg_check
+  changed_when: false
+  failed_when: false
+
+- name: Service runbg - Add to runlevel if needed
+  ansible.builtin.command: rc-update add runbg "{{ ift_runlevel_runbg }}"
+  when: all_distros_runbg_check.rc != 0
+  changed_when: true

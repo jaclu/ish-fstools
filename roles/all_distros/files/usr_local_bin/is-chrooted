@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/ish-fstool
+#
+#  Copyright (c) 2021-2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Checks if this chrooted - returns 0 if chrooted, 1 if not
+#
+
+# shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
+. /usr/local/lib/ift-utils.sh
+
+is_fs_chrooted

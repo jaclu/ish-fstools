@@ -1,0 +1,46 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Template for <repo_root>/vars/override.yml (this is in .gitignore)
+#  If present it will be read as the last variables file
+#
+#  User overrides - Primarilly intended to override group_vars/defaults.yml
+#  variables starting with "ift_"
+#
+#  Obviously, you can override stuff in group_vars/internals.yml, or any thing else
+#  but in that case you are on your own, since only the ift_ variables are
+#  thorougly checked at runtime, and if empty, the relevant tasks will be skipped.
+#
+
+# ift_user_name: ""
+# ift_shell: ""
+# ift_timezone: "Europe/Amsterdam"
+
+ift_alpine_packages:
+  - openrc # Needed for: ift_runlevel_runbg, ift_runlevel_sshd
+  - openssh-server # Needed for: ift_runlevel_sshd
+  - tzdata # Needed for: ift_timezone
+
+#
+# These are appended to ift_alpine_packages, to make it simpler to just add packages
+# without having to list all the other ones.
+# For the moment ift_extra_alpine_packages are NOT appended if you have redefined
+# ift_alpine_package here. Why that is I have no clue, but it is the way it is for now.
+#
+ift_extra_alpine_packages:
+  - bat  # cat(1) clone with wings
+
+#
+# If services are set to runlevel "", they will not be installed / activated.
+# If already installed, they will just be disabled.
+#
+# ift_runlevel_runbg: ""
+# ift_runlevel_sshd: ""
+
+# Min version of Alpine Linux when edge/testing repositories will be used.
+# ift_alpine_testing_repo_minv: 3.22

@@ -1,0 +1,29 @@
+---
+
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Defines root shell
+#
+
+- name: Root_shell - Run verify_shell_exists.yml
+  ansible.builtin.import_tasks: verify_shell_exists.yml
+  when: ift_shell is defined and ift_shell
+
+- name: Root_shell - get current root line from /etc/passwd
+  ansible.builtin.command: grep '^root:' /etc/passwd
+  register: all_distros_root_passwd
+  changed_when: false
+
+- name: "Root_shell - Use user shell if /bin/ash or /bin/bash - is: {{ ift_shell }}"
+  ansible.builtin.lineinfile:
+    path: /etc/passwd
+    regexp: '^root:'
+    line: >-
+      {{
+        all_distros_root_passwd.stdout.rsplit(':', 1)[0]
+      }}:{{ ift_shell }}
+    backup: true
+  when: ift_shell in ['/bin/ash', '/bin/bash']

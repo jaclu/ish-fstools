@@ -1,0 +1,21 @@
+---
+
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Verify shell exists
+#
+
+- name: Check if requested shell exists
+  ansible.builtin.stat:
+    path: "{{ ift_shell }}"
+  register: all_distros_shell_path
+
+- name: Abort if requested shell does not exist
+  ansible.builtin.fail:
+    msg: "Shell '{{ ift_shell }}' does not exist"
+  when:
+    - ift_shell is defined
+    - not all_distros_shell_path.stat.exists

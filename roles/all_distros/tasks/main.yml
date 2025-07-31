@@ -1,0 +1,64 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+
+- name: Common apps
+  ansible.builtin.import_tasks: common_apps.yml
+
+- name: Configs for /etc
+  ansible.builtin.import_tasks: etc_configs.yml
+
+- name: Run timezone.yml
+  ansible.builtin.import_tasks: timezone.yml
+  when: ift_timezone is defined and ift_timezone
+
+- name: Run services.yml
+  ansible.builtin.import_tasks: services.yml
+
+- name: Run user_account.yml
+  ansible.builtin.import_tasks: user_account.yml
+  when: ift_user_name is defined and ift_user_name
+
+- name: Run root_shell.yml
+  ansible.builtin.import_tasks: root_shell.yml
+  when: ift_shell is defined and ift_shell
+
+- name: Copy /etc/skel files to root home (without overwrite)
+  ansible.builtin.command: cp -rn /etc/skel/. /root/
+  args:
+    creates: /root/.profile # or any file you expect from skel
+  # become: true
+
+- name: Check if this is chrooted
+  ansible.builtin.include_tasks: tasks/is_chrooted.yml
+  when: vars['is_chrooted'] is not defined
+
+- name: "Set chroot default command: {{ f_app_ift_launcher }}"
+  ansible.builtin.copy:
+    dest: /.chroot_default_cmd
+    content: "{{ f_app_ift_launcher }}\n"
+    owner: root
+    group: root
+    mode: "0644"
+  when: is_chrooted
+# =====   other   =====
+
+# tasks:
+#   setup_environment
+#   set_hostname
+#   setup_root_env
+#   create_user
+# Funcs:
+#   user_shell
+#   handle_hardcoded_tz
+#   adding_runbg_service
+#   removing_original_hostname_service
+#   replacing_std_bins_with_aok_versions ""
+#   changing_sshd_port
+
+# setup_cron_env

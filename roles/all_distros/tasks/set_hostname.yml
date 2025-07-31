@@ -1,0 +1,11 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Set hostname, if a chroot, use ish- prefix and same hostname
+#
