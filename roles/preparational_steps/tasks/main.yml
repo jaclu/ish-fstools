@@ -65,7 +65,7 @@
   ansible.builtin.include_tasks: tasks/is_ish.yml
   when: vars['is_ish'] is not defined
 
-- name: Ensure /iCloud exist if not on iSH
+- name: If not on iSH - Ensure /iCloud exist
   ansible.builtin.file:
     path: /iCloud
     state: directory
@@ -75,7 +75,7 @@
   when:
     - not is_ish
 
-- name: Set /etc/hostname to {{ ift_hostname | default('iSH') | trim }}
+- name: If not on iSH - set /etc/hostname to {{ ift_hostname | default('iSH') | trim }}
   ansible.builtin.copy:
     content: "{{ (ift_hostname | default('iSH') | trim) + '\n' }}"
     dest: /etc/hostname
