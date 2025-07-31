@@ -48,19 +48,6 @@
     - "{{ d_etc_ift }}"
     - "{{ d_init_ift }}"
 
-# Still fails
-# - name: Ensure required directories exist
-#   ansible.builtin.file:
-#     path: "{{ item.path }}"
-#     state: directory
-#     owner: root
-#     group: root
-#     mode: "{{ item.mode }}"
-#   loop:
-#     - { path: "{{ d_etc_ift }}", mode: "0755" }
-#     - { path: "{{ d_init_ift }}", mode: "0755" }
-#     - { path: "/iCloud", mode: "0700" }
-
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
   when: vars['is_ish'] is not defined

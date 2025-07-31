@@ -4,16 +4,9 @@
 
 # =====   New   =====
 
-agetty - util-linux
-agetty-openrc
-blkid - util-linux
+-- agetty-openrc
 ca-certificates
-cfdisk - util-linux
 diffutils
-dmesg - util-linux
-findmnt - util-linux
-flock - util-linux
-fstrim - util-linux
 fzf
 fzf-bash-plugin
 fzf-vim
@@ -22,18 +15,10 @@ gc
 gettext
 gettext-envsubst
 gettext-libs
-hexdump - util-linux
 linux-pam
-logger - util-linux
-losetup - util-linux
 lsb-release-minimal
-lsblk - util-linux
-lscpu - util-linux
-mcookie - util-linux
-mount - util-linux
 mtm
 musl-fts
-partx - util-linux
 patch
 psmisc
 ranger
@@ -42,20 +27,10 @@ ripgrep
 ripgrep-bash-completion
 ripgrep-zsh-completion
 runuser - util-linux
-setarch-2.41-r9 - util-linux
-setpriv-2.41-r9 - util-linux
-sfdisk-2.41-r9 - util-linux
 shadow-4.17.3-r0
 strace
-umount - util-linux
 unison
-util-linux
-util-linux-bash-completion
-util-linux-misc
-util-linux-openrc
-uuidgen - util-linux
 w3m
-wipefs - util-linux
 
 
 

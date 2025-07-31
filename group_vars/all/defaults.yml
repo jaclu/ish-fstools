@@ -70,22 +70,21 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #  Core utils
   #
   - coreutils  # The basic file, shell and text manipulation utilities
-  - util-linux  # Random collection of Linux utilities
+  - diffutils  # Show differences among files
+  - file  # File type identification utility
+  ## - findutils  # GNU utilities for finding files
+  - gawk  # GNU awk pattern-matching language
+  - git  # Distributed version control system
+  ## - less  # File pager
+  - pigz  # Parallel implementation of gzip
+
   # - procps  # Utilities for monitoring your system and processes on your system
   # procps results in /usr/bin/uptime triggering Seg Fault
   #  but it provides ok pkill & pgrep
-  - findutils  # GNU utilities for finding files
-  # - git  # Already installed in role preparational_steps
-  # - rsync  # Already installed in role preparational_steps
-  - file  # File type identification utility
-  - gawk  # GNU awk pattern-matching language
-  - less  # File pager
-  - diffutils  # Show differences among files
-  - patch  # Utility to apply diffs to files
+
   - psmisc  # set of some small useful utilities that use the proc filesystem
-  - strace  # Diagnostic, debugging and instructional userspace tracer
-  - pigz  # Parallel implementation of gzip
-  # - bat  # cat(1) clone with wings
+            # provides a full pstree over the basic BusyBox implementation
+  - rsync  # A file transfer program to keep remote files in sync
 
   #
   #  Access
@@ -93,22 +92,22 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   - sudo  # Give certain users the ability to run some commands as root
   - shadow  # PAM-using login and passwd utilities (usermod, useradd, ...)
   - musl-locales  # Locales support for musl
-  - gettext  # GNU locale utilities - redundant??
+  - gettext  # GNU locale utilities
   - tzdata  # Timezone data
 
   #
   #  Editors
   #
-  - vim  # advanced text editor, with GUI
   - mg  # microscopic EMACS style editor
   - nano  # Enhanced clone of the Pico text editor
+  - vim  # advanced text editor, with GUI
 
   #
   #  Remote
   #
-  - openssh  # Port of OpenBSD's free SSH release
   - mosh  # Mobile shell surviving disconnects with local echo and line editing
   - mtr  # Full screen ncurses traceroute tool
+  - openssh  # Port of OpenBSD's free SSH release
 
   #
   #  Web Tools
@@ -142,14 +141,30 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #
   #  Services
   #
-  - openrc  # OpenRC manages the services, startup and shutdown of a host
   # - dcron  # dillon's lightweight cron daemon
   # - dcron-openrc  # dillon's lightweight cron daemon (OpenRC init scripts)
+  - openrc  # OpenRC manages the services, startup and shutdown of a host
 
   #
   #  Trust
   #
   - ca-certificates  # Common CA certificates PEM files from Mozilla
+
+  #
+  #  General Build env for Alpine iSH
+  #
+  # - automake
+  # - autoconf
+  # - bison
+  # - build-base
+  # - bzip2-dev
+  # - libffi-dev
+  # - openssl-dev
+  # - readline-dev
+  # - sqlite-dev
+  # - tk-dev
+  # - xz-dev
+  # - zlib-dev
 
 #
 #  Version dependent packages, 3.17 is ancient by now, but i keep this here as
