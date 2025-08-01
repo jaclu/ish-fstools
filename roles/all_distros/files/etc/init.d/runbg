@@ -34,7 +34,7 @@ pidfile="/run/runbg.pid"
 
 notification() {
     msg="$1"
-    _w=/usr/local/bin/wall
+    # _w=/usr/local/bin/wall
 
     if [ -e "$_w" ]; then
         $_w --nobanner "$msg"
