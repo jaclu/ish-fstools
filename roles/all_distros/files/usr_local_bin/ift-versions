@@ -17,23 +17,24 @@
 # printf "\e[35m" # set color - magenta
 
 if [ -f /etc/alpine-release ]; then
-    echo "Alpine release:  $(cat /etc/alpine-release)"
+    echo "Alpine release:      $(cat /etc/alpine-release)"
 elif [ -f /etc/devuan_version ]; then
-    echo "Devuan version:  $(cat /etc/devuan_version)"
+    echo "Devuan version:      $(cat /etc/devuan_version)"
 elif [ -f /etc/debian_version ]; then
-    echo "Debian version:  $(cat /etc/debian_version)"
+    echo "Debian version:      $(cat /etc/debian_version)"
 elif [ -f /etc/gentoo-release ]; then
-    echo "Gentoo version:  $(cat /etc/gentoo-release)"
+    echo "Gentoo version:      $(cat /etc/gentoo-release)"
 else
     echo "***  Failed to detect FS  ***"
 fi
 
 ish_version="$(cat /proc/ish/version 2>/dev/null)"
 [ -z "$ish_version" ] && ish_version="can't be detected whilst chrooted"
-echo "iSH release:     $ish_version"
+echo "iSH release:         $ish_version"
+
 
 release_ift="$(cat /etc/ifsh-fstools-release 2>/dev/null)"
 [ -z "$release_ift" ] && release_ift="Not found: /etc/ifsh-fstools-release"
-echo "ish-fstools release:  $release_ift"
+echo "ish-fstools release: $release_ift"
 
 # printf "\e[0m" # clear color
