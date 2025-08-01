@@ -13,5 +13,9 @@
 
 rm -rf /root/ish-fstools
 rm -rf /iCloud/*
-apk del ansible
 
+#
+#  ansible can't be run on iSH so no point in keeping it around.
+#  AND it consumes over 450 MB and 46k files...
+#
+apk del ansible
