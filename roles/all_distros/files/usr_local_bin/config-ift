@@ -324,7 +324,7 @@ launch_cmd_display() {
 }
 
 launch_cmd_options="ift|default|'[ \"custom_cmd\" ]'"
-launch_cmd_ift='[ "/usr/local/sbin/ift_launcher" ]'
+launch_cmd_ift='[ "/usr/local/sbin/ift-launcher" ]'
 launch_cmd_default='[ "/bin/login", "-f", "root" ]'
 
 #---------------------------------------------------------------
