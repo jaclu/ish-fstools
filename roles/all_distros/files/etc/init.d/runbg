@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 #
-# Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
+# Copyright (c) 2021-2025: Jacob.Lundqvist@gmail.com
 # License: MIT
 #
 #  This service reads the GPS and discards the output to /dev/null.
@@ -79,7 +79,7 @@ start_pre() {
 
 start_post() {
     log_it started
-    notification "*****  runbg started - iSH can run in the background!  *****"
+    # notification "*****  runbg started - iSH can run in the background!  *****"
 }
 
 stop_post() {
@@ -89,7 +89,7 @@ stop_post() {
         msg="WARNING: Other processes polling GPS [ $other_pids]"
         log_it "$msg"
         eerror "$msg"
-    else
-        notification "*****  runbg stopped - iSH can NOT run in the background!  *****"
+    # else
+    #    notification "*****  runbg stopped - iSH can NOT run in the background!  *****"
     fi
 }
