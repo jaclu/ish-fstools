@@ -16,6 +16,10 @@
 
 # printf "\e[35m" # set color - magenta
 
+ish_version="$(cat /proc/ish/version 2>/dev/null)"
+[ -z "$ish_version" ] && ish_version="can't be detected whilst chrooted"
+echo "iSH release:     $ish_version"
+
 if [ -f /etc/alpine-release ]; then
     echo "Alpine release:  $(cat /etc/alpine-release)"
 elif [ -f /etc/devuan_version ]; then
@@ -27,11 +31,6 @@ elif [ -f /etc/gentoo-release ]; then
 else
     echo "***  Failed to detect FS  ***"
 fi
-
-ish_version="$(cat /proc/ish/version 2>/dev/null)"
-[ -z "$ish_version" ] && ish_version="can't be detected whilst chrooted"
-echo "iSH release:     $ish_version"
-
 
 release_ift="$(cat /etc/ifsh-fstools-release 2>/dev/null)"
 [ -z "$release_ift" ] && release_ift="Not found: /etc/ifsh-fstools-release"
