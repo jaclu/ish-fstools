@@ -10,16 +10,6 @@
 # Various Distro neutral /etc configs
 #
 
-- name: Configs /etc/ifsh-fstools-release - {{ vers_ift }}
-  # become: true
-  ansible.builtin.copy:
-    remote_src: true
-    content: "{{ vers_ift }}"
-    dest: /etc/ifsh-fstools-release
-    owner: root
-    group: root
-    mode: '0644'
-
 - name: Configs /etc - Set /etc/issue for iSH node
   ansible.builtin.copy:
     dest: /etc/issue
