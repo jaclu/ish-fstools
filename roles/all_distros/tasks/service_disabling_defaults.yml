@@ -8,7 +8,7 @@
 #  License: MIT
 #
 # Disable all default services, then soft-link all servicess found in
-# /etc/init.d/ish-fstools to /etc/init.d
+# {{ d_init_ift }} to /etc/init.d
 #
 #  for f in /etc/init.d/*; do
 
