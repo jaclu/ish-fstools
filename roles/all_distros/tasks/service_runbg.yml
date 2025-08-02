@@ -28,6 +28,8 @@
   ansible.builtin.shell: |
     set -o pipefail
     rc-status "{{ ift_runlevel_runbg }}" | grep -q '^ runbg'
+  args:
+    executable: /bin/bash
   register: all_distros_runbg_check
   changed_when: false
   failed_when: false

@@ -18,6 +18,8 @@
   ansible.builtin.shell: |
     set -o pipefail
     rc-status "{{ ift_runlevel_sshd }}" | grep -q '^ sshd'
+  args:
+    executable: /bin/bash
   register: all_distros_sshd_check
   changed_when: false
   failed_when: false
