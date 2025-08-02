@@ -22,6 +22,7 @@
 # ift_timezone: "Europe/Amsterdam"
 
 ift_alpine_packages:
+  # Sample for a minimal install
   - openrc # Needed for: ift_runlevel_runbg, ift_runlevel_sshd
   - openssh-server # Needed for: ift_runlevel_sshd
   - tzdata # Needed for: ift_timezone
