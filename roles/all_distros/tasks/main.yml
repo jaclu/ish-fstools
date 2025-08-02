@@ -47,7 +47,7 @@
     mode: "0644"
   when: is_chrooted
 
-- name: Configs /etc/ifsh-fstools-release - {{ vers_ift }}
+- name: Configs Set /etc/ish-fstools-release - {{ vers_ift }}
   #
   # Do this as late as possible, to only indicate the current
   # version once deploy is done
@@ -56,11 +56,10 @@
   ansible.builtin.copy:
     remote_src: true
     content: "{{ vers_ift }}"
-    dest: /etc/ifsh-fstools-release
+    dest: /etc/ish-fstools-release
     owner: root
     group: root
-    mode: '0644'
-
+    mode: "0644"
 # =====   other   =====
 
 # tasks:
