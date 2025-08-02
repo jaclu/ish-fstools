@@ -61,7 +61,7 @@
       if [ ! -e "$dest" ]; then
         ln -s "$src" "$dest"
         echo "LINKED $dest"
-        changed=1
+        changed=43
       fi
     done
 
@@ -74,7 +74,7 @@
           [ -e "$target" ] && continue
           rm -f "$link"
           echo "REMOVED $link"
-          changed=1
+          changed=43
           ;;
       esac
     done
@@ -83,6 +83,6 @@
   args:
     executable: /bin/sh
   register: all_distros_ish_link_output
-  changed_when: all_distros_ish_link_output.rc != 0
-  failed_when: false
+  changed_when: all_distros_ish_link_output.rc == 43
+  failed_when: all_distros_ish_link_output.rc not in [0, 43]
   when: all_distros_d_ift_services_stat.stat.exists
