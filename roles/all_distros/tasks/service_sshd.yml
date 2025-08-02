@@ -29,7 +29,7 @@
   when: all_distros_sshd_check.rc != 0
   changed_when: true
 
-- name: "Service sshd - Set /etc/ssh/sshd_config Port to: {{ ift_port_sshd | default(2022) }}"
+- name: "Service sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^\#Port '
