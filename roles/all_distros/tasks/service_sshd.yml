@@ -8,13 +8,13 @@
 #  Installs basic sshd service
 #
 
-- name: Service sshd - create symbolic link
+- name: Service sshd - Create symbolic link in /etc/init.d
   ansible.builtin.file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ f_srvc_sshd }}"
     state: link
 
-- name: "Service sshd - Check if it is in runlevel: {{ ift_runlevel_sshd }}"
+- name: "Service sshd - Check presence in runlevel: {{ ift_runlevel_sshd }}"
   ansible.builtin.shell: |
     set -o pipefail
     rc-status "{{ ift_runlevel_sshd }}" | grep -q '^ sshd'

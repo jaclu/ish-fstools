@@ -8,7 +8,7 @@
 #  Installs runbg service
 #
 
-- name: Service runbg - install service
+- name: Service runbg - Install service
   # become: true
   ansible.builtin.copy:
     remote_src: true
@@ -18,13 +18,13 @@
     group: root
     mode: '0755'
 
-- name: Service runbg - create symbolic link
+- name: Service runbg - Create symbolic link in /etc/init.d
   ansible.builtin.file:
     src: "{{ d_init_ift }}/runbg"
     dest: "{{ service_runbg }}"
     state: link
 
-- name: "Service runbg - Check if it is in runlevel: {{ ift_runlevel_runbg }}"
+- name: "Service runbg - Check presence in runlevel: {{ ift_runlevel_runbg }}"
   ansible.builtin.shell: |
     set -o pipefail
     rc-status "{{ ift_runlevel_runbg }}" | grep -q '^ runbg'
