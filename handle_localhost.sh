@@ -60,7 +60,7 @@ do_ansible() {
     # export PYTHONWARNINGS=ignore::UserWarning
 
     lbl_1 "Running $playbook on localhost"
-    ansible-playbook "$playbook" -e target_hosts=local
+    ansible-playbook "$playbook" -e target_hosts=local # -vvvvvv
 }
 
 quick_mode=0
