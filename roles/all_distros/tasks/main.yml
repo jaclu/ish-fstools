@@ -53,26 +53,29 @@
   # version once deploy is done
   #
   # become: true
-  ansible.builtin.copy:
-    remote_src: true
-    content: "{{ vers_ift }}"
-    dest: /etc/ish-fstools-release
-    owner: root
-    group: root
-    mode: "0644"
-# =====   other   =====
+  # become: true
+  ansible.builtin.shell: |
+    f_rel_vers=/etc/ish-fstools-release
+    ex_code=0
 
-# tasks:
-#   setup_environment
-#   set_hostname
-#   setup_root_env
-#   create_user
-# Funcs:
-#   user_shell
-#   handle_hardcoded_tz
-#   adding_runbg_service
-#   removing_original_hostname_service
-#   replacing_std_bins_with_aok_versions ""
-#   changing_sshd_port
+    input=$(cat "$f_rel_vers")
+    old_vers_ift=${input%% - *}
+    rest=${input#* - }
+    [ "$old_vers_ift" = "$rest" ] && rest=""
 
-# setup_cron_env
+    if [ "$old_vers_ift" != "{{ vers_ift }}" ]; then
+        s="{{ vers_ift }}"
+        if [ -n "$rest" ]; then
+            s="$s - $rest"
+        fi
+        echo "$s" >"$f_rel_vers"
+        ex_code=43
+    fi
+    exit "$ex_code"
+  args:
+    executable: /bin/bash
+  register: all_distros_rel_vers
+  changed_when: all_distros_rel_vers.rc == 43
+  failed_when:
+    - all_distros_rel_vers.stderr != ''
+    - all_distros_rel_vers.rc not in [0, 43]
