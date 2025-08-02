@@ -18,7 +18,8 @@ d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
 
 d_init_d: /etc/init.d
-d_init_ift: "{{ d_init_d }}/ish-fstools"
+d_init_ift: "{{ d_init_d }}/ish-fstools_services"
+d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
 f_srvc_sshd: "{{ d_init_d }}/sshd"
 
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
