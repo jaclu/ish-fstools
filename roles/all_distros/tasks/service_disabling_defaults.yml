@@ -26,16 +26,25 @@
 
 - name: "Default services - Move system services to {{ d_init_not }}"
   ansible.builtin.shell: |
+    ex_code=0
     for f in "{{ d_init_d }}"/*; do
       case "$f" in
         "{{ d_init_not }}") continue ;;
       esac
-      [ -f "$f" ] && [ ! -L "$f" ] && mv "$f" "{{ d_init_not }}"/
+      [ -f "$f" ] && [ ! -L "$f" ] && {
+        mv "$f" "{{ d_init_not }}"/
+        ex_code=43 # indicate that at least one service was moved
+      }
     done
+    return "$ex_code"
   args:
     executable: /bin/sh
+  register: all_distros_services_moved
+  changed_when: all_distros_services_moved.rc == 43
+  failed_when:
+    - all_distros_services_moved.stderr != ''
+    - all_distros_services_moved.rc not in [0, 43]
   when: all_distros_file_count_result.stdout | int > 0
-  changed_when: true
 
 - name: "Default services - Check if folder exits {{ d_init_ift }}"
   ansible.builtin.stat:
