@@ -32,8 +32,8 @@ else
     echo "***  Failed to detect FS  ***"
 fi
 
-release_ift="$(cat /etc/ifsh-fstools-release 2>/dev/null)"
-[ -z "$release_ift" ] && release_ift="Not found: /etc/ifsh-fstools-release"
+release_ift="$(cat /etc/ish-fstools-release 2>/dev/null)"
+[ -z "$release_ift" ] && release_ift="Not found: /etc/ish-fstools-release"
 echo "ish-fstools:     $release_ift"
 
 # printf "\e[0m" # clear color
