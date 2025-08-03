@@ -16,7 +16,7 @@
 
 - name: " sshd - Check presence in runlevel: {{ ift_runlevel_sshd }}"
   ansible.builtin.stat:
-    path: "/etc/runlevels/{{ ift_runlevel_autossh }}/{{ ift_runlevel_sshd }}"
+    path: "/etc/runlevels/{{ ift_runlevel_sshd }}/sshd"
   register: all_distros_sshd_check
 
 - name: " sshd - Add to runlevel if needed"
