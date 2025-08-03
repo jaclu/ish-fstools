@@ -7,3 +7,8 @@ Since this fork is no longer maintained, no more suppprt for this fork needed
 ## uptime
 
 uptime -i seems off when logged in as root at least
+
+## commits
+
+install_apk - List what will be installed
+improved labels
