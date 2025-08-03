@@ -26,7 +26,7 @@
 
 - name: " runbg - Check presence in runlevel: {{ ift_runlevel_runbg }}"
   ansible.builtin.stat:
-    path: "/etc/runlevels/{{ ift_runlevel_autossh }}/{{ ift_runlevel_runbg }}"
+    path: "/etc/runlevels/{{ ift_runlevel_runbg }}/runbg"
   register: all_distros_runbg_check
 
 - name: " runbg - Add to runlevel if needed"
