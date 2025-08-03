@@ -179,23 +179,41 @@ get_user_count()
     log_it "get_user_count()"
     # -eo tty lists all TTYs (including '?', '', etc.)
     # strip header with a `read` call
-    $cmd_ps -eo tty | {
-        read _ # skip header
-        while read -r tty; do
-            case "$tty" in
-                pts/*)
-                    case " $seen " in
-                        *" $tty "*) ;; # already counted
-                        *)
-                            seen="$seen $tty"
-                            user_count=$((count + 1))
-                            ;;
-                    esac
-                    ;;
-            esac
-        done
-        # printf '%s\n' "$count"
-    }
+
+{
+    read -r _ # skip header
+    while read -r tty; do
+        case "$tty" in
+            pts/*)
+                case " $seen " in
+                    *" $tty "*) ;; # already counted
+                    *) seen="$seen $tty"; user_count=$((user_count + 1));;
+                esac
+                ;;
+            *) ;;
+        esac
+    done
+} < "$(ps -eo tty)"
+
+
+    # ps -eo tty | {
+    #     read -r _ # skip header
+    #     while read -r tty; do
+    #         case "$tty" in
+    #             pts/*)
+    #                 case " $seen " in
+    #                     *" $tty "*) ;; # already counted
+    #                     *)
+    #                         seen="$seen $tty"
+    #                         user_count=$((count + 1))
+    #                         ;;
+    #                 esac
+    #                 ;;
+    #             *) ;;
+    #         esac
+    #     done
+    #     # printf '%s\n' "$count"
+    # }
 }
 
 default_view() {
