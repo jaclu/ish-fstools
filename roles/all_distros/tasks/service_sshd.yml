@@ -8,28 +8,23 @@
 #  Installs basic sshd service
 #
 
-- name: Service sshd - Create symbolic link in /etc/init.d
+- name: " sshd - Create symbolic link in /etc/init.d"
   ansible.builtin.file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ f_srvc_sshd }}"
     state: link
 
-- name: "Service sshd - Check presence in runlevel: {{ ift_runlevel_sshd }}"
-  ansible.builtin.shell: |
-    set -o pipefail
-    rc-status "{{ ift_runlevel_sshd }}" | grep -q '^ sshd'
-  args:
-    executable: /bin/bash
+- name: " sshd - Check presence in runlevel: {{ ift_runlevel_sshd }}"
+  ansible.builtin.stat:
+    path: "/etc/runlevels/{{ ift_runlevel_autossh }}/{{ ift_runlevel_sshd }}"
   register: all_distros_sshd_check
-  changed_when: false
-  failed_when: false
 
-- name: Service sshd - Add to runlevel if needed
+- name: " sshd - Add to runlevel if needed"
   ansible.builtin.command: rc-update add sshd "{{ ift_runlevel_sshd }}"
-  when: all_distros_sshd_check.rc != 0
   changed_when: true
+  when: not all_distros_sshd_check.stat.exists
 
-- name: "Service sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
+- name: " sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^\#Port '
