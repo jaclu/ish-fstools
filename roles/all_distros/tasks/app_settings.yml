@@ -1,0 +1,29 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Configures app settings - not done yet
+#
+
+# set_kernel_default font_size 14 "Appearance - Font Size: 14"
+# set_kernel_default hide_status_bar true "Appearance - Always Hide Status Bar"
+# set_kernel_default option_mapping 1 "External keyboard - option -> Meta"
+# set_kernel_default backtick_mapping_escape true \
+#     "External keyboard - Backtick -> Escape"
+
+# # doesn't get changed
+# set_kernel_default font_family '"MesloLGS NF"' \
+#     "Appearance - Font: MesloLGS NF"
+# set_kernel_default color_scheme 2  "Appearance - color_scheme: 2"
+
+# # not available until first set in Settings
+# set_kernel_default override_control_space true \
+#     "External keyboard - Send ctrl-soace to terminal"
+# set_kernel_default hide_extra_keys_with_external_keyboard true \
+#     "External keyboard - Hide with external keyboard"
+# set_kernel_default disable_dimming true "Keep Screen Turned On"

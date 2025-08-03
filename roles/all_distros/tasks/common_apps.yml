@@ -53,7 +53,7 @@
         /sbin/halt
         /sbin/shutdown
         /usr/bin/logger
-        /usr/bin/uptime
+        # /usr/bin/uptime - needed for replacement uptime!
     )
     for hide_bin in "${hide_bins[@]}"; do
         [[ -L "$hide_bin" ]] && [[ $(realpath "$hide_bin") != /bin/busybox  ]] && {

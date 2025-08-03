@@ -16,7 +16,9 @@ err_msg() {
 }
 
 lbl_1() {
+    log_it
     log_it "===  $1"
+    log_it
 }
 
 lbl_2() {
@@ -145,9 +147,13 @@ sync_fs_tools() {
 
 prepare_ansible_job_history() {
     lbl_1 "Prpare ansible job history"
+    cmd_1="/root/ish-fstools/handle_localhost.sh"
+    cmd_2="/root/ish-fstools/my-ish-fs/handle_localhost.sh"
     f_ash_history="aok_fs/root/.ash_history"
-    lbl_1 "prepping $f_ash_history"
-    echo "time /root/ish-fstools/handle_localhost.sh && /root/ish-fstools/my-ish-fs/handle_localhost.sh" >>"$f_ash_history"
+
+    lbl_2 "prepping $f_ash_history"
+    echo "time $cmd_1 && time $cmd_2" >"$f_ash_history"
+    echo "time $cmd_1" >>"$f_ash_history"
     chmod 600 "$f_ash_history"
 }
 
@@ -207,6 +213,4 @@ $do_clear && replace_fs
 sync_fs_tools
 prepare_ansible_job_history
 
-echo
 lbl_1 "Done!"
-echo
