@@ -10,15 +10,15 @@
 # Various Distro neutral /etc configs
 #
 
-- name: Configs /etc - Set /etc/issue for iSH node
-  ansible.builtin.copy:
-    dest: /etc/issue
-    content: >
-      This is an iSH node, running {{ ansible_distribution }}
-      FS: ish-fstools: {{ vers_ift }}
-    owner: root
-    group: root
-    mode: '0644'
+# - name: Configs /etc - Set /etc/issue for iSH node
+#   ansible.builtin.copy:
+#     dest: /etc/issue
+#     content: >
+#       This is an iSH node, running {{ ansible_distribution }}
+#       FS: ish-fstools: {{ vers_ift }}
+#     owner: root
+#     group: root
+#     mode: '0644'
 
 - name: Configs /etc - Install common config files
   # become: true
