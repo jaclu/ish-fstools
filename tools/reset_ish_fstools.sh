@@ -55,18 +55,18 @@ create_empty_fs() {
     rm aok_fs/* -rf
 
     cd aok_fs || err_msg "Failed to cd into aok_fs"
-    
+
     lbl_2 "recreating alpine-minirootfs"
     tar xfz ../aok_cache/alpine-minirootfs-3.22.1-x86.tar.gz || {
 	err_msg "Failed to untar"
     }
-    
+
     #lbl_2 "Copying ssh_conf"
     #cp ~jaclu/cloud/Uni/iSH-conf/tools/ssh_conf.tgz tmp || {
     #    err_msg "Failed to copy ssh_conf.tgz"
     #}
     cd .. || err_msg "Failed to cd up ftom aok_fs"
-    
+
     f_fs_release="aok_fs/etc/aok-fs-release"
     lbl_2 "Defining $f_fs_release"
     echo "ish-fstool-template" >"$f_fs_release"
@@ -75,7 +75,7 @@ create_empty_fs() {
 replace_fs() {
     [ "$(find aok_fs/dev 2>/dev/null | wc -l)" -gt 1 ] && err_msg "chooted - found items in /dev"
     [ "$(find aok_fs/proc 2>/dev/null | wc -l)" -gt 1 ] && err_msg "chooted - found items in /proc"
-    
+
     if [ -f "$fs_saved" ]; then
         unpack_saved_fs
     else
@@ -147,7 +147,7 @@ prepare_ansible_job_history() {
     lbl_1 "Prpare ansible job history"
     f_ash_history="aok_fs/root/.ash_history"
     lbl_1 "prepping $f_ash_history"
-    echo "time /root/ish-fstools/handle_localhost.sh" >>"$f_ash_history"
+    echo "time /root/ish-fstools/handle_localhost.sh && /root/ish-fstools/my-ish-fs/handle_localhost.sh" >>"$f_ash_history"
     chmod 600 "$f_ash_history"
 }
 
