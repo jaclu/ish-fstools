@@ -126,8 +126,9 @@ calculate_ios_uptime() {
       "") m=$h; h=0 ;;
       *) ;;
     esac
+    msg_4 "t_days[$t_days] t_hm[$t_hm] h[$h] m[$m]"
     uptime_seconds=$((t_days * 86400 + h * 3600 + m * 60))
-    msg_4 "t_days[$t_days] t_hm[$t_hm] h[$h] m[$m] seconds:$uptime_seconds"
+    msg_4 "seconds:$uptime_seconds"
 
     # $cmd_org_uptime | cut -d',' -f1,2
     # uptime_raw=$(cut -d' ' -f1 </proc/uptime)
@@ -241,7 +242,10 @@ show_version() {
 app_name="$(basename "$0")"
 
 # d_repo="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-. /opt/ish-fstools/tools/utils.sh
+# . /opt/ish-fstools/tools/utils.sh
+
+# shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
+. /usr/local/lib/ift-utils.sh
 
 cmd_org_uptime=/usr/bin/uptime
 cmd_busybox=/bin/busybox
