@@ -10,13 +10,13 @@
 #  Install selected Alpine apps
 #
 
-- name: Display all packages being installed
-  ansible.builtin.debug:
-    msg: |
-      Alpine packets to be installed:
-      {% for pkg in ift_alpine_packages %}
-        {{ pkg }}
-      {% endfor %}
+# - name: Display all packages being installed
+#   ansible.builtin.debug:
+#     msg: |
+#       Alpine packets to be installed:
+#       {% for pkg in ift_alpine_packages %}
+#         {{ pkg }}
+#       {% endfor %}
 
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/install_apk.yml
@@ -32,7 +32,7 @@
     src: "{{ alpine_d_repo }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: Install Alpine additions for /usr/local/sbin
+- name: Install extras to /usr/local/sbin
   # become: true
   ansible.builtin.copy:
     mode: preserve

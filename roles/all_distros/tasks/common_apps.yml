@@ -10,7 +10,7 @@
 #  Installs apps common for all Distros
 #
 
-- name: Common apps - Install to /usr/local/lib
+- name: Common apps - Install extras to /usr/local/lib
   # become: true
   ansible.builtin.copy:
     mode: preserve
@@ -24,7 +24,7 @@
     dest: /usr/local/lib/ift-utils.sh
     mode: '0755'
 
-- name: Common apps - Install to  /usr/local/bin
+- name: Common apps - Install extras to  /usr/local/bin
   # become: true
   ansible.builtin.copy:
     mode: preserve
@@ -32,7 +32,7 @@
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: Common apps - Install to  /usr/local/sbin
+- name: Common apps - Install extras to  /usr/local/sbin
   # become: true
   ansible.builtin.copy:
     mode: preserve
