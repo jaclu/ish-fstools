@@ -14,3 +14,4 @@ install_apk - List what will be installed
 improved labels
 ift-utils.sh.js2 - added safe_remove, modernized log functions
 uptime - rewrote handling of ios uptime
+improved user sessions count calculation

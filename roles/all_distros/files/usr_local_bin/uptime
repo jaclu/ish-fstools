@@ -99,7 +99,8 @@ calculate_ios_uptime() {
     t_hm=$2
     case $t_days in
     *" days"*) t_days=${t_days%" days"} ;;
-    *)  t_hm=$t_days
+    *)
+        t_hm=$t_days
         t_days=0
         ;;
     esac
@@ -123,7 +124,9 @@ calculate_ios_uptime() {
 
     # Default hour/minute fallback (in case uptime says "X min")
     case $m in
-      "") m=$h; h=0 ;;
+      "")
+        m=$h
+        h=0 ;;
       *) ;;
     esac
     msg_4 "t_days[$t_days] t_hm[$t_hm] h[$h] m[$m]"
@@ -136,8 +139,8 @@ calculate_ios_uptime() {
 }
 
 calculate_uptime() {
-    startup_notice="===  System startup  ==="
     log_it "calculate_uptime()"
+    startup_notice="===  System startup  ==="
     if [ -f /var/log/syslog ]; then
         time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
             tail -n 1 |
@@ -168,6 +171,33 @@ display_sysload() {
     fi
 }
 
+get_user_count()
+{
+    user_count=0
+    seen=""
+
+    log_it "get_user_count()"
+    # -eo tty lists all TTYs (including '?', '', etc.)
+    # strip header with a `read` call
+    $cmd_ps -eo tty | {
+        read _ # skip header
+        while read -r tty; do
+            case "$tty" in
+                pts/*)
+                    case " $seen " in
+                        *" $tty "*) ;; # already counted
+                        *)
+                            seen="$seen $tty"
+                            user_count=$((count + 1))
+                            ;;
+                    esac
+                    ;;
+            esac
+        done
+        # printf '%s\n' "$count"
+    }
+}
+
 default_view() {
     log_it "default_view()"
 
@@ -186,7 +216,7 @@ default_view() {
     [ "$ut_hours" -gt 0 ] && output="$_hours:$_minutes"
     [ "$ut_days" -gt 0 ] && output="$ut_days days, $output"
 
-    user_count=$(find /dev/pts/* | wc -l)
+    get_user_count
     user_field="$user_count user"
     [ "$user_count" -gt 1 ] && user_field="${user_field}s"
 
@@ -265,7 +295,7 @@ while [ -n "$1" ]; do
     -s | --since) display_mode="since" ;;
     -V | --version) display_mode="version" ;;
     *)
-        echo "uptime: invalid option -- '$1'"
+        msg_1 "uptime: invalid option -- '$1'"
         show_help
         ;;
     esac
@@ -278,7 +308,5 @@ default) default_view ;;
 pretty) show_pretty ;;
 since) show_since ;;
 load) display_sysload ;;
-*)
-    echo "Invalid display_mode [$display_mode]"
-    ;;
+*) err_msg "Invalid display_mode [$display_mode]" ;;
 esac
