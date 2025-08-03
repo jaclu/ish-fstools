@@ -101,7 +101,6 @@
   when: ift_user_name is defined
   register: all_distros_autologin_result
   changed_when: "all_distros_autologin_result.rc == 0"
-  failed_when:
-    - "'ERROR' in all_distros_autologin_result.stdout"
-    - all_distros_autologin_result.stderr != ''
+  failed_when: >
+    - "'ERROR' in all_distros_autologin_result.stdout or"
     - all_distros_autologin_result.rc not in [0, 43]

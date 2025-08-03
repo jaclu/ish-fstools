@@ -60,7 +60,7 @@
           continue # already linked to ours
         }
         if [[ -f "$hide_bin" ]]; then
-            mv "$hide_bin" "${hide_bin}.ORG"
+            mv "$hide_bin" "${hide_bin}.ORG" || exit 1
             d_location="$(dirname "$hide_bin")"
             b_name="$(basename "$hide_bin")"
             case "$d_location" in
@@ -73,7 +73,7 @@
             esac
             f_our_bin="$d_our_location/$b_name"
             if [[ -f "$f_our_bin" ]]; then
-                ln -sf "$f_our_bin" "$hide_bin"
+                ln -sf "$f_our_bin" "$hide_bin" || exit 2
             else
                 echo "Unknown alt bin: $f_our_bin"
                 exit 1
@@ -87,7 +87,5 @@
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
   failed_when:
-    - all_distros_bin_replacement.stdout != ''
-    - all_distros_bin_replacement.stderr != ''
     - all_distros_bin_replacement.rc not in [0, 43]
   when: ansible_os_family == 'Alpine'

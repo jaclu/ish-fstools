@@ -23,7 +23,7 @@
     ex_code=0
     for f in "{{ d_init_d }}"/*; do
       [ -f "$f" ] && [ ! -L "$f" ] && {
-        mv "$f" "{{ d_init_not }}"/
+        mv "$f" "{{ d_init_not }}"/ || exit 1
         ex_code=43 # indicate that at least one service was moved
       }
     done
@@ -33,9 +33,7 @@
   register: all_distros_services_moved
   changed_when: all_distros_services_moved.rc == 43
   failed_when:
-    - all_distros_services_moved.stderr != ''
     - all_distros_services_moved.rc not in [0, 43]
-  # when: all_distros_file_count_result.stdout | int > 0
 
 - name: "Default services - Ensure folder exists {{ d_init_ift }}"
   ansible.builtin.file:
@@ -51,7 +49,7 @@
       [ -f "$src" ] || continue
       dest="{{ d_init_d }}/$(basename "$src")"
       if [ ! -e "$dest" ]; then
-        ln -s "$src" "$dest"
+        ln -s "$src" "$dest" || exit 1
         echo "LINKED $dest"
         changed=43
       fi
