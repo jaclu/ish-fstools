@@ -19,3 +19,5 @@ ift-utils.sh.js2 - added safe_remove, modernized log functions
 - rewrote handling of ios uptime
 - improved user sessions count calculation
 - linting
+- fixed interactive users count method
+- removed debug info
