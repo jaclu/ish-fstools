@@ -134,6 +134,22 @@ is_ish() {
     [ -d /proc/ish ]
 }
 
+fs_is_alpine() {
+    test -f /etc/alpine-release
+}
+
+fs_is_debian() {
+    test -f /etc/debian_version && ! fs_is_devuan
+}
+
+fs_is_devuan() {
+    test -f /etc/devuan_version
+}
+
+fs_is_gentoo() {
+    test -f /etc/gentoo-release
+}
+
 is_fs_chrooted() {
     # cmdline check:
     # grep -qv " / / " /proc/self/mountinfo || echo "is chrooted"
