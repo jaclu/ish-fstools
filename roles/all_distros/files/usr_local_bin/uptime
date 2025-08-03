@@ -177,43 +177,34 @@ get_user_count()
     seen=""
 
     log_it "get_user_count()"
+    # log_it "get_user_count()"
     # -eo tty lists all TTYs (including '?', '', etc.)
     # strip header with a `read` call
 
-{
-    read -r _ # skip header
-    while read -r tty; do
-        case "$tty" in
-            pts/*)
-                case " $seen " in
-                    *" $tty "*) ;; # already counted
-                    *) seen="$seen $tty"; user_count=$((user_count + 1));;
-                esac
-                ;;
-            *) ;;
-        esac
-    done
-} < "$(ps -eo tty)"
-
-
-    # ps -eo tty | {
-    #     read -r _ # skip header
-    #     while read -r tty; do
-    #         case "$tty" in
-    #             pts/*)
-    #                 case " $seen " in
-    #                     *" $tty "*) ;; # already counted
-    #                     *)
-    #                         seen="$seen $tty"
-    #                         user_count=$((count + 1))
-    #                         ;;
-    #                 esac
-    #                 ;;
-    #             *) ;;
-    #         esac
-    #     done
-    #     # printf '%s\n' "$count"
-    # }
+    tmpfile=$(mktemp)
+    ps -eo tty > "$tmpfile"
+    {
+        read -r _ # skip header
+        while read -r tty; do
+            case "$tty" in
+                pts/*)
+                    # echo ">tty: $tty"
+                    case " $seen " in
+                        *" $tty "*)
+                            # echo ">> already counted"
+                            ;; # already counted
+                        *)
+                            seen="$seen $tty";
+                            user_count=$((user_count + 1))
+                            # echo ">> added new user_count: $user_count"
+                            ;;
+                    esac
+                    ;;
+                *) ;;
+            esac
+        done
+    } < "$tmpfile"
+    rm -f "$tmpfile"
 }
 
 default_view() {
@@ -290,10 +281,11 @@ show_version() {
 app_name="$(basename "$0")"
 
 # d_repo="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-# . /opt/ish-fstools/tools/utils.sh
 
-# shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
-. /usr/local/lib/ift-utils.sh
+. /opt/ish-fstools/tools/utils.sh
+
+# # shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
+# . /usr/local/lib/ift-utils.sh
 
 cmd_org_uptime=/usr/bin/uptime
 cmd_busybox=/bin/busybox
