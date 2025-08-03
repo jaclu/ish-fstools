@@ -4,7 +4,6 @@
 
 Since this fork is no longer maintained, no more suppprt for this fork needed
 
-## Compare on real iSH before update
+## uptime
 
-/etc/inittab
-/etc/network/interfaces
+uptime -i seems off when logged in as root at least
