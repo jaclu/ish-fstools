@@ -28,7 +28,7 @@ show_help() {
     #region help text
     cat <<EOF
 Usage:
- uptime [options]
+ $app_name [options]
 
 Options:
  -p, --pretty   show uptime in pretty format
@@ -78,15 +78,65 @@ calculate_ish_uptime() {
 }
 
 calculate_ios_uptime() {
-    $dbg && echo ">calculate_ios_uptime()" >/dev/stderr
-    uptime_raw=$(cut -d' ' -f1 </proc/uptime)
+    log_it "calculate_ios_uptime()"
 
-    uptime_seconds=$(echo "$uptime_raw" | awk '{print int($1)}')
+    # shellcheck disable=SC2046  # Suppresses warnings about quoting
+    set -- $("$cmd_org_uptime")
+    while [ "$1" != "up" ] && [ "$#" -gt 0 ]; do shift; done
+    shift
+
+    rest=$*
+    rest=${rest%%load*}
+    rest=${rest%,}
+
+    old_ifs=$IFS
+    IFS=,
+    # shellcheck disable=SC2086  # Suppresses warnings about quoting
+    set -- $rest
+    IFS=$old_ifs
+
+    t_days=$1
+    t_hm=$2
+    case $t_days in
+    *" days"*) t_days=${t_days%" days"} ;;
+    *)  t_hm=$t_days
+        t_days=0
+        ;;
+    esac
+
+    # Trim leading/trailing spaces in t_hm (POSIX-safe)
+    t_hm=${t_hm## }  # leading
+    t_hm=${t_hm%% }  # trailing
+
+    # Default days to 0 if empty (paranoia)
+    [ -z "$t_days" ] && t_days=0
+
+    # Split HH:MM
+    old_ifs=$IFS
+    IFS=:
+    # shellcheck disable=SC2086  # Suppresses warnings about quoting
+    set -- $t_hm
+    IFS=$old_ifs
+
+    h=$1
+    m=$2
+
+    # Default hour/minute fallback (in case uptime says "X min")
+    case $m in
+      "") m=$h; h=0 ;;
+      *) ;;
+    esac
+    uptime_seconds=$((t_days * 86400 + h * 3600 + m * 60))
+    msg_4 "t_days[$t_days] t_hm[$t_hm] h[$h] m[$m] seconds:$uptime_seconds"
+
+    # $cmd_org_uptime | cut -d',' -f1,2
+    # uptime_raw=$(cut -d' ' -f1 </proc/uptime)
+    # uptime_seconds=$(echo "$uptime_raw" | awk '{print int($1)}')
 }
 
 calculate_uptime() {
     startup_notice="===  System startup  ==="
-    $dbg && echo ">calculate_uptime()" >/dev/stderr
+    log_it "calculate_uptime()"
     if [ -f /var/log/syslog ]; then
         time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
             tail -n 1 |
@@ -117,8 +167,39 @@ display_sysload() {
     fi
 }
 
+default_view() {
+    log_it "default_view()"
+
+    $force_ios_uptime && [ -f "$cmd_org_uptime" ] && {
+        msg_2 "using: $cmd_org_uptime"
+        $cmd_org_uptime
+        exit "$?"
+    }
+
+    calculate_uptime
+
+    _minutes=$(printf "%02d" "$ut_minutes")
+    _hours=$(printf "%d" "$ut_hours")
+
+    output="$ut_minutes min"
+    [ "$ut_hours" -gt 0 ] && output="$_hours:$_minutes"
+    [ "$ut_days" -gt 0 ] && output="$ut_days days, $output"
+
+    user_count=$(find /dev/pts/* | wc -l)
+    user_field="$user_count user"
+    [ "$user_count" -gt 1 ] && user_field="${user_field}s"
+
+    $dbg && echo ">default_view() - create output [$output] [$user_field]" >/dev/stderr
+    _s=" $(date +%H:%M:%S) up $output,  $user_field,  load average:"
+    _s="$_s $(display_sysload)"
+    echo "$_s"
+}
+
 show_pretty() {
     $dbg && echo ">show_pretty()" >/dev/stderr
+
+    calculate_uptime
+
     output="$ut_minutes minutes"
     [ "$ut_hours" -gt 0 ] && output="$ut_hours hours, $output"
     [ "$ut_days" -gt 0 ] && output="$ut_days days, $output"
@@ -127,6 +208,9 @@ show_pretty() {
 
 show_since() {
     $dbg && echo ">show_since($uptime_seconds)" >/dev/stderr
+
+    calculate_uptime
+
     if [ -f /etc/alpine-release ]; then
         current_timestamp=$(date +%s)
         new_timestamp=$((current_timestamp - uptime_seconds))
@@ -148,31 +232,16 @@ show_version() {
     exit 0
 }
 
-default_view() {
-    $dbg && echo ">default_view()" >/dev/stderr
-
-    _minutes=$(printf "%02d" "$ut_minutes")
-    _hours=$(printf "%d" "$ut_hours")
-
-    output="$ut_minutes min"
-    [ "$ut_hours" -gt 0 ] && output="$_hours:$_minutes"
-    [ "$ut_days" -gt 0 ] && output="$ut_days days, $output"
-
-    user_count=$(find /dev/pts/* | wc -l)
-    user_field="$user_count user"
-    [ "$user_count" -gt 1 ] && user_field="${user_field}s"
-
-    $dbg && echo ">default_view() - create output [$output] [$user_field]" >/dev/stderr
-    _s=" $(date +%H:%M:%S) up $output,  $user_field,  load average:"
-    _s="$_s $(display_sysload)"
-    echo "$_s"
-}
-
 #===============================================================
 #
 #   Main
 #
 #===============================================================
+
+app_name="$(basename "$0")"
+
+# d_repo="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
+. /opt/ish-fstools/tools/utils.sh
 
 cmd_org_uptime=/usr/bin/uptime
 cmd_busybox=/bin/busybox
@@ -184,7 +253,7 @@ dbg=false
 
 while [ -n "$1" ]; do
     case "$1" in
-    -h | --help) show_help ;;
+    # -h | --help) show_help ;;
     -d) dbg=true ;;
     -i | --ios) force_ios_uptime=true ;;
     -l | --load) display_mode="load" ;;
@@ -198,8 +267,6 @@ while [ -n "$1" ]; do
     esac
     shift
 done
-
-calculate_uptime
 
 case "$display_mode" in
 version) show_version ;;
