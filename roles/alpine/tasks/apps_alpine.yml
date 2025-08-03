@@ -24,7 +24,7 @@
     apk_packages: "{{ ift_alpine_packages }}"
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
 
-- name: Install Alpine additions for /usr/local/bin
+- name: Install extras to /usr/local/bin
   # become: true
   ansible.builtin.copy:
     mode: preserve
