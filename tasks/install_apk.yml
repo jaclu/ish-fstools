@@ -28,12 +28,12 @@
 - name: " install_apk - Fail if no packages are defined"
   ansible.builtin.fail:
     msg: "No packages defined to install. Please set apk_packages variable."
-  when: apk_packages is not defined or apk_packages | length == 0
+  when: apk_packages is not defined or (apk_packages | length) == 0
 
-# - name: " install_apk - List what will be installed"
-#   ansible.builtin.debug:
-#     msg:
-#       "{{ apk_packages }}"
+- name: " install_apk - List what will be installed"
+  ansible.builtin.debug:
+    msg:
+      "{{ apk_packages }}"
 
 - name: " install_apk - Install selected packages using apk directly (much faster)"
   ansible.builtin.command: >
