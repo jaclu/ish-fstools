@@ -50,7 +50,7 @@ is_busybox_uptime() {
 }
 
 org_uptime() {
-    $dbg && echo ">org_uptime()" >/dev/stderr
+    $dbg && log_it "org_uptime()"
 
     [ ! -x "$cmd_org_uptime" ] && {
         if [ -x "$cmd_busybox" ]; then
@@ -66,19 +66,19 @@ org_uptime() {
         echo "ERROR: $cmd_org_uptime points to this replacement uptime!"
         exit 1
     }
-    $dbg && echo ">org_uptime() - running org_uptime" >/dev/stderr
+    $dbg && msg_2 "org_uptime() - running org_uptime"
     $cmd_org_uptime
 }
 
 calculate_ish_uptime() {
-    $dbg && echo ">calculate_ish_uptime()" >/dev/stderr
+    $dbg && log_it "calculate_ish_uptime()"
     boot_time_epoch=$(date -d "$time_stamp_boot_up" +%s)
     current_time=$(date +%s)
     uptime_seconds=$((current_time - boot_time_epoch))
 }
 
 calculate_ios_uptime() {
-    # log_it "calculate_ios_uptime()"
+    $dbg && log_it "calculate_ios_uptime()"
 
     # shellcheck disable=SC2046  # Suppresses warnings about quoting
     set -- $("$cmd_org_uptime")
@@ -137,7 +137,7 @@ calculate_ios_uptime() {
 }
 
 calculate_uptime() {
-    # log_it "calculate_uptime()"
+    $dbg && log_it "calculate_uptime()"
     startup_notice="===  System startup  ==="
     if [ -f /var/log/syslog ]; then
         time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
@@ -152,7 +152,7 @@ calculate_uptime() {
         calculate_ios_uptime
     fi
 
-    $dbg && echo ">calculate_uptime() - doing the calculations" >/dev/stderr
+    $dbg && msg_2 "calculate_uptime() - doing the calculations"
     # Calculate days, hours, minutes
     ut_days=$((uptime_seconds / 86400))
     ut_hours=$(((uptime_seconds % 86400) / 3600))
@@ -160,9 +160,9 @@ calculate_uptime() {
 }
 
 display_sysload() {
-    $dbg && echo ">display_sysload()" >/dev/stderr
+    $dbg && log_it "display_sysload()"
     if [ -f /etc/alpine-release ]; then
-        $dbg && echo ">display_sysload() - using org_uptime" >/dev/stderr
+        $dbg && msg_2 "display_sysload() - using org_uptime"
         org_uptime | sed 's/load average: /|/' | cut -d'|' -f 2
     else
         echo "0.00, 0.00, 0.00"
@@ -174,7 +174,7 @@ get_user_count()
     user_count=0
     seen=""
 
-    # log_it "get_user_count()"
+    $dbg && log_it "get_user_count()"
     tmpfile=$(mktemp)
 
     # -eo tty lists all TTYs (including '?', '', etc.)
@@ -185,15 +185,12 @@ get_user_count()
         while read -r tty; do
             case "$tty" in
                 pts/*)
-                    # echo ">tty: $tty"
                     case " $seen " in
                         *" $tty "*)
-                            # echo ">> already counted"
                             ;; # already counted
                         *)
                             seen="$seen $tty";
                             user_count=$((user_count + 1))
-                            # echo ">> added new user_count: $user_count"
                             ;;
                     esac
                     ;;
@@ -205,7 +202,7 @@ get_user_count()
 }
 
 default_view() {
-    # log_it "default_view()"
+    $dbg && log_it "default_view()"
 
     $force_ios_uptime && [ -f "$cmd_org_uptime" ] && {
         $cmd_org_uptime
@@ -225,14 +222,14 @@ default_view() {
     user_field="$user_count user"
     [ "$user_count" -gt 1 ] && user_field="${user_field}s"
 
-    $dbg && echo ">default_view() - create output [$output] [$user_field]" >/dev/stderr
+    $dbg && msg_2 "default_view() - create output [$output] [$user_field]"
     _s=" $(date +%H:%M:%S) up $output,  $user_field,  load average:"
     _s="$_s $(display_sysload)"
     echo "$_s"
 }
 
 show_pretty() {
-    $dbg && echo ">show_pretty()" >/dev/stderr
+    $dbg && log_it "show_pretty()"
 
     calculate_uptime
 
@@ -243,7 +240,7 @@ show_pretty() {
 }
 
 show_since() {
-    $dbg && echo ">show_since($uptime_seconds)" >/dev/stderr
+    $dbg && log_it "show_since($uptime_seconds)"
 
     calculate_uptime
 
@@ -257,7 +254,7 @@ show_since() {
 }
 
 show_version() {
-    $dbg && echo ">show_version()" >/dev/stder
+    $dbg && log_it "show_version()" >/dev/stder
     if $force_ios_uptime && is_busybox_uptime; then
         $cmd_busybox uptime -V 2>&1 | grep ^BusyBox
     else
