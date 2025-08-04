@@ -21,7 +21,7 @@
             echo "No such device: $gps_device"
             exit 1
         fi
-        if [ "$(basename /bin/ps)" = /bin/busybox ]; then
+        if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
             cmd_ps="ps"
         else
             cmd_ps="ps -ax" # handle normal ps cmds
