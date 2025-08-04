@@ -24,6 +24,16 @@
     apk_packages: "{{ ift_alpine_packages }}"
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
 
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
+- name: "Remove ansible if this is iSH - can't be used there..."
+  ansible.builtin.package:
+    state: absent
+    name: ansible
+  when: is_ish | default(false)
+
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
   # The procps uptime throws Segmentation fault on iSH
   # but the package is generally useful, providing a better ps
