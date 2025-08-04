@@ -98,24 +98,11 @@
     apk_packages: "{{ crucial_apps }}"
   when: ansible_os_family == 'Alpine'
 
-- name: Install crucial apps needed for deploy
+- name: Install crucial apps needed for deploy (Non Alpine)
   ansible.builtin.package:
     state: present
     name: "{{ crucial_apps }}"
   when: ansible_os_family != 'Alpine'
-
-# - name: "Checkout custom repo into {{ ift_custom_repo }}"
-#   ansible.builtin.git:
-#     repo: "{{ ift_custom_repo }}"
-#     dest: "/opt/{{ ift_custom_repo | basename | regex_replace('\\.git$', '') }}"
-#     version: main
-#   when: ift_custom_repo is defined and ift_custom_repo != ''
-
-# - name: "Checkout custom repo into {{ ift_custom_repo }}"
-#   ansible.builtin.copy:
-#     src: "/root/ish-fstools/{{ ift_custom_repo }}"
-#     dest: "/opt/{{ ift_custom_repo }}"
-#   when: ift_custom_repo is defined and ift_custom_repo != ''
 
 - name: Checkout ish-fstools into /opt
   ansible.builtin.git:
