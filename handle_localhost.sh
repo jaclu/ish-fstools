@@ -43,7 +43,7 @@ do_ansible() {
     #  Run the ansible playbook to deploy FS
     #
     if [ "$quick_mode" -eq 1 ]; then
-	    playbook="debug_task.yml"
+	    playbook="prov_debug.yml"
     else
 	    playbook="provisioning.yml"
     fi

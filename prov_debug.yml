@@ -13,6 +13,10 @@
   hosts: "{{ target_hosts | default('localhost') }}"
 
   pre_tasks:
+    - name: "Show version"
+      ansible.builtin.debug:
+        msg: "vers_ift = {{ vers_ift }}"
+
     - name: Load override variables
       ansible.builtin.import_tasks: tasks/load_overrides.yml
 
