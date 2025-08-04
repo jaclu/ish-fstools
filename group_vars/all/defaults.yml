@@ -72,16 +72,10 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   - coreutils  # The basic file, shell and text manipulation utilities
   - diffutils  # Show differences among files
   - file  # File type identification utility
-  ## - findutils  # GNU utilities for finding files
   - gawk  # GNU awk pattern-matching language
   - git  # Distributed version control system
-  ## - less  # File pager
   - pigz  # Parallel implementation of gzip
-
-  # - procps  # Utilities for monitoring your system and processes on your system
-  # procps results in /usr/bin/uptime triggering Seg Fault
-  #  but it provides ok pkill & pgrep
-
+  - procps  # Utilities for monitoring your system and processes on your system
   - psmisc  # set of some small useful utilities that use the proc filesystem
             # provides a full pstree over the basic BusyBox implementation
   - rsync  # A file transfer program to keep remote files in sync

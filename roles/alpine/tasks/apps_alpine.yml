@@ -24,6 +24,25 @@
     apk_packages: "{{ ift_alpine_packages }}"
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
 
+- name: Ensure /usr/bin/uptime is symlink to /bin/busybox
+  ansible.builtin.shell: |
+    ex_code=0
+    if [ ! -L /usr/bin/uptime ] || \
+       [ "$(readlink -f /usr/bin/uptime)" != "/bin/busybox" ]; then
+        rm -f /usr/bin/uptime.ORG
+        if [ -e /usr/bin/uptime ]; then
+            mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 1
+        fi
+        ln -sf /bin/busybox /usr/bin/uptime || exit 2
+        ex_code=43
+    fi
+    exit "$ex_code"
+  args:
+    executable: /bin/sh
+  register: alpine_rename_uptime
+  changed_when: alpine_rename_uptime.rc == 43
+  failed_when: alpine_rename_uptime.rc not in [0, 43]
+
 - name: Install extras to /usr/local/bin
   # become: true
   ansible.builtin.copy:
