@@ -21,7 +21,12 @@
             echo "No such device: $gps_device"
             exit 1
         fi
-        ps >"$tmp_file"  # busybox ps lacks have the normal options
+        if [ "$(basename /bin/ps)" = /bin/busybox ]; then
+            cmd_ps="ps"
+        else
+            cmd_ps="ps -ax" # handle normal ps cmds
+        fi
+        $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
         if grep -q "cat $gps_device\$" "$tmp_file"; then
             echo "backgrounding already active"
             ex_code=0
