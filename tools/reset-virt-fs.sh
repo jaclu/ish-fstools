@@ -152,9 +152,11 @@ prepare_ansible_job_history() {
     f_ash_history="aok_fs/root/.ash_history"
 
     lbl_2 "prepping $f_ash_history"
-    echo "time $cmd_1 && time $cmd_2" >>"$f_ash_history"
-    echo "time $cmd_2" >>"$f_ash_history"
-    echo "time $cmd_1" >>"$f_ash_history"
+    {
+        echo "time $cmd_1 && time $cmd_2"
+        echo "time $cmd_2"
+        echo "time $cmd_1"
+    } >> "$f_ash_history"
     chmod 600 "$f_ash_history"
 }
 
