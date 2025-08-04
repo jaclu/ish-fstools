@@ -25,6 +25,8 @@
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
 
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
+  # The procps uptime throws Segmentation fault on iSH
+  # but the package is generally useful, providing a better ps
   ansible.builtin.shell: |
     ex_code=0
     if [ ! -L /usr/bin/uptime ] || \
