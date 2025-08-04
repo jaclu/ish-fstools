@@ -52,6 +52,11 @@ is_busybox_uptime() {
 org_uptime() {
     $dbg && log_it "org_uptime()"
 
+    # 1 check if it is not a softlink to busybox, if so abort
+    [ -x "$cmd_org_uptime" ] && [ ! -L "$cmd_org_uptime" ] && {
+        err_msg "$cmd_org_uptime needs to be softlinked to /bin/busybox on iSH"
+    }
+
     [ ! -x "$cmd_org_uptime" ] && {
         if [ -x "$cmd_busybox" ]; then
             echo "Linking $cmd_org_uptime to busybox"
@@ -177,6 +182,7 @@ get_user_count()
     $dbg && log_it "get_user_count()"
     tmpfile=$(mktemp)
 
+    [ "$(realpath /bin/ps)" = /bin/busybox ] && err_msg "this uptime needs procps"
     # -eo tty lists all TTYs (including '?', '', etc.)
     # strip header with a `read` call
     ps -eo tty > "$tmpfile"
