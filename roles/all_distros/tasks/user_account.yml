@@ -90,9 +90,9 @@
 - name: User acct - Enable autologin for {{ ift_user_name }}
   ansible.builtin.shell: |
     set -o pipefail
-    if config-ift | grep autologin | grep -v " {{ ift_user_name }}$"; then
+    if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ ift_user_name }}$"; then
       mkdir -p "{{ d_etc_ift }}"
-      config-ift -a "{{ ift_user_name }}"
+      "{{ f_app_ift_config }}" -a "{{ ift_user_name }}"
     else
       exit 43 # indicates autologin already set for this user
     fi

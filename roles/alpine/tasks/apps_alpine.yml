@@ -10,14 +10,6 @@
 #  Install selected Alpine apps
 #
 
-# - name: Display all packages being installed
-#   ansible.builtin.debug:
-#     msg: |
-#       Alpine packets to be installed:
-#       {% for pkg in ift_alpine_packages %}
-#         {{ pkg }}
-#       {% endfor %}
-
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/install_apk.yml
   vars:

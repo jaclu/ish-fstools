@@ -29,7 +29,7 @@
   # #
   # tasks:
   #   - name: Run specific task file
-  #     ansible.builtin.include_tasks: tasks/is_chrooted.yml
+  #     ansible.builtin.include_tasks: tasks/is_ish.yml
 
   # #
   # # run specific task inside a role

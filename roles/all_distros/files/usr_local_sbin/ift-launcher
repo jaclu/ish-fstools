@@ -594,7 +594,7 @@ login_with_param_check() {
                 return
             }
         }
-        _s="auto-login as: $def_user - can be changed by running: config-ift"
+        _s="auto-login as: $def_user - can be changed by running: $prog_name"
         log_display "$_s"
         handle_etc_issue
         login_params="-f $def_user"
