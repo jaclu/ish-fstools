@@ -29,8 +29,8 @@
     ex_code=0
     if [ ! -L /usr/bin/uptime ] || \
        [ "$(readlink -f /usr/bin/uptime)" != "/bin/busybox" ]; then
-        rm -f /usr/bin/uptime.ORG
         if [ -e /usr/bin/uptime ]; then
+            rm -f /usr/bin/uptime.ORG # only remove .ORG if it will be replaced
             mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 1
         fi
         ln -sf /bin/busybox /usr/bin/uptime || exit 2
