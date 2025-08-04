@@ -11,3 +11,4 @@ uptime user count always zero
 ## commits
 
 set-timezone - fixed broken test condition
+uptime - ensure right Alpine ps and uptime are pressent
