@@ -243,11 +243,11 @@ EOF
 
 display_header() {
     # log_display "display_header()"
-    if [ -f "$f_aok_release" ]; then
-        aok_vers="$(cat "$f_aok_release" 2>/dev/null)" ||
-            aok_vers="*** Failed to read $f_aok_release ***"
+    if [ -f "$f_ift_release" ]; then
+        ift_rel="$(cat "$f_ift_release" 2>/dev/null)" ||
+            ift_rel="*** Failed to read $f_ift_release ***"
     else
-        aok_vers=Unknown
+        ift_rel=Unknown
     fi
 
     if fs_is_alpine; then
@@ -268,7 +268,7 @@ display_header() {
     fi
 
     echo
-    echo "$prog_name - AOK: $aok_vers - Filesystem: $fs_name"
+    echo "$prog_name - ish-fstools: $ift_rel - Filesystem: $fs_name"
     header_msg=""
     [ -f "$f_pts_0_as_console" ] && {
         header_msg="/dev/pts/0 is used as /dev/console"
@@ -284,7 +284,7 @@ display_header() {
         echo
     fi
 
-    unset aok_vers fs_name header_msg
+    unset ift_rel fs_name header_msg
 }
 
 boot_up() {
@@ -535,14 +535,14 @@ handle_logins() {
         if [ -f "$f_logins_continuous" ]; then
             echo
             _s="Will spawn a new login session. If this is not requested,"
-            _s="$_s run aok"
+            _s="$_s run config-ift"
             log_display "$_s"
             unset _s
             echo
             sleep 1
         else
             # echo
-            # echo "To enable continuous vterm sessions, run aok"
+            # echo "To enable continuous vterm sessions, run config-ift"
             if $this_is_pts0; then
                 # echo
                 # echo "Shutting down system..."
@@ -761,7 +761,7 @@ f_login_default_user="$state_prefix"/login-default-username
 f_profile_hints="$state_prefix"/show_profile_hints
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
-f_aok_release=/etc/aok-fs-release
+f_ift_release=/etc/ish-fstools-release
 f_rel_alpine=/etc/alpine-release
 f_rel_devuan=/etc/devuan_version
 f_rel_debian=/etc/debian_version

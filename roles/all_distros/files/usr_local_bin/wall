@@ -7,7 +7,7 @@
 #  Copyright (c) 2021-2025: Jacob.Lundqvist@gmail.com
 #
 #  Replaces the Alpine wall that doesn't work in iSH
-#  and the Debian wall, that only partially work in iSH-AOK
+#  and the Debian wall, that only partially work in ish-fstools
 #
 #  Be aware that unless you sudo wall, messages will most likely
 #  not be displayed on the console, but inside tmux all panes
@@ -29,7 +29,7 @@ show_help() {
 }
 
 show_version() {
-    echo "AOK-FS wall inspired by util-linux 2.39.1"
+    echo "ish-fstools wall inspired by util-linux 2.39.1"
 }
 
 display_msg() {

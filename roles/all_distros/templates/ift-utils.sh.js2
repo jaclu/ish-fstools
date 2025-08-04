@@ -8,7 +8,7 @@
 #
 #  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
 #
-#  Environment variables used when building the AOK-FS
+#  Environment variables used when building ish-fstools
 #
 
 #---------------------------------------------------------------
@@ -164,9 +164,6 @@ is_fs_chrooted() {
 #===============================================================
 #
 #   Main
-#
-#  Env variables
-#  aok_this_is_dest_fs="Y"  -  Indicates this is running in dest FS
 #
 #===============================================================
 

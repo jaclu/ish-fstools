@@ -53,7 +53,7 @@ create_empty_fs() {
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
-    lbl_2 "Clearing aok_fs"
+    lbl_2 "Clearing File System"
     rm aok_fs/* -rf
 
     cd aok_fs || err_msg "Failed to cd into aok_fs"

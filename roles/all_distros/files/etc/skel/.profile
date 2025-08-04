@@ -32,7 +32,7 @@ use_ash_env() {
 #
 #  A bash login shell reads the first found of:
 #  ~/.bash_profile ~/.bash_login ~/.profile
-#  Since ~/.bash_profile is provided in AOK_FS
+#  Since ~/.bash_profile is provided in ish-fstools
 #  There will normally not be a need to handle bash here.
 #
 if [ -f /proc/$$/exe ]; then

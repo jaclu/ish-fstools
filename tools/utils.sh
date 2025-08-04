@@ -8,7 +8,7 @@
 #
 #  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
 #
-#  Environment variables used when building the AOK-FS
+#  Environment variables used when building ish-fstools
 #
 
 err_msg() {

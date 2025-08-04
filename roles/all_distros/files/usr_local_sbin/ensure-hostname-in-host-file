@@ -30,10 +30,3 @@ this_app="$(basename "$0")"
 host_name="$(hostname | tr '[:upper:]' '[:lower:]')"
 
 ensure_it_is_there "$host_name"
-
-#
-#  If hostname has suffix -aok, ensure the hostname without the suffix
-#  is also present in /etc/hosts, in order to be able to connect to the
-#  non iSH-AOK instance
-#
-echo "$host_name" | grep -q '\-aok' && ensure_it_is_there "${hname%-aok}"
