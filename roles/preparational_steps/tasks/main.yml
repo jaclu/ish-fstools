@@ -14,7 +14,6 @@
   # each time iSH is started will be installed
   ansible.builtin.shell: |
     if [ -d /proc/ish ]; then
-        tmp_file=/tmp/proc-list
         gps_device=/dev/location
 
         if [ ! -c "$gps_device" ]; then
@@ -26,6 +25,7 @@
         else
             cmd_ps="ps -ax" # handle normal ps cmds
         fi
+        tmp_file=$(mktemp)
         $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
         if grep -q "cat $gps_device\$" "$tmp_file"; then
             echo "backgrounding already active"
