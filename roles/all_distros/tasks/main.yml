@@ -34,9 +34,11 @@
 #     creates: /root/.profile # or any file you expect from skel
 #   # become: true
 
-- name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
+# - name: Check if this is iSH
+#   ansible.builtin.include_tasks: tasks/is_ish.yml
+#   when: vars['is_ish'] is not defined
+
+# launch code goes here
 
 # - name: "Set chroot default command: {{ f_app_ift_launcher }}"
 #   ansible.builtin.copy:
@@ -47,24 +49,6 @@
 #     mode: "0644"
 #   when: not is_ish | default(false)
 
-- name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
-  ansible.builtin.shell: |
-    set -o pipefail
-    ex_coe=0
-    tmp_file=$(mktemp)
-    config-ift -l > "$tmp_file" | exit 1
-    if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
-        {{ f_app_ift_config }} -l ift | exit 2
-        ex_code=43
-    fi
-    rm -f "$tmp_file"
-    exit "$ex_code"
-  args:
-    executable: /bin/bash
-  register: all_distros_launcher
-  changed_when: all_distros_launcher.rc == 43
-  failed_when: all_distros_launcher.rc not in [0, 43]
-  when: is_ish | default(false)
 # - name: Configs Set /etc/ish-fstools-release - {{ vers_ift }}
 #   #
 #   # Do this as late as possible, to only indicate the current
@@ -97,3 +81,22 @@
 #   changed_when: all_distros_rel_vers.rc == 43
 #   failed_when:
 #     - all_distros_rel_vers.rc not in [0, 43]
+
+- name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
+  ansible.builtin.shell: |
+    set -o pipefail
+    ex_code=0
+    tmp_file=$(mktemp)
+    config-ift -l > "$tmp_file" | exit 1
+    if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
+        {{ f_app_ift_config }} -l ift | exit 2
+        ex_code=43
+    fi
+    rm -f "$tmp_file"
+    exit "$ex_code"
+  args:
+    executable: /bin/bash
+  register: all_distros_launcher
+  changed_when: all_distros_launcher.rc == 43
+  failed_when: all_distros_launcher.rc not in [0, 43]
+  # when: is_ish | default(false)
