@@ -54,15 +54,15 @@ set_hostname() {
     echo "$new_hostname" >"$f_etc_hostname" || {
         error_msg "Failed to write '$new_hostname' to '$f_etc_hostname'!"
     }
-    [ -f "$f_hostname_override" ] && {
-        echo "'\"$new_hostname\"'" > "$f_hostname_override" || {
-            error_msg "Failed to set $f_hostname_override"
-        }
-        override="$(cat "$f_hostname_override")"
-        [ "$override" != "\"$new_hostname\"" ] && {
-            error_msg "Failed to correctly set $f_hostname_override: [$override]"
-        }
-    }
+    # [ -f "$f_hostname_override" ] && {
+    #     echo "'\"$new_hostname\"'" > "$f_hostname_override" || {
+    #         error_msg "Failed to set $f_hostname_override"
+    #     }
+    #     override="$(cat "$f_hostname_override")"
+    #     [ "$override" != "\"$new_hostname\"" ] && {
+    #         error_msg "Failed to correctly set $f_hostname_override: [$override]"
+    #     }
+    # }
 }
 
 set_hostname_from_file() {
