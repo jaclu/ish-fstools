@@ -2,7 +2,7 @@
 #
 #  Part of https://github.com/jaclu/ish-fstool
 #
-#  Copyright (c) 2023-2024: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
 #
@@ -21,7 +21,8 @@ f_recovery_log_file=/var/log/recovery-mode.log
     log_it "R-check detected recovery mode - skipped: ${*}"
     exit 0
 }
-log_it "R-check will run: ${*}"
+# For debugging, also list what inittab tasks will run
+# log_it "R-check will run: ${*}"
 
 # run the intended task
 "$@"
