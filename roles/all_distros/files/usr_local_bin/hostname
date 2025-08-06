@@ -47,7 +47,7 @@ root_check() {
 
 set_hostname() {
     new_hostname="$1"
-    f_hostname_override="/proc/ish/defaults/hostname_override"
+    # f_hostname_override="/proc/ish/defaults/hostname_override"
 
     [ -z "$new_hostname" ] && error_msg "set_hostname() - no hostname param"
     root_check
