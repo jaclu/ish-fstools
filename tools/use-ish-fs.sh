@@ -7,6 +7,7 @@
 #  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #
 #  Handle local virtual FS to prep iSH FS - in progress not yet usable
+#  NOT USABLE YET!!
 #
 
 show_help() {
@@ -51,7 +52,7 @@ clear_ish_fs() {
 }
 
 create_ish_fs_from_miniroot_fs() {
-    msg_2 "create_ish_fs_from_miniroot_fs()"
+    msg_2 "create_ish_fs_from_miniroot_fs() at: $d_ish_fs"
     [ -z "$d_ish_fs" ] && err_msg "create_ish_fs_from_miniroot_fs() - undefined: d_ish_fs"
     is_fs_used && err_msg "create_ish_fs_from_miniroot_fs() - iSH fs is used"
 
@@ -138,12 +139,17 @@ sync_playbook() {
     sync_something home_jaclu \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
         "$d_ish_fs/iCloud/deploy/saved_home_dirs/"
+
     sync_something sshd-jacpad-server-keys \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/sshd-jacpad-server-keys.tgz \
         "$d_ish_fs/iCloud/deploy/sshd_config/"
-    sync_something ift_root_ssh_conf \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/root-ssh.tgz \
+    sync_something etc_ssh \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/etc_ssh.tgz \
         "$d_ish_fs/iCloud/deploy/sshd_config/"
+    sync_something ssh_conf.tgz \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/ssh_conf.tgz \
+        "$d_ish_fs/iCloud/deploy/sshd_config/"
+
     sync_something "my_tmux_cond venv Alpine" \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.21-py-3.12.1.tgz \
         "$d_ish_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
@@ -181,7 +187,8 @@ d_repo="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
 d_prefix="$TMPDIR/ish-fstools"
 d_miniroot_fs_cache="$d_prefix/miniroot_fs_cache"
 d_saved_fs="$d_prefix/saved_fs"
-d_ish_fs="$d_prefix/proot_fs"
+# d_ish_fs="$d_prefix/proot_fs"
+d_ish_fs=/mnt/volume-hetz1/aok_tmp_slow/aok_completed
 f_fs_in_usage="$d_prefix/proc/self"
 
 miniroot_name="alpine-minirootfs-${ALPINE_VERSION}-x86.tar.gz"

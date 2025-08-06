@@ -1,4 +1,15 @@
 #!/bin/sh
+# This is sourced. Fake bang-path to help editors and linters
+#  shellcheck disable=SC2034,SC2154
+#
+#  Part of https://github.com/jaclu/ish-fstool
+#
+#  License: MIT
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  Recreate a clean chroot FS usable for testing deploys
+#
 
 log_it() {
     if [ -c /dev/stderr ]; then
@@ -63,10 +74,10 @@ create_empty_fs() {
 	err_msg "Failed to untar"
     }
 
-    #lbl_2 "Copying ssh_conf"
-    #cp ~jaclu/cloud/Uni/iSH-conf/tools/ssh_conf.tgz tmp || {
-    #    err_msg "Failed to copy ssh_conf.tgz"
-    #}
+    lbl_2 "Copying ssh_conf"
+    cp ~jaclu/cloud/Uni/iSH-conf/tools/ssh_conf.tgz tmp || {
+       err_msg "Failed to copy ssh_conf.tgz"
+    }
     cd .. || err_msg "Failed to cd up ftom aok_fs"
 
     f_fs_release="aok_fs/etc/aok-fs-release"
@@ -93,11 +104,11 @@ sync_something() {
     lbl_2 "$lbl"
     if $do_clear; then
 	eval "$cmd"  >/dev/null || {
-	    err_msg "Failed to sync ish-fstools"
+	    err_msg "Failed to sync ish-fstools - $lbl"
 	}
     else
 	eval "$cmd" || {
-	    err_msg "Failed to sync ish-fstools"
+	    err_msg "Failed to sync ish-fstools - $lbl"
 	}
     fi
 }
@@ -113,14 +124,25 @@ sync_fs_tools() {
 	"rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/saved_home_dirs/"
+
+
+
     sync_something sshd-jacpad-server-keys \
 	"rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/sshd-jacpad-server-keys.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
-    sync_something ift_root_ssh_conf \
+
+    sync_something etc_ssh_conf \
 	"rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/root-ssh.tgz \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/etc_ssh.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
+
+    sync_something ssh_conf \
+	"rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/ssh_conf.tgz \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
+
+
 
     sync_something "my_tmux_cond venv Alpine" \
         "rsync -ahP \
