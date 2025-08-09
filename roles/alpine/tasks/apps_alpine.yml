@@ -83,15 +83,15 @@
 - name: Install extras to /usr/local/bin
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ alpine_d_repo }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Install extras to /usr/local/sbin
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ alpine_d_repo }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/

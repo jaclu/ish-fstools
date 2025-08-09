@@ -12,6 +12,7 @@
 
 # - name: Configs /etc - Set /etc/issue for iSH node
 #   ansible.builtin.copy:
+#     remote_src: true
 #     dest: /etc/issue
 #     content: >
 #       This is an iSH node, running {{ ansible_distribution }}
@@ -23,8 +24,8 @@
 - name: Configs /etc - Install common config files
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:

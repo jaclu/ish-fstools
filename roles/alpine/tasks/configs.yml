@@ -13,6 +13,7 @@
 - name: Deploy /etc/inittab
   # become: true
   ansible.builtin.copy:
+    remote_src: true
     mode: preserve
     src: files/etc/inittab
     dest: /etc/

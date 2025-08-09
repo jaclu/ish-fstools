@@ -13,13 +13,14 @@
 - name: Common apps - Install extras to /usr/local/lib
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   ansible.builtin.template:
+    remote_src: true
     src: ift-utils.sh.js2
     dest: /usr/local/lib/ift-utils.sh
     mode: '0755'
@@ -27,16 +28,16 @@
 - name: Common apps - Install extras to  /usr/local/bin
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Common apps - Install extras to  /usr/local/sbin
   # become: true
   ansible.builtin.copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
 
