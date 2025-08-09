@@ -20,7 +20,6 @@
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   ansible.builtin.template:
-    remote_src: true
     src: ift-utils.sh.js2
     dest: /usr/local/lib/ift-utils.sh
     mode: '0755'

@@ -39,8 +39,9 @@
     d_tmp="$(mktemp -d)" || exit 2
     cd "$d_tmp" || exit 3
     wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-0.92-r0.apk || exit 4
-    apk add mtr-0.92-r0.apk || exit 5
-    rm -rf "$d_tmp" || exit 6
+    wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-doc-0.92-r0.apk || exit 5
+    apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 6
+    rm -rf "$d_tmp" || exit 7
     exit 43
   args:
     executable: /bin/sh
