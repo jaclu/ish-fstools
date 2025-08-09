@@ -32,6 +32,14 @@
   #     ansible.builtin.include_tasks: tasks/is_ish.yml
 
   # #
+  # # run specific task
+  # #
+  # tasks:
+  #   - name: Intentional fail
+  #     ansible.builtin.fail:
+  #       msg: "Intentional fail"
+
+  # #
   # # run specific task inside a role
   # #
   # tasks:
