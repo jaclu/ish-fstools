@@ -44,6 +44,14 @@ ift_runlevel_sshd: default   # set to "" if this service is not wanted
 ift_port_sshd: 2022  # set to "" if port should not be set
 
 #
+#  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last
+#  version that supports both DNS and IP# (and thus hosts defined in /etc/hosts)
+#  If set to true, and mtr was included in ift_alpine_packages it will trigger
+#  an error due to incompatible package selection
+#
+ift_use_old_mtr: true # set to false if not desired
+
+#
 #  ift_alpine_packages - defines what Alpine packages will be installed if FS is Alpine
 #  some temp variables are first used to define what packages to use.
 #
@@ -100,7 +108,6 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #  Remote
   #
   - mosh  # Mobile shell surviving disconnects with local echo and line editing
-  - mtr  # Full screen ncurses traceroute tool
   - openssh  # Port of OpenBSD's free SSH release
 
   #

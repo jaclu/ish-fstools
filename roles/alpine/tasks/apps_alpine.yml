@@ -10,11 +10,44 @@
 #  Install selected Alpine apps
 #
 
+- name: Check if mtr is in ift_alpine_packages
+  # Do this before base apks are installed to trigger early abort
+  ansible.builtin.fail:
+    msg: "mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
+  when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
+
+
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/install_apk.yml
   vars:
     apk_packages: "{{ ift_alpine_packages }}"
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
+
+- name: "Install old IP# able mtr 0.92-a"
+  ansible.builtin.shell: |
+    set -u
+    if command -v mtr ; then
+        [ "$(mtr -v)" = "mtr 0.91.1-4c982" ] && {
+            exit 0 # correct "old" version installed
+        }
+        # Remove incorrect version
+        apk del mtr || exit 1
+    fi
+    #
+    #  Download and install specific older mtr
+    #
+    d_tmp="$(mktemp -d)" || exit 2
+    cd "$d_tmp" || exit 3
+    wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-0.92-r0.apk || exit 4
+    apk add mtr-0.92-r0.apk || exit 5
+    rm -rf "$d_tmp" || exit 6
+    exit 43
+  args:
+    executable: /bin/sh
+  register: alpine_old_mtr
+  changed_when: alpine_old_mtr.rc == 43
+  failed_when: alpine_old_mtr.rc not in [0, 43]
+  when: ift_use_old_mtr
 
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
