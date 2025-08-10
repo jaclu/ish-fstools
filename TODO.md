@@ -13,3 +13,21 @@ remote_src: false - 33m 45s (when stuff was updated) - 33m 41s (repeat run - no 
 
 - ansible.builtin.copy:
 - ansible.builtin.template:
+
+## mtr
+
+### in main/x86
+
+- Alpine 3.10 - mtr-0.92-r0
+- Alpine 3.11 - mtr-0.93-r2
+
+### in community/x86/
+
+- Alpine 3.12 - mtr-0.93-r2
+- Alpine 3.13 - mtr-0.94-r1
+- Alpine 3.14 - same
+- Alpine 3.15 - same
+- Alpine 3.16 - mtr-0.95-r1
+- Alpine 3.17 - same
+- Alpine 3.18 - mtr-0.95-r2
+- Alpine 3.22 - same
