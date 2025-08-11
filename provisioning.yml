@@ -30,6 +30,9 @@
     - name: Load override variables
       ansible.builtin.import_tasks: tasks/load_overrides.yml
 
+    - name: Verify parameters
+      ansible.builtin.import_tasks: tasks/param_check.yml
+
   roles:
     - role: preparational_steps
     - role: alpine

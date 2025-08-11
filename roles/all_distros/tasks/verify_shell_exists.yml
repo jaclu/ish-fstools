@@ -15,7 +15,7 @@
 
 - name: Abort if requested shell does not exist
   ansible.builtin.fail:
-    msg: "Shell '{{ ift_shell }}' does not exist"
+    msg: "Shell defined in ift_shell does not exist: {{ ift_shell }}"
   when:
     - ift_shell is defined
     - not all_distros_shell_path.stat.exists

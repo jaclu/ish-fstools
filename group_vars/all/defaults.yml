@@ -30,8 +30,8 @@ ift_user_name: ish  # set to "" to disable
 ift_shell: /bin/ash  # set to "" to disable
 
 #
-#  Use tzdata for timezone naming, such as Europe/Amsterdam EST
-#  set to "" if no system timezone should be defined
+#  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
+#  set to "" if no system timezone should be defined, then UTC will be used
 #
 ift_timezone: ""
 

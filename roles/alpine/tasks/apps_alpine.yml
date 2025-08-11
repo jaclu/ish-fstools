@@ -10,13 +10,6 @@
 #  Install selected Alpine apps
 #
 
-- name: Check if mtr is in ift_alpine_packages
-  # Do this before base apks are installed to trigger early abort
-  ansible.builtin.fail:
-    msg: "mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
-  when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
-
-
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/install_apk.yml
   vars:

@@ -8,17 +8,6 @@
 #  Defines user account
 #
 
-- name: User acct - Fail if ift_shell is undefined while ift_user_name is defined
-  ansible.builtin.fail:
-    msg: "ift_shell must be defined when ift_user_name is set"
-  when:
-    - ift_shell is defined
-    - ift_user_name is not defined
-
-- name: User acct - Run verify_shell_exists.yml
-  ansible.builtin.import_tasks: verify_shell_exists.yml
-  when: ift_shell is defined and ift_shell
-
 - name: User acct - Find user with UID 501 different from ift_user_name
   ansible.builtin.command: >
     awk -F: -v user="{{ ift_user_name }}" '
@@ -66,7 +55,7 @@
     uid: 501
     group: "{{ ift_user_name }}"
     groups: sudo
-    shell: "{{ ift_shell }}"
+    # shell: "{{ ift_shell }}"
     state: present
     force: true  # forces update of existing user attributes, including shell
     password: ''  # ← explicitly sets empty password, avoids '!' in /etc/shadow

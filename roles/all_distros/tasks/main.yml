@@ -8,6 +8,10 @@
 #
 #  All distros task
 
+- name: Run verify_shell_exists.yml
+  ansible.builtin.import_tasks: verify_shell_exists.yml
+  when: ift_shell is defined and ift_shell
+
 - name: Common apps
   ansible.builtin.import_tasks: common_apps.yml
 
@@ -30,7 +34,7 @@
   when: ift_shell is defined and ift_shell
 
 - name: Copy /etc/skel files to root home (without overwrite)
-  ansible.builtin.command: cp -rn /etc/skel/. /root/
+  ansible.builtin.command: cp -ru /etc/skel/. /root/
   args:
     creates: /root/.profile # or any file you expect from skel
   # become: true

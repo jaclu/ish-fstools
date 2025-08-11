@@ -24,8 +24,11 @@
 
 # ift_alpine_packages:
 #   # Sample for a minimal install, without these the deploy will fail.
+#   # Each lists what options depend on them, if the corresponding option(-s) are
+#   # set to "" that package is not needed
 #   - openrc # Needed for: ift_runlevel_runbg, ift_runlevel_sshd
 #   - openssh-server # Needed for: ift_runlevel_sshd
+#   - shadow # Needed for: ift_shell
 #   - tzdata # Needed for: ift_timezone
 
 #
