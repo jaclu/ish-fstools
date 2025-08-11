@@ -14,11 +14,13 @@ remote_src: false - 33m 45s (when stuff was updated) - 33m 41s (repeat run - no 
 - ansible.builtin.copy:
 - ansible.builtin.template:
 
-## mtr
+## mtr Alpine repos
+
+Sample url `https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86/`
 
 ### in main/x86
 
-- Alpine 3.10 - mtr-0.92-r0
+- Alpine 3.10 - mtr-0.92-r0 From: 2019-05-08
 - Alpine 3.11 - mtr-0.93-r2
 
 ### in community/x86/
