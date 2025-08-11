@@ -125,34 +125,20 @@ sync_fs_tools() {
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/saved_home_dirs/"
 
-
-
-    sync_something sshd-jacpad-server-keys \
+    sync_something sshd_config \
 	"rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/sshd-jacpad-server-keys.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy"
 
-    sync_something etc_ssh_conf \
-	"rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/etc_ssh.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
-
-    sync_something ssh_conf \
-	"rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/ssh_conf.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/sshd_config/"
-
-
-
-    sync_something "my_tmux_cond venv Alpine" \
+    sync_something "my_tmux_conf venv Alpine" \
         "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.21-py-3.12.1.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
+
     sync_something "jed" \
         "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs/"
-
 
     sync_something ish-fstools "rsync -ahP \
         --exclude=.git/ \
