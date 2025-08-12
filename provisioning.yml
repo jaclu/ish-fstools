@@ -38,3 +38,14 @@
     - role: alpine
       when: ansible_os_family == 'Alpine'
     - role: all_distros
+
+  post_tasks:
+    - name: "Change ownership of /opt/ish-fstools to {{ ift_user_name }}"
+      ansible.builtin.file:
+        path: /opt/ish-fstools
+        owner: "{{ ift_user_name }}"
+        group: "{{ ift_user_name }}"
+        recurse: true
+      when:
+        - ift_user_name is defined
+        - ift_user_name | length > 0
