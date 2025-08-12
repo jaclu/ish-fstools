@@ -36,11 +36,23 @@
 # These are appended to ift_alpine_packages, to make it simpler to just add packages
 # without having to list all the default ones.
 #
-# For the moment ift_extra_alpine_packages are NOT appended if you have redefined
-# ift_alpine_package here. Why that is I have no clue, but it is the way it is for now.
-#
 # ift_extra_alpine_packages:
 #   - bat  # cat(1) clone with wings
+#   #
+#   #  General Build env for Alpine iSH
+#   #
+#   - automake
+#   - autoconf
+#   - bison
+#   - build-base
+#   - bzip2-dev
+#   - libffi-dev
+#   - openssl-dev
+#   - readline-dev
+#   - sqlite-dev
+#   - tk-dev
+#   - xz-dev
+#   - zlib-dev
 
 #
 # If services are set to runlevel "", they will not be installed / activated.
