@@ -27,7 +27,9 @@
 
 - name: Run user_account.yml
   ansible.builtin.import_tasks: user_account.yml
-  when: ift_user_name is defined and ift_user_name
+  when:
+    - ift_user_name is defined
+    - ift_user_name | length > 0
 
 - name: Run root_shell.yml
   ansible.builtin.import_tasks: root_shell.yml
