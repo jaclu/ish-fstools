@@ -1,4 +1,6 @@
-# Ansible iSH FS deploy
+# Ansible iSH FS tools
+
+Creates and updates a more desktop Linux like FS on iSH, adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin
 
 ## Preparaiton
 
