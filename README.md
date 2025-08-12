@@ -44,9 +44,12 @@ cp conf_templates/overrides.yml vars/
 
 ## Configuration Files
 
-- `inventory.ini` If deploying remotely, add each iSH node under the [servers] section.
-Example entries by name and IP address are included as templates.
-For chroot-based deployment, this file is not required.
+- `inventory.ini`  
+Required for both remote and chroot-based deployments. For remote deployment,
+add each iSH node under the `[servers]` section using the provided name and IP
+address templates.
+For chroot-based deployment, this file must be present but typically does not require
+modification.
 - `vars/overrides.yml` Edit this file to customize deployment parameters.
 
 ## Deployment
