@@ -18,4 +18,3 @@
 
 - name: Run service_runbg.yml
   ansible.builtin.import_tasks: service_runbg.yml
-  when: ift_runlevel_runbg is defined and ift_runlevel_runbg

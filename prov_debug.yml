@@ -20,6 +20,9 @@
     - name: Load override variables
       ansible.builtin.import_tasks: tasks/load_overrides.yml
 
+    - name: Verify parameters
+      ansible.builtin.import_tasks: tasks/param_check.yml
+
   #
   # only one of the below can be used - put the active one last
   #
@@ -40,19 +43,19 @@
   #       msg: "Intentional fail"
 
   # #
-  # # run specific task inside a role
+  # # run specific role(-s)
   # #
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     ansible.builtin.include_role:
-  #       name: all_distros
-  #       tasks_from: common_apps.yml
+  # roles:
+  #   - role: preparational_steps
+  #   - role: alpine
+  #   #   when: ansible_os_family == 'Alpine'
+  #   # - role: all_distros
 
   #
-  # run specific role(-s)
+  # run specific task inside a role
   #
-  roles:
-    - role: preparational_steps
-    - role: alpine
-    #   when: ansible_os_family == 'Alpine'
-    # - role: all_distros
+  tasks:
+    - name: Use just one task file from the role
+      ansible.builtin.include_role:
+        name: all_distros
+        tasks_from: service_runbg.yml

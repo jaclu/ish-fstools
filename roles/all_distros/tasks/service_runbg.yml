@@ -24,12 +24,56 @@
     dest: "{{ service_runbg }}"
     state: link
 
-- name: " runbg - Check presence in runlevel: {{ ift_runlevel_runbg }}"
-  ansible.builtin.stat:
-    path: "/etc/runlevels/{{ ift_runlevel_runbg }}/runbg"
-  register: all_distros_runbg_check
+- name: "Remove runbg from all runlevels except desired one"
+  ansible.builtin.shell: |
+    set -o pipefail
+    ex_code=0
 
-- name: " runbg - Add to runlevel if needed"
-  ansible.builtin.command: rc-update add runbg "{{ ift_runlevel_runbg }}"
-  changed_when: true
-  when: not all_distros_runbg_check.stat.exists
+    run_levels=$(rc-status -l) || exit 1
+
+    for runlvl in $run_levels; do
+        echo "Checking runlvl: $runlvl"
+        if [ "$runlvl" = "{{ ift_runlevel_runbg }}" ]; then
+            echo "  skipping desired"
+            continue
+        fi
+        if rc-status "$runlvl" | grep -q runbg; then
+            echo "  removing runbg from $runlvl"
+            rc-update del runbg "$runlvl" || exit 2
+            ex_code=43
+        fi
+    done
+    exit "$ex_code"
+  args:
+    executable: /bin/sh
+  register: all_distros_runbg_remove
+  changed_when: all_distros_runbg_remove.rc == 43
+  failed_when: all_distros_runbg_remove.rc not in [0, 43]
+
+# - name: "Show all_distros_runbg_remove"
+#   ansible.builtin.debug:
+#     msg: "{{ all_distros_runbg_remove }}"
+
+- name: "Add runbg to desired runlevel"
+  ansible.builtin.shell: |
+    out=$(rc-update show "{{ ift_runlevel_runbg }}") || exit 2
+    case "$out" in
+      *runbg*) ex_code=0 ;;
+      *)
+        rc-update add runbg "{{ ift_runlevel_runbg }}" || exit 3
+        ex_code=43
+        ;;
+    esac
+    exit "$ex_code"
+  args:
+    executable: /bin/sh
+  register: all_distros_enable_runbg
+  changed_when: all_distros_enable_runbg.rc == 43
+  failed_when: all_distros_enable_runbg.rc not in [0, 43]
+  when:
+    - ift_runlevel_runbg is defined
+    - ift_runlevel_runbg | length > 0
+
+# - name: "Show all_distros_enable_runbg"
+#   ansible.builtin.debug:
+#     msg: "{{ all_distros_enable_runbg }}"
