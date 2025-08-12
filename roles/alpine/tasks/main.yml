@@ -19,7 +19,7 @@
   # become: true
   ansible.builtin.copy:
     remote_src: true
-    src: "{{ alpine_d_repo }}/files{{ f_srvc_sshd }}"
+    src: "{{ alpine_d_repo }}/files/etc/init.d/sshd"
     dest: "{{ d_init_ift }}/sshd"
     owner: root
     group: root
