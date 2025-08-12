@@ -1,6 +1,6 @@
-# Ansible iSH FS tools
+# iSH FS tools
 
-Creates and updates a more desktop Linux like FS on iSH, adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin
+Creates and maintains a more complete Linux like FS on iSH, adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin, using ansible
 
 ## Preparaiton
 
