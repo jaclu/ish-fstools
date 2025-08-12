@@ -1,7 +1,10 @@
 # iSH FS tools
 
-Creates and maintains a more complete Linux like FS on iSH, adding some iSH
-focused extra tools in /usr/local/bin and /usr/local/sbin, using ansible
+Creates and maintains a more complete Linux like FS on iSH
+
+- adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin
+- custom /etc/inittab and app launcher, aimed at handling some of the iSH quirks
+- Deploying via ansible
 
 ## Preparaiton
 
