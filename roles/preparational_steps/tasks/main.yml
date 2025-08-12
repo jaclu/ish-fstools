@@ -104,8 +104,19 @@
     name: "{{ crucial_apps }}"
   when: ansible_os_family != 'Alpine'
 
-- name: Checkout ish-fstools into /opt
-  ansible.builtin.git:
-    repo: https://github.com/jaclu/ish-fstools.git
-    dest: "{{ d_repo }}"
-    version: main
+- name: Checkout or update ish-fstools
+  ansible.builtin.shell: |
+    if [ -d "{{ d_repo }}/.git" ]; then
+      if [ -n "{{ ift_user_name | default('') }}" ] && \
+          id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
+        sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull
+      else
+        git -C "{{ d_repo }}" pull
+      fi
+    else
+      git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}"
+    fi
+  args:
+    executable: /bin/sh
+  register: preparational_steps_git_pull
+  changed_when: "'Already up to date.' not in preparational_steps_git_pull.stdout"
