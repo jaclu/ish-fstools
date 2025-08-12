@@ -17,9 +17,10 @@ irectly.
 
 #### Installing a Minirootfs on iSH
 
-1. Download a recent Alpine minirootfs image, for example:  
-   `https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/`  
-   `alpine-minirootfs-3.22.1-x86.tar.gz`  
+1. Download a recent Alpine minirootfs image, for example:
+```sh
+https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
+```
 2. Transfer the image to the iOS device (via iCloud or similar if downloaded elsewhere).
 3. In the iSH app, go to `Settings → Filesystems → Import`, select the minirootfs,
 then choose `Boot From This Filesystem`.
