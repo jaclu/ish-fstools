@@ -10,4 +10,4 @@
 
 d_repo_all_distros_role: "{{ d_repo }}/roles/all_distros"
 
-service_runbg: "{{ d_init_d }}/runbg"
+f_service_runbg: "{{ d_init_d }}/runbg"

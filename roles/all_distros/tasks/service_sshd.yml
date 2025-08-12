@@ -8,21 +8,20 @@
 #  Installs basic sshd service
 #
 
+- name: Set service_name_sshd based on FS
+  ansible.builtin.set_fact:
+    # slightly unusual wrapping to ensure no space chars injected in the variable content
+    all_distros_service_name_sshd: >-
+      {% if
+        ansible_os_family == 'Alpine' %}sshd{% elif
+        ansible_os_family == 'Debian' %}ssh{%
+        else %}{% endif %}
+
 - name: " sshd - Create symbolic link in /etc/init.d"
   ansible.builtin.file:
     src: "{{ d_init_ift }}/sshd"
-    dest: "{{ f_srvc_sshd }}"
+    dest: "{{ d_init_d }}/{{ all_distros_service_name_sshd }}"
     state: link
-
-- name: " sshd - Check presence in runlevel: {{ ift_runlevel_sshd }}"
-  ansible.builtin.stat:
-    path: "/etc/runlevels/{{ ift_runlevel_sshd }}/sshd"
-  register: all_distros_sshd_check
-
-- name: " sshd - Add to runlevel if needed"
-  ansible.builtin.command: rc-update add sshd "{{ ift_runlevel_sshd }}"
-  changed_when: true
-  when: not all_distros_sshd_check.stat.exists
 
 - name: " sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
   ansible.builtin.lineinfile:
@@ -30,3 +29,9 @@
     regexp: '^\#Port '
     line: 'Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools'
   when: ift_port_sshd is defined and ift_port_sshd != ""
+
+- name: "Set runlevel for sshd"
+  ansible.builtin.include_tasks: tasks/service_runlevel_set.yml
+  vars:
+    srvc_name: "{{ all_distros_service_name_sshd }}"
+    srvc_runlevel: "{{ ift_runlevel_sshd }}"

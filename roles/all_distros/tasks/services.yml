@@ -14,7 +14,6 @@
 
 - name: Run service_sshd.yml
   ansible.builtin.import_tasks: service_sshd.yml
-  when: ift_runlevel_sshd is defined and ift_runlevel_sshd
 
 - name: Run service_runbg.yml
   ansible.builtin.import_tasks: service_runbg.yml

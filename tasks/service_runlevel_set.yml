@@ -1,0 +1,73 @@
+---
+
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Ensures service is only in the intended runlevel
+#
+#  Variables required:
+#     srvc_name     - name of service
+#     srvc_runlevel - runlevel intended, if empty or unset, srvc will not be active
+#
+
+- name: "Service runlevel - Fail if srvc_name is not defined"
+  ansible.builtin.fail:
+    msg: "No service defined. Please set srvc_name variable."
+  when: srvc_name is not defined or (srvc_name | length) == 0
+
+
+- name: "Service runlevel - Remove from all other runlevels: {{ srvc_name }}"
+  ansible.builtin.shell: |
+    set -o pipefail
+    ex_code=0
+
+    run_levels=$(rc-status -l) || exit 1
+
+    for runlvl in $run_levels; do
+        echo "Checking runlvl: $runlvl"
+        if [ "$runlvl" = "{{ srvc_runlevel }}" ]; then
+            echo "  skipping desired"
+            continue
+        fi
+        if rc-status "$runlvl" | grep -q "{{ srvc_name }}"; then
+            echo "  removing {{ srvc_name }} from $runlvl"
+            rc-update del "{{ srvc_name }}" "$runlvl" || exit 2
+            ex_code=43
+        fi
+    done
+    exit "$ex_code"
+  args:
+    executable: /bin/sh
+  register: srvc_remove_from_undesired_runlevels
+  changed_when: srvc_remove_from_undesired_runlevels.rc == 43
+  failed_when: srvc_remove_from_undesired_runlevels.rc not in [0, 43]
+
+# - name: "Show srvc_remove_from_undesired_runlevels"
+#   ansible.builtin.debug:
+#     msg: "{{ srvc_remove_from_undesired_runlevels }}"
+
+- name: "Service runlevel - Add to desired runlevel: {{ srvc_runlevel }}"
+  ansible.builtin.shell: |
+    out=$(rc-update show "{{ srvc_runlevel }}") || exit 2
+    case "$out" in
+      *"{{ srvc_name }}"*) ex_code=0 ;;
+      *)
+        rc-update add "{{ srvc_name }}" "{{ srvc_runlevel }}" || exit 3
+        ex_code=43
+        ;;
+    esac
+    exit "$ex_code"
+  args:
+    executable: /bin/sh
+  register: srvc_ensure_enabled
+  changed_when: srvc_ensure_enabled.rc == 43
+  failed_when: srvc_ensure_enabled.rc not in [0, 43]
+  when:
+    - srvc_runlevel is defined
+    - srvc_runlevel | length > 0
+
+# - name: "Show srvc_ensure_enabled"
+#   ansible.builtin.debug:
+#     msg: "{{ srvc_ensure_enabled }}"

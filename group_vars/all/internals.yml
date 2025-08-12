@@ -12,7 +12,7 @@
 
 # debian_reboot_if_needed: false
 
-vers_ift: 0.7.36
+vers_ift: 0.7.37
 
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
@@ -20,7 +20,6 @@ d_etc_ift: /etc/opt/ift
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
 d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
-f_srvc_sshd: "{{ d_init_d }}/sshd"
 
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
