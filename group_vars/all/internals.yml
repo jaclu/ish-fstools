@@ -32,7 +32,12 @@ f_app_ift_config: /usr/local/bin/config-ift
 #
 # check_connection: false
 
+#
+#  Apps that are needed during deploy, always installed, regardless of
+#  user selection
+#
 crucial_apps:
+  - sudo
   - git
   - rsync
   - bash
