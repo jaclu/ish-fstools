@@ -4,15 +4,15 @@ Creates and maintains a more complete Linux like CLI env on iSH
 
 - Adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin
 - Custom /etc/inittab and app launcher, aimed at handling some of the iSH quirks
-- Pleny of room for user config, like what apps to install and so on
+- Plenty of room for user config, like what apps to install and so on
 - Deploying via ansible
 
-## Preparaiton
+## Preparation
 
 ### iSH node
 
-Only relevant if deploying via ansible to the iSH node, if the FS is prepared in a
-chroot, then the resulting FS can be deployed directly.
+This step is only necessary if deploying via Ansible to the iSH node. If the filesystem
+is prepared in a chroot environment, the resulting filesystem can be deployed directly.
 
 #### Install a minirootfs on iSH
 
