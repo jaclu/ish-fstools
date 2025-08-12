@@ -1,83 +1,90 @@
-# iSH FS tools
+# iSH FS Tools
 
-Creates and maintains a more complete Linux like CLI env on iSH
+Provides a more complete Linux-like CLI environment on iSH by:
 
-- Adding some iSH focused extra tools in /usr/local/bin and /usr/local/sbin
-- Custom /etc/inittab and app launcher, aimed at handling some of the iSH quirks
-- Plenty of room for user config, like what apps to install and so on
-- Deploying via ansible
+- Adding iSH-specific utilities to `/usr/local/bin` and `/usr/local/sbin`  
+- Supplying a custom `/etc/inittab` and application launcher to address iSH quirks  
+- Allowing extensive user configuration (e.g., which apps to install)  
+- Supporting deployment via Ansible  
 
 ## Preparation
 
-### iSH node
+### iSH Node Setup
 
-This step is only necessary if deploying via Ansible to the iSH node. If the filesystem
-is prepared in a chroot environment, the resulting filesystem can be deployed directly.
+This step is required only if deploying directly to the iSH device via Ansible.  
+If you prepare the filesystem in a chroot environment, you can deploy that filesystem d
+irectly.
 
-#### Install a minirootfs on iSH
+#### Installing a Minirootfs on iSH
 
-- Download a recent image, something like
-`https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz`
-- Copy it to the iOS device via iCloud or similar if downloaded on other device
-- In the iSH app `Settings - Filesystems - import` then select the minirootfs,
-  finally select `Boot From This Filesystem`
+1. Download a recent Alpine minirootfs image, for example:  
+   `https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/`  
+   `alpine-minirootfs-3.22.1-x86.tar.gz`  
+2. Transfer the image to the iOS device (via iCloud or similar if downloaded elsewhere).
+3. In the iSH app, go to `Settings → Filesystems → Import`, select the minirootfs,
+then choose `Boot From This Filesystem`.
 
-#### Configure the new FS to run sshd
+#### Configuring SSH Server on the New Filesystem
 
-Follow the procedure on this page: `https://github.com/ish-app/ish/wiki/Running-an-SSH-server`
+Follow instructions here:  
+`https://github.com/ish-app/ish/wiki/Running-an-SSH-server`
 
-### Deploy node
+### Deploy Node Setup
 
-Deploy initial configurations via templates
+Deploy initial configurations using templates:
 
-```shell
+```sh
 cp conf_templates/inventory.ini .
 mkdir vars
 cp conf_templates/overrides.yml vars/
 ```
 
-#### Configuration
+## Configuration Files
 
-##### inventory.ini
+- `inventory.ini` If deploying remotely, add each iSH node under the [servers] section.
+Example entries by name and IP address are included as templates.
+For chroot-based deployment, this file is not required.
+- `vars/overrides.yml` Edit this file to customize deployment parameters.
 
-If remote deploy is used, add a line for each iSH node that should be updated under
-the section `[servers]` there is one name based and one IP# based example that
-can be used as templates
+## Deployment
 
-For chrooted deploys, there is no need to configure this file
+### Remote Deployment via Deploy Host
 
-##### Deploy config
+Run the deployment script:
 
-Edit `vars/overrides.yml`
-
-## Deploy
-
-### Remote deploy via deploy host
-
-- run the deploy `./handle_servers.sh`
-
-### chroot deploy
-
-```shell
-
-wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
-
-# Unpack it
-mkdir chroot-FS
-cd  chroot-FS
-tar ../xfz alpine-minirootfs-3.22.1-x86.tar.gz
-cd ..
-
-# Copy this repo into the chroot env
-cp -av ../ish-fstools chroot-FS chroot-FS/opt
+```sh
+./handle_servers.sh
 ```
 
-#### Run deploy inside chroot
+### Chroot Deployment
 
-`/opt/ish-fstools/handle_localhost.sh`
+Download and unpack the Alpine minirootfs:
 
-## mtr (My traceroute)
+```sh
+wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
 
-Recent versions of mtr, post 0.92 can only resolve dns names on iSH. Due to this
-an older version, 0.92-a from Alpine 3.10 is installed. This can also handle
-hosts given with IP#, thus supporting hostnames listed in /etc/hosts
+mkdir chroot-FS
+cd chroot-FS
+tar xfz ../alpine-minirootfs-3.22.1-x86.tar.gz
+cd ..
+```
+
+Copy this repository into the chroot environment:
+
+```sh
+cp -av ish-fstools chroot-FS/opt
+```
+
+#### Running Deployment Inside the Chroot
+
+Execute:
+
+```sh
+/opt/ish-fstools/handle_localhost.sh
+```
+
+## Notes on `mtr` (My traceroute)
+
+Recent versions of `mtr` (post 0.92) cannot resolve DNS names on iSH.
+This repository installs an older version (0.92-a from Alpine 3.10) that supports
+hostname resolution via `/etc/hosts` and IP addresses directly.
