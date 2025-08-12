@@ -12,11 +12,8 @@ chroot, then the resulting FS can be deployed directly.
 
 #### Install a minirootfs on iSH
 
-```shell
-wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
-```
-
-- Download it
+- Download a recent image, something like
+`https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz`
 - Copy it to the iOS device via iCloud or similar if downloaded on other device
 - In the iSH app `Settings - Filesystems - import` then select the minirootfs,
   finally select `Boot From This Filesystem`
