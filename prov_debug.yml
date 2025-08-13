@@ -43,19 +43,19 @@
   #       msg: "Intentional fail"
 
   # #
-  # # run specific role(-s)
+  # # run specific task inside a role
   # #
-  # roles:
-  #   - role: preparational_steps
-  #   - role: alpine
-  #   #   when: ansible_os_family == 'Alpine'
-  #   # - role: all_distros
+  # tasks:
+  #   - name: Use just one task file from the role
+  #     ansible.builtin.include_role:
+  #       name: all_distros
+  #       tasks_from: service_sshd.yml
 
   #
-  # run specific task inside a role
+  # run specific role(-s)
   #
-  tasks:
-    - name: Use just one task file from the role
-      ansible.builtin.include_role:
-        name: all_distros
-        tasks_from: service_sshd.yml
+  roles:
+    - role: preparational_steps
+    - role: alpine
+      when: ansible_os_family == 'Alpine'
+    # - role: all_distros
