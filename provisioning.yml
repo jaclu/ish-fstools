@@ -23,7 +23,7 @@
   hosts: "{{ target_hosts | default('localhost') }}"
 
   pre_tasks:
-    - name: Load override variables
+    - name: Load tasks/pre_tasks.yml
       ansible.builtin.import_tasks: tasks/pre_tasks.yml
 
   roles:
