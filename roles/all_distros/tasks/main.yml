@@ -7,6 +7,7 @@
 #  License: MIT
 #
 #  All distros task
+#
 
 - name: Run verify_shell_exists.yml
   ansible.builtin.import_tasks: verify_shell_exists.yml
@@ -72,36 +73,3 @@
     group: root
     mode: "0644"
   when: not is_ish | default(false)
-
-- name: Configs Set /etc/ish-fstools-release - {{ vers_ift }}
-  #
-  # Do this as late as possible, to only indicate the current
-  # version once deploy is done
-  #
-  # become: true
-  # become: true
-  ansible.builtin.shell: |
-    f_rel_vers=/etc/ish-fstools-release
-    ex_code=0
-
-    input=$(cat "$f_rel_vers")
-    old_vers_ift=${input%% - *}
-    rest=${input#* - }
-    [ "$old_vers_ift" = "$rest" ] && rest=""
-
-    if [ "$old_vers_ift" != "{{ vers_ift }}" ]; then
-        s="{{ vers_ift }}"
-        if [ -n "$rest" ]; then
-            s="$s - $rest"
-        fi
-        echo "$s" >"$f_rel_vers" || exit 1
-        /usr/local/sbin/update-motd
-        ex_code=43
-    fi
-    exit "$ex_code"
-  args:
-    executable: /bin/bash
-  register: all_distros_rel_vers
-  changed_when: all_distros_rel_vers.rc == 43
-  failed_when:
-    - all_distros_rel_vers.rc not in [0, 43]
