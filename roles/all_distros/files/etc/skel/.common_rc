@@ -170,12 +170,17 @@ get_sysload_lvl() {
 }
 
 use_static_bash_prompt() {
+    bash_prompt_colors
     PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn}${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
 use_dynamic_bash_prompt() {
-    # use_static_bash_prompt # call to get the colors defined
-    # PROMPT_COMMAND='update_dynamic_bash_prompt;'"$PROMPT_COMMAND"
+    bash_prompt_colors
+    PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn}${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
+    PROMPT_COMMAND='update_dynamic_bash_prompt;'"$PROMPT_COMMAND"
+}
+
+update_dynamic_bash_prompt() {
     PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
