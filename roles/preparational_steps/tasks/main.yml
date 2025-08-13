@@ -9,17 +9,19 @@
 #  Role: preparational_steps - main tasks
 #
 
-- name: Ensure iSH can run in the background & Some folders
+- name: Ensure iSH can run in the background & Some prep tasks
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed
   ansible.builtin.shell: |
-    mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}"
+    # Create folders that must be present
+    mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}" || exit 1
+
     if [ -d /proc/ish ]; then
         gps_device=/dev/location
 
         if [ ! -c "$gps_device" ]; then
             echo "No such device: $gps_device"
-            exit 1
+            exit 2
         fi
         if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
             cmd_ps="ps"
@@ -40,18 +42,15 @@
         exit "$ex_code"
     else
         # If not on iSH - Ensure /iCloud exist
-        mkdir -p /iCloud
-        chown 501:501 /iCloud
+        mkdir -p /iCloud || exit 3
+        chown 501:501 /iCloud || exit 4
+
         # If not on iSH - set /etc/hostname
-        echo "{{ (ift_hostname | default('iSH') | trim) + '\n' }}" > /etc/hostname
+        echo "{{ (ift_hostname | default('iSH') | trim) }}" > /etc/hostname || exit 5
     fi
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
-
-- name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   # become: true

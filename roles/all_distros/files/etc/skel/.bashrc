@@ -59,6 +59,7 @@ if ! shopt -oq posix; then
     fi
 fi
 
+bash_prompt_colors
 if [[ -f $HOME/.no-sysload-available ]]; then
     # Debian 10 can't display sysload on iSH...
     use_static_bash_prompt

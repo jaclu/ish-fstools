@@ -50,6 +50,7 @@ set_current_shell_name() {
             CURRENT_SHELL="$(basename "$(readlink /proc/$$/exe)")" || {
                 CURRENT_SHELL="" # unknown
             }
+            [ "$CURRENT_SHELL" = "busybox" ] && CURRENT_SHELL="ash"
         fi
     fi
 }
@@ -114,6 +115,21 @@ prompt_colors() {
     fi
 }
 
+bash_prompt_colors() {
+    #
+    #  Since Ash also uses the Bash style prompt, it is defined here
+    #  so that Ash also can use it
+    #
+    prompt_colors
+
+    #  shell specific notation for prompt colors
+    PCOL_USERNAME="\[\e[38;5;${PCOL_USERNAME}m\]"
+    PCOL_HOSTNAME="\[\e[38;5;${PCOL_HOSTNAME}m\]"
+    PCOL_CWD="\[\e[38;5;${PCOL_CWD}m\]"
+    PCOL_GREY="\[\e[38;5;${PCOL_GREY}m\]"
+    PCOL_CLR="\e[0m"
+}
+
 get_sysload_lvl() {
     # Debian 10 can't display sysload on iSH...
     sysload_not_available="$HOME/.no-sysload-available"
@@ -121,7 +137,13 @@ get_sysload_lvl() {
         echo
         return
     }
-    _sysload="$(uptime | awk -F'average:' '{print $2}' | awk -F, '{print $1}' | tr -d ' ')"
+    custom_uptime=/usr/local/bin/sysload
+    if [ -f "$custom_uptime" ]; then
+        _sysload="$($custom_uptime -l | cut -d',' -f 1)"
+    else
+        _sysload="$(uptime | awk -F'average:' '{print $2}' | \
+            awk -F, '{print $1}' | tr -d ' ')"
+    fi
     [ "$_sysload" = "0.00" ] && {
         touch "$sysload_not_available"
         echo
@@ -148,28 +170,12 @@ get_sysload_lvl() {
 }
 
 use_static_bash_prompt() {
-    #
-    #  Since Ash also uses the Bash style prompt, it is defined here
-    #  so that Ash also can use it
-    #
-    prompt_colors
-
-    #  shell specific notation for prompt colors
-    PCOL_USERNAME="\[\e[38;5;${PCOL_USERNAME}m\]"
-    PCOL_HOSTNAME="\[\e[38;5;${PCOL_HOSTNAME}m\]"
-    PCOL_CWD="\[\e[38;5;${PCOL_CWD}m\]"
-    PCOL_GREY="\[\e[38;5;${PCOL_GREY}m\]"
-    PCOL_CLR="\e[0m"
-
     PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn}${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 
 use_dynamic_bash_prompt() {
-    use_static_bash_prompt # call to get the colors defined
-    PROMPT_COMMAND='update_dynamic_bash_prompt;'"$PROMPT_COMMAND"
-}
-
-update_dynamic_bash_prompt() {
+    # use_static_bash_prompt # call to get the colors defined
+    # PROMPT_COMMAND='update_dynamic_bash_prompt;'"$PROMPT_COMMAND"
     PS1="${PCOL_USERNAME}\u${PCOL_GREY}@${PCOL_HOSTNAME}${_hn} ${PCOL_GREY}$(get_sysload_lvl)${PCOL_GREY}:${PCOL_CWD}\w${PCOL_CLR}\$ "
 }
 

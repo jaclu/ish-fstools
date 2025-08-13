@@ -22,14 +22,19 @@ echo "$-" | grep -qv 'i' && return # non-interactive
 #  So shell specific init can override anything in there
 #
 if [ -f ~/.common_rc ]; then
-    #  shellcheck source=/opt/ish-fstools/roles/all_distros/files/etc/skel/.common_rc
+    # shellcheck source=/opt/ish-fstools/roles/all_distros/files/etc/skel/.common_rc
     . ~/.common_rc
 fi
 
 #
-#  Ash can use the bash prompt, but doesn't support dynamic prompt
+#  dynamic prompt displays sysload
 #
-use_static_bash_prompt
+bash_prompt_colors
+
+use_dynamic_bash_prompt
+# use_static_bash_prompt
+
+
 
 #
 #  To make it possible to see what shell is used atm, ash tries
