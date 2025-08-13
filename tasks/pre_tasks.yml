@@ -1,0 +1,18 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+
+# - name: "Show version"
+#   ansible.builtin.debug:
+#     msg: "vers_ift = {{ vers_ift }}"
+
+- name: Load override variables
+  ansible.builtin.import_tasks: tasks/load_overrides.yml
+
+- name: Verify parameters
+  ansible.builtin.import_tasks: tasks/param_check.yml

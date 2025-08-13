@@ -9,10 +9,11 @@
 #  Role: preparational_steps - main tasks
 #
 
-- name: Ensure iSH can run in the background
+- name: Ensure iSH can run in the background & Some folders
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed
   ansible.builtin.shell: |
+    mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}"
     if [ -d /proc/ish ]; then
         gps_device=/dev/location
 
@@ -37,45 +38,20 @@
         fi
         rm -f "$tmp_file"
         exit "$ex_code"
+    else
+        # If not on iSH - Ensure /iCloud exist
+        mkdir -p /iCloud
+        chown 501:501 /iCloud
+        # If not on iSH - set /etc/hostname
+        echo "{{ (ift_hostname | default('iSH') | trim) + '\n' }}" > /etc/hostname
     fi
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
 
-- name: Ensure required directories exist
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-  loop:
-    - "{{ d_etc_ift }}"
-    - "{{ d_init_ift }}"
-
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
   when: vars['is_ish'] is not defined
-
-- name: If not on iSH - Ensure /iCloud exist
-  ansible.builtin.file:
-    path: /iCloud
-    state: directory
-    owner: 501
-    group: 501
-    mode: "0700"
-  when:
-    - not is_ish
-
-- name: If not on iSH - set /etc/hostname to {{ ift_hostname | default('iSH') | trim }}
-  ansible.builtin.copy:
-    content: "{{ (ift_hostname | default('iSH') | trim) + '\n' }}"
-    dest: /etc/hostname
-    owner: root
-    group: root
-    mode: "0644"
-  when:
-    - not is_ish
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   # become: true
@@ -87,16 +63,18 @@
     - ansible_os_family == 'Alpine'
     - ansible_distribution_version is version(ift_alpine_testing_repo_minv, '>=')
 
+- name: Install crucial apps needed for deploy (Alpine)
+  ansible.builtin.include_tasks: tasks/handle_apk.yml
+  vars:
+    apk_upgrade: 1
+    apk_add: "{{ crucial_apps }}"
+  when: ansible_os_family == 'Alpine'
+
 - name: Package upgrade
   ansible.builtin.package:
     update_cache: true
     upgrade: true
-
-- name: Install crucial apps needed for deploy (Alpine)
-  ansible.builtin.include_tasks: tasks/install_apk.yml
-  vars:
-    apk_packages: "{{ crucial_apps }}"
-  when: ansible_os_family == 'Alpine'
+  when: ansible_os_family != 'Alpine'
 
 - name: Install crucial apps needed for deploy (Non Alpine)
   ansible.builtin.package:

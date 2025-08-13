@@ -1,0 +1,83 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  This task is idempotent, and will detect any install failure, no such package etc
+#
+#  This uses apk directly instead of using ansible.builtin.package or community.general.apk
+#  both those are ridiculously slow since for each package to be installed,
+#  they both first call: /sbin/apk -v info --description <package name>
+#  And on iSH, which is really slow to start, running several extra apk calls,
+#  really slow things down...
+#
+#  Comparison on my iPad, installing 40 packages:
+#  - community.general.apk - 11m 11s  - repeated run: 8m 36s
+#  - This direct apk usage - 3m10s    - repeated run: 44s
+#
+#  Variables used:
+#   apk_upgrade   - if 1 then apk upgrade will first be done
+#   apk_add       - list of packages to install
+#   apk_del       - list of packages to delete
+
+- name: Handle apk - Fail if handle_apk.yml is not running on Alpine
+  ansible.builtin.fail:
+    msg: "This role only supports Alpine Linux"
+  when: ansible_os_family != 'Alpine'
+
+- name: Handle apk - Fail if no packages are defined
+  ansible.builtin.fail:
+    msg: "No packages defined to install. Please set apk_add variable."
+  when: apk_add is not defined or (apk_add | length) == 0
+
+- name: Handle apk - Default delete list to be empty
+  ansible.builtin.set_fact:
+    apk_del: ""
+  when: vars['apk_del'] is not defined
+
+- name: Handle apk - Default upgrade to not take place
+  ansible.builtin.set_fact:
+    apk_upgrade: 0
+  when: vars['apk_upgrade'] is not defined
+
+- name: Handle apk - List what will be installed
+  ansible.builtin.debug:
+    msg:
+      "{{ apk_add }}"
+
+- name: Handle apk - List what will be removed
+  ansible.builtin.debug:
+    msg: "{{ apk_del }}"
+  when: apk_del != ""
+
+- name: Handle apk - Install selected packages using apk directly (much faster)
+  ansible.builtin.shell: |
+    if [ "{{ apk_upgrade }}" = "1" ]; then
+      apk upgrade || exit 1
+    fi
+    apk add --no-progress {{ apk_add | join(' ') }} || exit 2
+    if [ -n "{{ apk_del }}" ]; then
+      echo "apk_del: [{{ apk_del }}]"
+      apk del --no-progress {{ apk_del | join(' ') }} || exit 3
+    fi
+  args:
+    executable: /bin/sh
+  register: apk_result
+  changed_when: >
+    apk_result.rc == 0 and
+    (
+      apk_result.stdout is search('Installing')
+      or apk_result.stdout is search('Upgrading')
+      or apk_result.stdout is search('Purging')
+    )
+  failed_when: >
+    (apk_result.rc | int != 0) or
+    ('ERROR' in (apk_result.stderr | default('')))
+
+# - name: Display apk_result
+#   ansible.builtin.debug:
+#     msg: "{{ apk_result }}"

@@ -23,15 +23,8 @@
   hosts: "{{ target_hosts | default('localhost') }}"
 
   pre_tasks:
-    - name: "Show version"
-      ansible.builtin.debug:
-        msg: "vers_ift = {{ vers_ift }}"
-
     - name: Load override variables
-      ansible.builtin.import_tasks: tasks/load_overrides.yml
-
-    - name: Verify parameters
-      ansible.builtin.import_tasks: tasks/param_check.yml
+      ansible.builtin.import_tasks: tasks/pre_tasks.yml
 
   roles:
     - role: preparational_steps
@@ -39,6 +32,6 @@
       when: ansible_os_family == 'Alpine'
     - role: all_distros
 
-  tasks:
+  post_tasks:
     - name: Run tasks/update_release.yml
       ansible.builtin.import_tasks: tasks/update_release.yml

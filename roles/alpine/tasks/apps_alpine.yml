@@ -10,10 +10,15 @@
 #  Install selected Alpine apps
 #
 
+- name: Check if this is iSH
+  ansible.builtin.include_tasks: tasks/is_ish.yml
+  when: vars['is_ish'] is not defined
+
 - name: Install selected packages
-  ansible.builtin.include_tasks: tasks/install_apk.yml
+  ansible.builtin.include_tasks: tasks/handle_apk.yml
   vars:
-    apk_packages: "{{ ift_alpine_packages }}"
+    apk_add: "{{ ift_alpine_packages }}"
+    apk_del: "{{ ['ansible'] if is_ish else '' }}"
   when: ift_alpine_packages is defined and ift_alpine_packages | length > 0
 
 - name: "Install old IP# able mtr 0.92-a"
@@ -42,16 +47,6 @@
   changed_when: alpine_old_mtr.rc == 43
   failed_when: alpine_old_mtr.rc not in [0, 43]
   when: ift_use_old_mtr
-
-- name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
-
-- name: "Remove ansible if this is iSH - can't be used there..."
-  ansible.builtin.package:
-    state: absent
-    name: ansible
-  when: is_ish | default(false)
 
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
   # The procps uptime throws Segmentation fault on iSH
