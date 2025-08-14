@@ -199,7 +199,6 @@ recovery_mode_trigger() {
         error_msg "recovery_mode_trigger($1) - called when recovery is not active"
         return
     }
-    echo "><> recovery_mode_trigger($1)"
     f_recovery_mode_log=/var/log/recovery-mode.log
     recovery_mode_disable silent
     trap '' INT # abort capturing Ctrl-C
@@ -570,12 +569,11 @@ login_with_param_check() {
     #
     #  Do this for each login, in case changes have been made
     #
-    log_display "login_with_param_check() ignore_login_params: $ignore_login_params"
+    # log_display "login_with_param_check() ignore_login_params: $ignore_login_params"
     login_ex_code=0
     if [ "$ignore_login_params" != "1" ] &&
         [ -f "$f_login_default_user" ]; then
 
-        log_display "><> ignore_login_params not 1"
         def_user="$(cat "$f_login_default_user")"
         [ -n "$def_user" ] && {
             cut -d: -f 1 /etc/passwd | grep -qw "$def_user" || {
@@ -602,8 +600,6 @@ login_with_param_check() {
 
         recovery_mode_disable login_param_checks
         log_display "Starting login with params: [$login_params]" noecho
-        #log_display "><> $(date) login with params: $f_login_prog $login_params"
-        # /usr/local/bin/network-check
         # shellcheck disable=SC2086  # in this case variable should expand
         $f_login_prog $login_params || {
             login_ex_code="$?"
