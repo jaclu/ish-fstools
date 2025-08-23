@@ -33,9 +33,25 @@ lbl_2() {
     log_it "---  $1"
 }
 
+fs_is_alpine() {
+    test -f /etc/alpine-release
+}
+
+fs_is_debian() {
+    test -f /etc/debian_version && ! fs_is_devuan
+}
+
 install_ansible() {
     lbl_1 "Install Ansible"
-    apk add ansible || err_msg "Failed to install ansible"
+    if fs_is_alpine; then
+	apk add ansible || err_msg "Failed to: apk add ansible"
+    elif fs_is_debian; then
+	if ! command -v ansible; then
+	    cp "$d_repo/roles/debian/files/etc/apt/sources.list" /etc/apt
+	    apt update
+	    apt -y install ansible || err_msg "Failed to: apt install ansible"
+	fi
+    fi
 }
 
 do_ansible() {
@@ -62,6 +78,14 @@ do_ansible() {
     lbl_1 "Running $playbook on localhost"
     ansible-playbook "$playbook" -e target_hosts=local # -vvvvvv
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+d_repo="$(dirname "$0")"
 
 quick_mode=0
 
