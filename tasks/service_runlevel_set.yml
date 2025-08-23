@@ -46,7 +46,7 @@
   changed_when: srvc_remove_from_undesired_runlevels.rc == 43
   failed_when: srvc_remove_from_undesired_runlevels.rc not in [0, 43]
 
-# - name: "Show srvc_remove_from_undesired_runlevels"
+# - name: "Service runlevel - Show remove from other runlevels"
 #   ansible.builtin.debug:
 #     msg: "{{ srvc_remove_from_undesired_runlevels }}"
 
@@ -70,6 +70,6 @@
     - srvc_runlevel is defined
     - srvc_runlevel | length > 0
 
-# - name: "Show srvc_ensure_enabled"
+# - name: "Service runlevel - Show enabled runlevel"
 #   ansible.builtin.debug:
 #     msg: "{{ srvc_ensure_enabled }}"
