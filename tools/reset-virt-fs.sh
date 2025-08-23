@@ -135,6 +135,16 @@ sync_fs_tools() {
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.21-py-3.12.1.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
 
+    sync_something "olint venv" \
+        "rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/25-07-25.tgz \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
+
+    sync_something "asdf env" \
+        "rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
+
     sync_something "jed" \
         "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
@@ -146,6 +156,9 @@ sync_fs_tools() {
         --exclude=.ansible/ \
         --delete-delay \
         /opt/ish-fstools $AOK_TMPDIR/aok_fs/root"
+
+    chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
+
     # override the softlink with actual file
     f_overrides="$AOK_TMPDIR/aok_fs/root/ish-fstools/vars/overrides.yml"
     lbl_2 "Will replace softlink with real file: $f_overrides"
@@ -201,6 +214,9 @@ if [ "$1" = "clear" ]; then
     else
         fs_saved="" # force creation of fresh FS
     fi
+elif [ "$1" = "debian" ]; then
+    do_clear=true
+    fs_saved=/home/jaclu/cloud/Dropbox/aok_images/Debian10-minim-12.tgz
 else
     do_clear=false
 fi
