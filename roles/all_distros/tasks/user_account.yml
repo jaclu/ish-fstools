@@ -95,10 +95,3 @@
   failed_when: >
     'ERROR' in all_distros_autologin_result.stdout or
     all_distros_autologin_result.rc not in [0, 43]
-
-- name: "Change ownership of /opt/ish-fstools to {{ ift_user_name }}"
-  ansible.builtin.file:
-    path: /opt/ish-fstools
-    owner: "{{ ift_user_name }}"
-    group: "{{ ift_user_name }}"
-    recurse: true
