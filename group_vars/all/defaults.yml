@@ -80,6 +80,7 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   - coreutils  # The basic file, shell and text manipulation utilities
   - diffutils  # Show differences among files
   - file  # File type identification utility
+  - findutils # GNU utilities for finding files
   - gawk  # GNU awk pattern-matching language
   - git  # Distributed version control system
   - pigz  # Parallel implementation of gzip
