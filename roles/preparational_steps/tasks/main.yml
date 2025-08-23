@@ -9,6 +9,12 @@
 #  Role: preparational_steps - main tasks
 #
 
+# - name: Show variables
+#  ansible.builtin.debug:
+#    msg: |
+#      d_etc_ift = {{ d_etc_ift }}
+#      d_init_ift = {{ d_init_ift }}
+
 - name: Ensure iSH can run in the background & Some prep tasks
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed
@@ -46,7 +52,7 @@
         chown 501:501 /iCloud || exit 4
 
         # If not on iSH - set /etc/hostname
-        echo "{{ (ift_hostname | default('iSH') | trim) }}" > /etc/hostname || exit 5
+        echo "{{ (ift_hostname | default('iSH')) }}" > /etc/hostname || exit 5
     fi
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
@@ -94,6 +100,8 @@
       fi
     else
       git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 4
+      # Make the owner the iCloud ID
+      chown 501:501 -R /opt/ish-fstools || exit 5
     fi
   args:
     executable: /bin/sh
