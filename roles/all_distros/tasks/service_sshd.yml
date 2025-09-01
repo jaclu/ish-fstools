@@ -32,6 +32,12 @@
     line: 'Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools'
   when: ift_port_sshd is defined and ift_port_sshd != ""
 
+- name: " sshd - Set /etc/ssh/sshd_config AcceptEnv"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    # regexp: '^\#Port '
+    line: 'AcceptEnv LANG TERM_* LC_* XPC_*'
+
 - name: "Set runlevel for sshd"
   ansible.builtin.include_tasks: tasks/service_runlevel_set.yml
   vars:
