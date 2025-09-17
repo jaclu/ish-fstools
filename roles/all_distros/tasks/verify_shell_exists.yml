@@ -10,14 +10,20 @@
 #  Verify shell exists
 #
 
+- name: "Show ift_shell"
+  ansible.builtin.debug:
+    msg: "{{ ift_shell }}"
+
 - name: Check if requested shell exists
   ansible.builtin.stat:
     path: "{{ ift_shell }}"
   register: all_distros_shell_path
+  when:
+    - (ift_shell | default('') | length) > 0
 
 - name: Abort if requested shell does not exist
   ansible.builtin.fail:
     msg: "Shell defined in ift_shell does not exist: {{ ift_shell }}"
   when:
-    - ift_shell is defined
+    - (ift_shell | default('') | length) > 0
     - not all_distros_shell_path.stat.exists
