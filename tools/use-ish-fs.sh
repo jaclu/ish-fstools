@@ -151,7 +151,7 @@ sync_playbook() {
         "$d_ish_fs/iCloud/deploy/sshd_config/"
 
     sync_something "my_tmux_cond venv Alpine" \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.21-py-3.12.1.tgz \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.22.1-py-3.12.11.tgz \
         "$d_ish_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
     sync_something "jed" \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
