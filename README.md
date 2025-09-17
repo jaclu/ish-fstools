@@ -2,16 +2,16 @@
 
 Provides a more complete Linux-like CLI environment on iSH by:
 
-- Adding iSH-specific utilities to `/usr/local/bin` and `/usr/local/sbin`  
-- Supplying a custom `/etc/inittab` and application launcher to address iSH quirks  
-- Allowing extensive user configuration (e.g., which apps to install)  
-- Supporting deployment via Ansible  
+- Adding iSH-specific utilities to `/usr/local/bin` and `/usr/local/sbin`
+- Supplying a custom `/etc/inittab` and application launcher to address iSH quirks
+- Allowing extensive user configuration (e.g., which apps to install)
+- Supporting deployment via Ansible
 
 ## Preparation
 
 ### iSH Node Setup
 
-This step is required only if deploying directly to the iSH device via Ansible.  
+This step is required only if deploying directly to the iSH device via Ansible.
 If you prepare the filesystem in a chroot environment, you can deploy that filesystem
 directly.
 
@@ -19,17 +19,17 @@ directly.
 
 1. Download a recent Alpine minirootfs image, for example:
 
-    ```sh
-    https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
-    ```
+   ```sh
+   https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
+   ```
 
 2. Transfer the image to the iOS device (via iCloud or similar if downloaded elsewhere).
 3. In the iSH app, go to `Settings → Filesystems → Import`, select the minirootfs,
-then choose `Boot From This Filesystem`.
+   then choose `Boot From This Filesystem`.
 
 #### Configuring SSH Server on the New Filesystem
 
-Follow instructions here:  
+Follow instructions here:
 `https://github.com/ish-app/ish/wiki/Running-an-SSH-server`
 
 ### Deploy Node Setup
@@ -44,12 +44,12 @@ cp conf_templates/overrides.yml vars/
 
 ## Configuration Files
 
-- `inventory.ini`  
-Required for both remote and chroot-based deployments. For remote deployment,
-add each iSH node under the `[servers]` section using the provided name and IP
-address templates.
-For chroot-based deployment, this file must be present but typically does not require
-modification.
+- `inventory.ini`
+  Required for both remote and chroot-based deployments. For remote deployment,
+  add each iSH node under the `[servers]` section using the provided name and IP
+  address templates.
+  For chroot-based deployment, this file must be present but typically does not require
+  modification.
 - `vars/overrides.yml` Edit this file to customize deployment parameters.
 
 ## Deployment
@@ -61,6 +61,19 @@ Run the deployment script:
 ```sh
 ./handle_servers.sh
 ```
+
+### Old Chroot Deployment
+
+```sh
+./tools/reset-virt-fs.sh clear ansible
+/opt/AOK/tools/do_chroot.sh /bin/login -f root
+```
+
+Then use up arrow:
+
+- 1 for: time /root/ish-fstools/handle_localhost.sh
+- 2 for: time /root/ish-fstools/my-ish-fs/handle_localhost.sh
+- 3 for both
 
 ### Chroot Deployment
 
