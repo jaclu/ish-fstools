@@ -52,3 +52,6 @@
     # - role: alpine
     #   when: ansible_os_family == 'Alpine'
     - role: all_distros
+  # post_tasks:
+  #   - name: Run tasks/update_release.yml
+  #     ansible.builtin.import_tasks: tasks/update_release.yml
