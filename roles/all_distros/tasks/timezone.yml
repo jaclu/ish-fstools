@@ -27,7 +27,7 @@
   ansible.builtin.fail:
     msg: "Timezone {{ ift_timezone }} set but tzdata missing. Install tzdata."
   when:
-    - (ift_timezone | default('') | length) > 0
+    - ift_timezone | default('') | length > 0
     - not all_distros_tzdata.stat.exists
 
 - name: Timezone - Set system timezone to {{ ift_timezone }}
@@ -36,5 +36,5 @@
     dest: /etc/localtime
     state: link
   when:
-    - (ift_timezone | default('') | length) > 0
+    - ift_timezone | default('') | length > 0
     - all_distros_tzdata.stat.exists

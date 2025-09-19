@@ -49,7 +49,7 @@
     gid: 501
     state: present
     force: true
-  when: (ift_user_name | default('') | length) > 0
+  when: ift_user_name | default('') | length > 0
 
 - name: User acct - Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
   ansible.builtin.user:
@@ -62,8 +62,8 @@
     force: true  # forces update of existing user attributes, including shell
     password: ''  # ← explicitly sets empty password, avoids '!' in /etc/shadow
   when:
-    - (ift_user_name | default('') | length) > 0
-    - (ift_shell | default('') | length) > 0
+    - ift_user_name | default('') | length > 0
+    - ift_shell | default('') | length > 0
 
 - name: User acct - Check current shell for {{ ift_user_name }}
   ansible.builtin.command: getent passwd "{{ ift_user_name }}"
@@ -73,8 +73,8 @@
 - name: User acct - Set shell for {{ ift_user_name }}
   ansible.builtin.command: chsh -s "{{ ift_shell }}" "{{ ift_user_name }}"
   when:
-    - (ift_user_name | default('') | length) > 0
-    - (ift_shell | default('') | length) > 0
+    - ift_user_name | default('') | length > 0
+    - ift_shell | default('') | length > 0
     - all_distros_passwd_line.stdout.split(':')[6] != ift_shell
   changed_when: true
 
@@ -89,7 +89,7 @@
     fi
   args:
     executable: /bin/bash
-  when: (ift_user_name | default('') | length) > 0
+  when: ift_user_name | default('') | length > 0
   register: all_distros_autologin_result
   changed_when: "all_distros_autologin_result.rc == 0"
   failed_when: >

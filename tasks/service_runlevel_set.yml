@@ -17,7 +17,7 @@
 - name: "Service runlevel - Fail if srvc_name is not defined"
   ansible.builtin.fail:
     msg: "No service defined. Please set srvc_name variable."
-  when: srvc_name is not defined or (srvc_name | length) == 0
+  when: srvc_name is not defined or srvc_name | length == 0
 
 
 - name: "Service runlevel - Remove from all other runlevels: {{ srvc_name }}"

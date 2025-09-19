@@ -32,7 +32,7 @@
 - name: Handle apk - Fail if no packages are defined
   ansible.builtin.fail:
     msg: "No packages defined to install. Please set apk_add variable."
-  when: apk_add is not defined or (apk_add | length) == 0
+  when: apk_add is not defined or apk_add | length == 0
 
 - name: Handle apk - Default delete list to be empty
   ansible.builtin.set_fact:

@@ -19,7 +19,7 @@
   vars:
     apk_add: "{{ ift_alpine_packages }}"
     apk_del: "{{ ['ansible'] if is_ish else '' }}"
-  when: (ift_alpine_packages | default('') | length) > 0
+  when: ift_alpine_packages | default('') | length > 0
 
 - name: "Install old IP# able mtr 0.92-a"
   ansible.builtin.shell: |

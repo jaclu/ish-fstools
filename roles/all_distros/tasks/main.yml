@@ -11,7 +11,7 @@
 
 - name: Run verify_shell_exists.yml
   ansible.builtin.import_tasks: verify_shell_exists.yml
-  when: (ift_shell | default('') | length) > 0
+  when: ift_shell | default('') | length > 0
 
 - name: Common apps
   ansible.builtin.import_tasks: common_apps.yml
@@ -21,18 +21,18 @@
 
 - name: Run timezone.yml
   ansible.builtin.import_tasks: timezone.yml
-  when: (ift_timezone | default('') | length) > 0
+  when: ift_timezone | default('') | length > 0
 
 - name: Run services.yml
   ansible.builtin.import_tasks: services.yml
 
 - name: Run user_account.yml
   ansible.builtin.import_tasks: user_account.yml
-  when: (ift_user_name | default('') | length) > 0
+  when: ift_user_name | default('') | length > 0
 
 - name: Run root_shell.yml
   ansible.builtin.import_tasks: root_shell.yml
-  when: (ift_shell | default('') | length) > 0
+  when: ift_shell | default('') | length > 0
 
 - name: Copy /etc/skel files to root home (without overwrite)
   ansible.builtin.command: cp -ru /etc/skel/. /root/
