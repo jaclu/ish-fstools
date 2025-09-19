@@ -1,7 +1,6 @@
 ---
 
 - name: Debian additional packages
-  become: true
   ansible.builtin.package:
     state: present
     name:
@@ -71,14 +70,15 @@
       #  Other
       #
       # - fortune-mod
+  become: true
   when: ansible_distribution == 'Debian'
 
 
 - name: Alpine additional packages
-  become: true
   ansible.builtin.package:
     state: present
     name: "{{ additional_packages }}"
+  become: true
   vars:
     base_packages:
       #

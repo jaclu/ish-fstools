@@ -1,49 +1,48 @@
 ---
 
 - name: Debian upgrade packages
-  become: true
   ansible.builtin.apt:
     upgrade: true
+  become: true
 
 # no-changed-when: Commands should not change things if nothing needs doing.
 # - name: Debian additional packages
-#   become: true
 #   #
 #   # For performance reqsons, instead of using ansible package tool
 #   # this is done by running an external script
 #   #
 #   ansible.builtin.command: "{{ aok_folder }}/Debian/default_apts.sh"
+#   become: true
 
 - name: Debian iSH-AOK packages
-  become: true
   ansible.builtin.package:
     state: present
     name:
       - nload
+  become: true
   when:
     - is_aok_kernel
 
 - name: Debian Perform autoclean and autoremove
-  become: true
   ansible.builtin.apt:
     autoclean: true
     autoremove: true
+  become: true
 
 - name: Debian Purge residual configuration files
-  become: true
   ansible.builtin.apt:
     purge: true
+  become: true
 
 - name: Debian Check if a reboot is needed.
   ansible.builtin.stat:
     path: /var/run/reboot-required
-  register: reboot_required_file
   when:
     - debian_reboot_if_needed
     - not is_ish
+  register: reboot_required_file
 
 - name: Debian Reboot if needed
-  become: true
   ansible.builtin.reboot:
     msg: 'Reboot initiated by Ansible due to kernel updates'
     connect_timeout: 5
@@ -51,6 +50,7 @@
     pre_reboot_delay: 0
     post_reboot_delay: 30
     test_command: uptime
+  become: true
   when:
     - debian_reboot_if_needed
     - not is_ish

@@ -14,6 +14,6 @@
     connect_timeout: 1
     sleep: 1
     timeout: 1
-  register: result
   until: result is succeeded
   retries: 10  # Number of retries
+  register: result

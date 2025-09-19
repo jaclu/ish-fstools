@@ -36,9 +36,9 @@
 
 - name: Copy /etc/skel files to root home (without overwrite)
   ansible.builtin.command: cp -ru /etc/skel/. /root/
+  # become: true
   args:
     creates: /root/.profile # or any file you expect from skel
-  # become: true
 
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
@@ -58,10 +58,10 @@
     exit "$ex_code"
   args:
     executable: /bin/bash
+  when: is_ish | default(false)
   register: all_distros_launcher
   changed_when: all_distros_launcher.rc == 43
   failed_when: all_distros_launcher.rc not in [0, 43]
-  when: is_ish | default(false)
 
 - name: "Set chroot default command: {{ f_app_ift_launcher }}"
   ansible.builtin.copy:

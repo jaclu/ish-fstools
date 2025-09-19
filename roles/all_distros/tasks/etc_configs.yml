@@ -22,12 +22,12 @@
 #     mode: '0644'
 
 - name: Configs /etc - Install common config files
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
+  # become: true
   loop:
     - environment
     - profile-hints
@@ -45,7 +45,6 @@
   when: all_distros_login_defs_stat.stat.exists
 
 - name: Configs /etc - Copy /etc/skel
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
@@ -53,9 +52,9 @@
     owner: root
     group: root
     mode: '0644'
+  # become: true
 
 - name: Configs /etc - Installing no-pw sudoers group
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
@@ -63,3 +62,4 @@
     owner: root
     group: root
     mode: '0644'
+  # become: true

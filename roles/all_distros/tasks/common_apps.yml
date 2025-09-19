@@ -11,12 +11,12 @@
 #
 
 - name: Common apps - Install extras to /usr/local/lib
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
+  # become: true
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   ansible.builtin.template:
@@ -25,20 +25,20 @@
     mode: '0755'
 
 - name: Common apps - Install extras to  /usr/local/bin
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
+  # become: true
 
 - name: Common apps - Install extras to  /usr/local/sbin
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
+  # become: true
 
 
 - name: "Common apps - Rename Alpine bins -> name.ORG if found, and softlink ours"
@@ -84,8 +84,8 @@
     exit "$ex_code"
   args:
     executable: /bin/bash
+  when: ansible_os_family == 'Alpine'
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
   failed_when:
     - all_distros_bin_replacement.rc not in [0, 43]
-  when: ansible_os_family == 'Alpine'

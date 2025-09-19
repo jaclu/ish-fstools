@@ -14,8 +14,8 @@
 - name: Check for /proc/ish
   ansible.builtin.stat:
     path: /proc/ish
-  register: ish_proc
   when: vars['is_ish'] is not defined
+  register: ish_proc
 
 - name: Set is_ish fact
   ansible.builtin.set_fact:

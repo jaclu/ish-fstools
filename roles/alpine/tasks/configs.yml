@@ -11,9 +11,9 @@
 #
 
 - name: Deploy /etc/inittab
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     mode: preserve
     src: "{{ alpine_d_repo }}/files/etc/inittab"
     dest: /etc/
+  # become: true

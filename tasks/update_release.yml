@@ -15,8 +15,6 @@
   # Do this as late as possible, to only indicate the current
   # version once deploy is done
   #
-  # become: true
-  # become: true
   ansible.builtin.shell: |
     f_rel_vers=/etc/ish-fstools-release
     ex_code=0
@@ -36,6 +34,7 @@
         ex_code=43
     fi
     exit "$ex_code"
+  # become: true
   args:
     executable: /bin/bash
   register: all_distros_rel_vers

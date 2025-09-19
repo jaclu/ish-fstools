@@ -59,11 +59,11 @@
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
-  # become: true
   ansible.builtin.lineinfile:
     path: /etc/apk/repositories
     line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     insertafter: EOF
+  # become: true
   when:
     - ansible_os_family == 'Alpine'
     - ansible_distribution_version is version(ift_alpine_testing_repo_minv, '>=')

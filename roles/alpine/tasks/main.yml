@@ -16,7 +16,6 @@
   ansible.builtin.import_tasks: configs.yml
 
 - name: Service sshd - install service supporting iSH logging
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ alpine_d_repo }}/files/etc/init.d/sshd"
@@ -24,3 +23,4 @@
     owner: root
     group: root
     mode: "0755"
+  # become: true

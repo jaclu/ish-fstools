@@ -106,3 +106,27 @@ Execute:
 Recent versions of `mtr` (post 0.92) cannot resolve DNS names on iSH.
 This repository installs an older version (0.92-a from Alpine 3.10) that supports
 hostname resolution via `/etc/hosts` and IP addresses directly.
+
+## The common task definition order
+
+This aligns with how task output is logged. Ansible prints the task name first,
+then whether it was skipped due to when. register and the others never appear in output
+unless something fails. So people naturally group when closer to the action,
+not with the result logic.
+
+- name:
+- module call:
+- become:
+- become_user:
+- args:
+- delegate_to:
+- run_once:
+- loop:
+- until:
+- retries:
+- delay:
+- delay_factor:
+- when:
+- register:
+- changed_when:
+- failed_when:

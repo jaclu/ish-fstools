@@ -11,7 +11,6 @@
 #
 
 - name: " runbg - Install service"
-  # become: true
   ansible.builtin.copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
@@ -19,6 +18,7 @@
     owner: root
     group: root
     mode: '0755'
+  # become: true
 
 - name: " runbg - Create symbolic link in /etc/init.d"
   ansible.builtin.file:
