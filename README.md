@@ -65,8 +65,7 @@ Run the deployment script:
 ### Old Chroot Deployment
 
 ```sh
-./tools/reset-virt-fs.sh clear ansible
-/opt/AOK/tools/do_chroot.sh /bin/login -f root
+./tools/reset-virt-fs.sh clear ansible && /opt/AOK/tools/do_chroot.sh /bin/login -f root
 ```
 
 Then use up arrow:
