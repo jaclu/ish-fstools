@@ -12,7 +12,7 @@
 
 # debian_reboot_if_needed: false
 
-vers_ift: 0.7.45
+vers_ift: 0.7.46
 
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
