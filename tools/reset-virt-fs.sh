@@ -137,7 +137,7 @@ sync_fs_tools() {
 
     sync_something "olint venv" \
         "rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-09-28.tgz \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-09-29.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
 
     sync_something "asdf env" \
