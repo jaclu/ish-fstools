@@ -152,6 +152,25 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #
   - ca-certificates  # Common CA certificates PEM files from Mozilla
 
+  # #
+  # #  General Build env for Alpine iSH
+  # #
+  # - build-base    # Meta package for build base
+  # - automake      # GNU tool for automatically creating Makefiles
+  # - autoconf      # GNU tool for automatically configuring source code
+  # - bison         # The GNU general-purpose parser generator
+  # - cmake         # Cross-platform, open-source make system
+  # - libtool       # A generic library support script
+  # - bzip2-dev     # A high-quality data compression program
+  # - libevent-dev  # An event notification library
+  # - ncurses-dev   # Console display library
+  # - openssl-dev   # Toolkit for Transport Layer Security (TLS)
+  # - readline-dev  # GNU readline library
+  # - sqlite-dev    # C library that implements an SQL database engine
+  # - xz-dev        # Library and CLI tools for XZ and LZMA compressed files
+  # - zlib-dev      # A compression/decompression Library
+
+
 #
 #  Version dependent packages, 3.17 is ancient by now, but i keep this here as
 #  a template, if later other version dependent deploy decisions might be needed
