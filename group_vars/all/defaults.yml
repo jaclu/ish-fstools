@@ -123,6 +123,9 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #
   #  System info
   #
+  # atop - doesn't work on iSH
+  # btop - doesn't work on iSH
+  # glances - doesn't work on iSH
   - htop  # Interactive process viewer
   - ncdu  # Text-based disk usage viewer
 
