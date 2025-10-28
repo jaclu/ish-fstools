@@ -194,7 +194,7 @@ recovery_mode_probe() {
 recovery_mode_trigger() {
     # First do urgent tasks that are somewhat time sensitive
     touch "$f_recovery_mode"
-    log_display "recovery_mode_trigger()"
+    log_display "recovery_mode_trigger($1)"
     $recovery_mode_active || {
         error_msg "recovery_mode_trigger($1) - called when recovery is not active"
         return
@@ -332,6 +332,16 @@ runlevel_wait() {
         recovery_mode_probe runlevel-wait
         _current_runlevel="$(rc-status -r)"
         if [ "$_current_runlevel" = "$expected_runlevel" ]; then
+
+	    # waiting for openrc to complete runlevel
+	    log_display "Waiting for services to be processed"
+	    while pgrep -f /sbin/openrc-run >/dev/null; do
+		rc-status default  # display progress on console
+		sleep 1
+		recovery_mode_probe openrc-wait
+	    done
+	    rc-status default
+
             # clear before exiting loop
             unset _current_runlevel
             break
@@ -348,7 +358,7 @@ runlevel_wait() {
         [ "$abort_runlevel_wait" = "1" ] && break
     done
     trap '' INT # abort capturing Ctrl-C
-    log_display "runlevel_wait completed, runlevel is now: $(rc-status -r)"
+    log_display "runlevel completed: $(rc-status -r)"
 
 }
 
