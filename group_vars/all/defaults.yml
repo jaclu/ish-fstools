@@ -43,6 +43,9 @@ ift_runlevel_sshd: default   # set to "" if this service is not wanted
 
 ift_port_sshd: 2022  # set to "" if port should not be set
 
+ift_pkgs_devel: false # set to true if devel packages should be used
+ift_pkgs_man: false  # se to true if man pages for everything installed should be used
+
 #
 #  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last
 #  version that supports both DNS and IP# (and thus hosts defined in /etc/hosts)
@@ -185,13 +188,25 @@ _tmp_alpine_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
 #
-#  Generate ift_alpine_packages
+#  General Build env for Alpine iSH, will be included if ift_pkgs_devel is true
+#  in vars/overrides.yml
 #
-ift_alpine_packages: "{{ _tmp_alpine_base_packages +
-  (
-    _tmp_alpine_min_317 if ansible_distribution_version is version('3.17', '>=')
-  )
-  | default([]) }}"
+ift_alpine_pkgs_devel:
+  - build-base    # Meta package for build base
+  - automake      # GNU tool for automatically creating Makefiles
+  - autoconf      # GNU tool for automatically configuring source code
+  - bison         # The GNU general-purpose parser generator
+  - cmake         # Cross-platform, open-source make system
+  - libtool       # A generic library support script
+  - bzip2-dev     # A high-quality data compression program
+  - libevent-dev  # An event notification library
+  # lazygit       doesn't work on iSH
+  - ncurses-dev   # Console display library
+  - openssl-dev   # Toolkit for Transport Layer Security (TLS)
+  - readline-dev  # GNU readline library
+  - sqlite-dev    # C library that implements an SQL database engine
+  - xz-dev        # Library and CLI tools for XZ and LZMA compressed files
+  - zlib-dev      # A compression/decompression Library
 
 #
 #  Min Alpine version when to include the testing repo, typically current and

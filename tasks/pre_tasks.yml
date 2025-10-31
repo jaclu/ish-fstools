@@ -6,13 +6,17 @@
 #  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
+- name: "Add dev apts when ift_pkgs_devel is true"
+  ansible.builtin.set_fact:
+    ift_alpine_packages: >-
+      {{ ift_alpine_packages | union(ift_alpine_pkgs_devel | default([])) }}
+  when:
+    - ift_alpine_pkgs_devel | default('') | length > 0
+    - ift_pkgs_devel is defined and ift_pkgs_devel
+  changed_when: true
 
-# - name: "Show version"
-#   ansible.builtin.debug:
-#     msg: "vers_ift = {{ vers_ift }}"
-
-- name: Load override variables
-  ansible.builtin.import_tasks: tasks/load_overrides.yml
-
-- name: Verify parameters
-  ansible.builtin.import_tasks: tasks/param_check.yml
+- name: Add docs to ift_alpine_packages if ift_pkgs_man is true
+  ansible.builtin.set_fact:
+    ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
+  when: ift_pkgs_man | bool
+  changed_when: true
