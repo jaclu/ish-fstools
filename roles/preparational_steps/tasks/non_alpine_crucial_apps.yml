@@ -1,0 +1,20 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install crucial apps on non Alpine distros
+#
+
+- name: Package upgrade (Non Alpine)
+  ansible.builtin.package:
+    update_cache: true
+    upgrade: true
+
+- name: Install crucial apps needed for deploy (Non Alpine)
+  ansible.builtin.package:
+    state: present
+    name: "{{ crucial_apps }}"

@@ -1,11 +1,58 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
 #  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
+#
+#  Handle overrides, needs to be done as a task instead of inside a role,
+#  in order to be able to set global variables without linting errors
+#
+
+- name: Check if override file exists
+  ansible.builtin.stat:
+    path: vars/overrides.yml
+  delegate_to: localhost
+  run_once: true
+  register: overrides_file
+
+- name: Read overrides file
+  ansible.builtin.set_fact:
+    __override_raw: "{{ lookup('file', 'vars/overrides.yml') }}"
+  delegate_to: localhost
+  run_once: true
+  when: overrides_file.stat.exists
+
+- name: Parse override vars
+  ansible.builtin.set_fact:
+    __override_vars: >-
+      {{
+        (__override_raw | from_yaml)
+          if (__override_raw | trim) != ''
+          else {}
+      }}
+  delegate_to: localhost
+  run_once: true
+  when: __override_raw is defined
+
+- name: Extend ift_alpine_packages with extra packages
+  ansible.builtin.set_fact:
+    ift_alpine_packages: >-
+      {{ (ift_alpine_packages | default([])) +
+         (__override_vars.ift_extra_alpine_packages | default([])) }}
+  delegate_to: localhost
+  run_once: true
+  when: __override_vars is defined
+
+- name: Apply overrides
+  ansible.builtin.set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  delegate_to: localhost
+  run_once: true
+  loop: "{{ __override_vars | dict2items }}"
+  when: __override_vars is defined
+
 - name: Add pkgs for Alpine >= 3.17
   ansible.builtin.set_fact:
     ift_alpine_packages: >-

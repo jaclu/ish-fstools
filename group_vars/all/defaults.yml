@@ -62,13 +62,8 @@ ift_use_old_mtr: true # set to false if not desired
 #  the variable ift_extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
-# NOTICE: put this in vars/overrides.yml
-# ift_extra_alpine_packages:
-#   - gcc
-#   - strace
-#
 
-_tmp_alpine_base_packages: # part of ift_alpine_packages
+ift_alpine_packages:
   #
   #  Shells
   #
@@ -161,25 +156,6 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
   #
   - ca-certificates  # Common CA certificates PEM files from Mozilla
 
-  # #
-  # #  General Build env for Alpine iSH
-  # #
-  # - build-base    # Meta package for build base
-  # - automake      # GNU tool for automatically creating Makefiles
-  # - autoconf      # GNU tool for automatically configuring source code
-  # - bison         # The GNU general-purpose parser generator
-  # - cmake         # Cross-platform, open-source make system
-  # - libtool       # A generic library support script
-  # - bzip2-dev     # A high-quality data compression program
-  # - libevent-dev  # An event notification library
-  # - ncurses-dev   # Console display library
-  # - openssl-dev   # Toolkit for Transport Layer Security (TLS)
-  # - readline-dev  # GNU readline library
-  # - sqlite-dev    # C library that implements an SQL database engine
-  # - xz-dev        # Library and CLI tools for XZ and LZMA compressed files
-  # - zlib-dev      # A compression/decompression Library
-
-
 #
 #  Version dependent packages, 3.17 is ancient by now, but i keep this here as
 #  a template, if later other version dependent deploy decisions might be needed
@@ -210,6 +186,7 @@ ift_alpine_pkgs_devel:
 
 #
 #  Min Alpine version when to include the testing repo, typically current and
-#  perhaps one two prior. If this is intended, set it to a version such as 3.22
+#  perhaps one/two prior works. If this is intended, set it to a version such as 3.22
+#  in vars/overrides.yml
 #
 ift_alpine_testing_repo_minv: 999 # set to 999 to disable the testing repo

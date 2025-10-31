@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -7,43 +6,39 @@
 #
 #  License: MIT
 #
-#  Verifies ift_ params are sane
-#
-#  Since running ansible tasks on an iSH host has a per task overhead of over 10s
-#  it makes sense to abort early if params are unusable
+#  Role: preparational_steps - Verify that params are sane
 #
 
-- name: Check if mtr is in ift_alpine_packages
+- name: Params - Conflicting mtr versions defined
   # Do this before base apks are installed to trigger early abort
   ansible.builtin.fail:
-    msg: "mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
+    msg: "ERROR: mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
   when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
 
-- name: User acct - Fail if ift_user_name is defined, but not ift_shell
+- name: Params - User acct - Fail if ift_user_name is defined, but not ift_shell
   ansible.builtin.fail:
     msg: "ift_shell must be defined when ift_user_name is set"
   when:
     - ift_user_name | default('') | length > 0
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
-- name: Fail if ift_shell is set but shadow not in ift_alpine_packages
+- name: Params - Fail if ift_shell is set but shadow not in ift_alpine_packages
   ansible.builtin.fail:
     msg: "shadow must be in ift_alpine_packages when ift_shell is defined and non-empty"
   when:
     - ift_shell | default('') | length > 0
     - "'shadow' not in (ift_alpine_packages | default([]))"
 
-- name: Fail if ift_runlevel_runbg is set but openrc not in ift_alpine_packages
+- name: Params - Fail if ift_runlevel_runbg is set but openrc not in ift_alpine_packages
   ansible.builtin.fail:
     msg: >
-     shadow must be in ift_alpine_packages when ift_runlevel_runbg is defined
-     and non-empty
+      shadow must be in ift_alpine_packages when ift_runlevel_runbg is defined
+      and non-empty
   when:
     - ift_runlevel_runbg | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([]))"
 
-
-- name: Fail if ift_runlevel_sshd is set but packages missing
+- name: Params - Fail if ift_runlevel_sshd is set but packages missing
   ansible.builtin.fail:
     msg: >
       openrc and (openssh-server or openssh) must be in ift_alpine_packages
@@ -51,10 +46,10 @@
   when:
     - ift_runlevel_sshd | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([])) or
-       ('openssh-server' not in (ift_alpine_packages | default([])) and
-        'openssh' not in (ift_alpine_packages | default([])))"
+      ('openssh-server' not in (ift_alpine_packages | default([])) and
+      'openssh' not in (ift_alpine_packages | default([])))"
 
-- name: Fail if ift_timezone is set but tzdata not in ift_alpine_packages
+- name: Params - Fail if ift_timezone is set but tzdata not in ift_alpine_packages
   ansible.builtin.fail:
     msg: "tzdata must be in ift_alpine_packages when ift_timezone is defined and non-empty"
   when:
