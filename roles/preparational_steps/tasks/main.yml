@@ -89,19 +89,23 @@
 
 - name: Checkout or update ish-fstools
   ansible.builtin.shell: |
-    if [ -d "{{ d_repo }}/.git" ]; then
-      if [ -n "{{ ift_user_name | default('') }}" ] && \
-          id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
+    if [ -n "{{ ift_user_name | default('') }}" ] && \
+        id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
+
+      if [ -d "{{ d_repo }}/.git" ]; then
         # First ensure right ownership of repo
         chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 1
         sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 2
       else
         git -C "{{ d_repo }}" pull || exit 3
+        chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 4
       fi
     else
-      git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 4
-      # Make the owner the iCloud ID
-      chown 501:501 -R /opt/ish-fstools || exit 5
+      if [ -d "{{ d_repo }}/.git" ]; then
+        git -C "{{ d_repo }}" pull || exit 5
+      else
+        git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 6
+      fi
     fi
   args:
     executable: /bin/sh
