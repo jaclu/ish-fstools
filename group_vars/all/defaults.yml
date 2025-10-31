@@ -184,7 +184,7 @@ _tmp_alpine_base_packages: # part of ift_alpine_packages
 #  Version dependent packages, 3.17 is ancient by now, but i keep this here as
 #  a template, if later other version dependent deploy decisions might be needed
 #
-_tmp_alpine_min_317:  # potentially part of ift_alpine_packages
+ift_alpine_pkgs_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
 #
