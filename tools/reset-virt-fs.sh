@@ -170,15 +170,14 @@ prepare_ansible_job_history() {
     lbl_1 "Prpare ansible job history"
     cmd_1="/root/ish-fstools/handle_localhost.sh"
     cmd_2="/root/ish-fstools/my-ish-fs/handle_localhost.sh"
-    f_ash_history="aok_fs/root/.ash_history"
 
-    lbl_2 "prepping $f_ash_history"
+    lbl_2 "prepping $f_history"
     {
         echo "time $cmd_1 && time $cmd_2"
         echo "time $cmd_2"
         echo "time $cmd_1"
-    } >> "$f_ash_history"
-    chmod 600 "$f_ash_history"
+    } >> "$f_history"
+    chmod 600 "$f_history"
 }
 
 save_new_fs() {
@@ -198,6 +197,7 @@ save_new_fs() {
 
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
+f_history="aok_fs/root/.ash_history"
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
@@ -217,6 +217,7 @@ if [ "$1" = "clear" ]; then
 elif [ "$1" = "debian" ]; then
     do_clear=true
     fs_saved=/home/jaclu/cloud/Dropbox/aok_images/Debian10-minim-12.tgz
+    f_history="aok_fs/root/.bash_history"
 else
     do_clear=false
 fi
