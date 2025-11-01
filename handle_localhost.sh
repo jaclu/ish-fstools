@@ -37,6 +37,10 @@ fs_is_alpine() {
     test -f /etc/alpine-release
 }
 
+fs_is_devuan() {
+    test -f /etc/devuan_version
+}
+
 fs_is_debian() {
     test -f /etc/debian_version && ! fs_is_devuan
 }
@@ -44,13 +48,19 @@ fs_is_debian() {
 install_ansible() {
     lbl_1 "Install Ansible"
     if fs_is_alpine; then
-	apk add ansible || err_msg "Failed to: apk add ansible"
+	    apk add ansible || err_msg "Failed to: apk add ansible"
     elif fs_is_debian; then
-	if ! command -v ansible; then
-	    cp "$d_repo/roles/debian/files/etc/apt/sources.list" /etc/apt
-	    apt update
-	    apt -y install ansible || err_msg "Failed to: apt install ansible"
-	fi
+        if ! command -v ansible; then
+            cp "$d_repo"/roles/debian/files/etc/apt/sources.list /etc/apt
+            apt update
+
+            apt -y install python3-venv pipx
+            # pipx install ansible-core==2.11
+            pipx install andible==7.7.0
+
+            # pipx install --include-deps ansible  # Fails needs python 3.9
+
+        fi
     fi
 }
 
