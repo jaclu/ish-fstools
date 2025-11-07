@@ -88,6 +88,7 @@ ift_alpine_packages:
   - findutils # GNU utilities for finding files
   - gawk      # GNU awk pattern-matching language
   - git       # Distributed version control system
+  - jq  # Lightweight and flexible command-line JSON processor
   - mc        # Filemanager/shell that emulates Norton Commander
   - pigz      # Parallel implementation of gzip
   - procps    # Utilities for monitoring your system and processes on
