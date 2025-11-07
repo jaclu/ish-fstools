@@ -1,0 +1,61 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  All distros task
+#
+
+# set_kernel_default() {
+#     _fname="$1"
+#     _param="$2"
+#     _lbl="$3"
+#     _silent="$4"
+
+#     [ -z "$_fname" ] && error_msg "set_kernel_default() - missing param 1 _fname"
+#     [ -z "$_param" ] && error_msg "set_kernel_default($_fname) - missing param 2 _param"
+#     _f="/proc/ish/defaults/$_fname"
+#     [ -f "$_f" ] || error_msg "set_kernel_default($_fname) - No such file: $_f"
+#     is_fs_chrooted && {
+#         error_msg "set_kernel_default($_fnamem) not available when chrooted" -1
+#     }
+
+#     [ -n "$_lbl" ] && msg_3 "$_lbl"
+#     echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
+#     [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
+#         _s="set_kernel_default($_fname,v$_param, $_lbl) -"
+#         _s="$_s param 4 ($_silent) must be unset or silent"
+#         error_msg "$_s"
+#     }
+
+#     _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
+#     if [ "$_setting" = "$_param" ]; then
+#         [ "$_silent" != "silent" ] && msg_4 "$_fname set to: $_setting"
+#     else
+#         error_msg "value is <$_setting> - expected <$_param>"
+#     fi
+
+#     unset _fname
+#     unset _param
+#     unset _lbl
+#     unset _f
+# }
+
+# set_kernel_default font_family '"MesloLGS NF"' \
+#   "Appearance - Font: MesloLGS NF" # doesn't get changed
+# set_kernel_default font_size 14 "Appearance - Font Size: 14"
+# set_kernel_default color_scheme 2  \
+#   "Appearance - color_scheme: 2" # doesn't get changed
+# set_kernel_default hide_status_bar true "Appearance - Always Hide Status Bar"
+# set_kernel_default option_mapping 1 "External keyboard - option -> Meta"
+# set_kernel_default backtick_mapping_escape true \
+#   "External keyboard - Backtick -> Escape"
+# # not available until first set in Settings
+# set_kernel_default override_control_space true \n
+#   "External keyboard - Send ctrl-soace to terminal"
+# set_kernel_default hide_extra_keys_with_external_keyboard true \
+#   "External keyboard - Hide with external keyboard"
+# set_kernel_default disable_dimming true "Keep Screen Turned On"
