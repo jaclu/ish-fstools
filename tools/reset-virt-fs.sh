@@ -100,9 +100,6 @@ replace_fs() {
 sync_something() {
     lbl="$1"
     cmd="$2"
-    echo "><> sync_something($lbl)"
-    echo "><>   $cmd"
-    echo
     [ -z "$cmd" ] && err_msg "sync_something() - no param"
     lbl_2 "$lbl"
     if $do_clear; then
