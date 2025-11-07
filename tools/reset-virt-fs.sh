@@ -62,6 +62,9 @@ unpack_saved_fs() {
 }
 
 create_empty_fs() {
+    miniroot_fs="alpine-minirootfs-3.19.9-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.22.1-x86.tar.gz"
+
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
@@ -71,7 +74,7 @@ create_empty_fs() {
     cd aok_fs || err_msg "Failed to cd into aok_fs"
 
     lbl_2 "recreating alpine-minirootfs"
-    tar xfz ../aok_cache/alpine-minirootfs-3.22.1-x86.tar.gz || {
+    tar xfz ../aok_cache/"$miniroot_fs" || {
 	err_msg "Failed to untar"
     }
 

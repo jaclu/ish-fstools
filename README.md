@@ -21,6 +21,7 @@ directly.
 
    ```sh
    https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86/alpine-minirootfs-3.22.1-x86.tar.gz
+   https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86/alpine-minirootfs-3.19.9-x86.tar.gz
    ```
 
 2. Transfer the image to the iOS device (via iCloud or similar if downloaded elsewhere).
