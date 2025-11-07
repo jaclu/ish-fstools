@@ -23,7 +23,7 @@
   changed_when: all_distros_set_hostname.rc == 43
   failed_when: all_distros_set_hostname.rc not in [0, 43]
 
-- name: Set non iSH node default hostname to iSH
+- name: Set non iSH node default hostname to - iSH
   become: true
   ansible.builtin.copy:
     dest: /etc/hostname
@@ -31,4 +31,6 @@
     owner: root
     group: root
     mode: '0644'
-  when: ift_hostname | default('') | length == 0
+  when:
+    - "'ish' not in ansible_kernel | lower"
+    - ift_hostname | default('') | length == 0

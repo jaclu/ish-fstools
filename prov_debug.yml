@@ -38,20 +38,20 @@
   # #
   # # run specific task inside a role
   # #
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     ansible.builtin.include_role:
-  #       name: all_distros
-  #       tasks_from: service_sshd.yml
+  tasks:
+    - name: Use just one task file from the role
+      ansible.builtin.include_role:
+        name: all_distros
+        tasks_from: set_hostname.yml
 
   #
   # run specific role(-s)
   #
-  roles:
-    - role: preparational_steps
-    # - role: alpine
-    #   when: ansible_os_family == 'Alpine'
-    # - role: all_distros
+  # roles:
+  #   - role: preparational_steps
+  # - role: alpine
+  #   when: ansible_os_family == 'Alpine'
+  # - role: all_distros
   # post_tasks:
   #   - name: Run tasks/update_release.yml
   #     ansible.builtin.import_tasks: tasks/update_release.yml
