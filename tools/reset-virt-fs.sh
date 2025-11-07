@@ -100,6 +100,9 @@ replace_fs() {
 sync_something() {
     lbl="$1"
     cmd="$2"
+    echo "><> sync_something($lbl)"
+    echo "><>   $cmd"
+    echo
     [ -z "$cmd" ] && err_msg "sync_something() - no param"
     lbl_2 "$lbl"
     if $do_clear; then
@@ -160,7 +163,7 @@ sync_fs_tools() {
     chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
 
     # override the softlink with actual file
-    f_overrides="$AOK_TMPDIR/aok_fs/root/ish-fstools/vars/overrides.yml"
+    f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
     lbl_2 "Will replace softlink with real file: $f_overrides"
     rm "$f_overrides"
     cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
@@ -168,8 +171,8 @@ sync_fs_tools() {
 
 prepare_ansible_job_history() {
     lbl_1 "Prpare ansible job history"
-    cmd_1="/root/ish-fstools/handle_localhost.sh"
-    cmd_2="/root/ish-fstools/my-ish-fs/handle_localhost.sh"
+    cmd_1=/root/"$repo_name"/handle_localhost.sh
+    cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
     lbl_2 "prepping $f_history"
     {
@@ -182,8 +185,8 @@ prepare_ansible_job_history() {
 
 save_new_fs() {
     $do_clear && {
-	lbl_1 "Save new FS"
-	lbl_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
+        lbl_1 "Save new FS"
+        lbl_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
         /opt/AOK/tools/aok_fs-save
     }
 }
@@ -195,6 +198,8 @@ save_new_fs() {
 #
 #===============================================================
 
+d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
+repo_name=$(basename "$d_repo")
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
 f_history="aok_fs/root/.ash_history"
