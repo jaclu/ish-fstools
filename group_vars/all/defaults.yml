@@ -62,7 +62,10 @@ ift_use_old_mtr: true # set to false if not desired
 #  the variable ift_extra_alpine_packages, to avoid having to duplicate the entire
 #  ift_alpine_packages
 #
-
+# Items commented out notation:
+#   valid packets, just temporary disabled: # - name
+#   common packets, not working on iSH: # name - doesn't work on iSH
+#
 ift_alpine_packages:
   #
   #  Shells
@@ -140,7 +143,6 @@ ift_alpine_packages:
   #  Terminal / session management
   #
   - tmux  # Tool to control multiple terminals from a single terminal
-  - mtm  # Perhaps the smallest useful terminal multiplexer in the world
   - dvtm  # Dynamic virtual terminal manager
   - abduco  # Session management in a clean and simple way
 
