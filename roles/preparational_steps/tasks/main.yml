@@ -71,6 +71,7 @@
           echo "iSH" > /etc/hostname || exit 5
         }
     fi
+    exit 0
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
