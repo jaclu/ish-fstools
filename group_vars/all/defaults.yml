@@ -17,7 +17,10 @@
 #
 
 #
-#  If unspecified it will default to iSH
+#  If unspecified, hostname will not be set
+#
+#  WARNING: Be aware that this hostname will be set to all hosts,
+#           so only use if a single host is deployed!
 #
 # ift_hostname: NameOfDevice
 

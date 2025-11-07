@@ -7,5 +7,18 @@
 #
 #  License: MIT
 #
-#  Set hostname, if a chroot, use ish- prefix and same hostname
+#  Set hostname, if ift_hostname is defined
 #
+
+- name: "Set hostname - {{ ift_hostname | default('Not specified') }}"
+  ansible.builtin.shell: |
+    set -o pipefail
+    [ "$(/usr/local/bin/hostname)" == "{{ ift_hostname }}" ] && exit 0
+    /usr/local/bin/hostname "{{ ift_hostname }}" | exit 1
+    exit 43
+  args:
+    executable: /bin/sh
+  when: ift_hostname | default('') | length > 0
+  register: all_distros_set_hostname
+  changed_when: all_distros_set_hostname.rc == 43
+  failed_when: all_distros_set_hostname.rc not in [0, 43]

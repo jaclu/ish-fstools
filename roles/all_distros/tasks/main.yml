@@ -44,6 +44,10 @@
   ansible.builtin.include_tasks: tasks/is_ish.yml
   when: vars['is_ish'] is not defined
 
+- name: Run set_hostname.yml
+  ansible.builtin.import_tasks: set_hostname.yml
+  when: ift_hostname | default('') | length > 0
+
 - name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
   ansible.builtin.shell: |
     set -o pipefail
