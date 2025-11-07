@@ -21,9 +21,8 @@ echo "$-" | grep -qv 'i' && return # non-interactive
 #  So shell specific init can override anything in here
 #
 
-#  shellcheck source=/opt/ish-fstools/roles/all_distros/files/etc/skel/.common_rc
 if [[ -f ~/.common_rc ]]; then
-    # shellcheck source=/dev/null
+    # shellcheck source=/dev/null # relative path
     . ~/.common_rc
 fi
 

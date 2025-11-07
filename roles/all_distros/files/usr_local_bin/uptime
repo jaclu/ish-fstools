@@ -282,7 +282,7 @@ app_name="$(basename "$0")"
 # For debugging when not using this FS
 # . /opt/ish-fstools/tools/utils.sh
 
-# shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
+# shellcheck source=/dev/null # not available on deploy machines
 . /usr/local/lib/ift-utils.sh
 
 cmd_org_uptime=/usr/bin/uptime

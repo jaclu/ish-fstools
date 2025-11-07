@@ -21,6 +21,6 @@ echo "$-" | grep -qv 'i' && return # non-interactive
 #  in order to keep the setup in one place
 #
 if [[ -f ~/.bashrc ]]; then
-    # shellcheck source=/opt/ish-fstools/roles/all_distros/files/etc/skel/.bashrc
+    # shellcheck source=/dev/null # relative path
     . ~/.bashrc
 fi

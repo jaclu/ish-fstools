@@ -89,6 +89,7 @@ autologin_change() {
 
     if [ "$uname_autologin" = "disable" ]; then
         # echo "disabling auto-login"
+        # shellcheck disable=SC2154 # f_login_default_user sourced at runtime
         rm -f "$f_login_default_user"
     else
         eval "_h=~$uname_autologin"
@@ -299,6 +300,7 @@ launch_cmd_change() {
     case "$lnch_cmd" in
     "default")
         set_kernel_default launch_command "$launch_cmd_default" "" silent
+        # shellcheck disable=SC2154 # f_pts_0_as_console sourced at runtime
         [ -f "$f_pts_0_as_console" ] && {
             echo
             echo "WARNING: With the default launcher, using console"
@@ -340,6 +342,7 @@ profile_hints_change() {
     [ -z "$hints_mode" ] && {
         error_msg "profile_hints_change() - no param given, options are on/off"
     }
+    # shellcheck disable=SC2154 # f_profile_hints sourced at runtime
     case "$hints_mode" in
     "on") touch "$f_profile_hints" ;;
     "off") rm -f "$f_profile_hints" ;;
@@ -478,7 +481,7 @@ console_mode_display() {
 
 # shellcheck disable=SC1091 # Check is usually done on deploy platform...
 hide_run_as_root=1 . /usr/local/bin/ift-run-as-root.sh
-# shellcheck source=/opt/ish-fstools/roles/all_distros/templates/ift-utils.sh.js2
+# shellcheck source=/dev/null # not available on deploy machines
 . /usr/local/lib/ift-utils.sh
 
 prog_name=$(basename "$0")

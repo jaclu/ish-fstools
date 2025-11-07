@@ -46,7 +46,7 @@ uptime_check() {
         return
     }
 
-    #  shellcheck source=/opt/ish-fstools/roles/all_distros/files/usr_local_lib/ift-vers-check.sh
+    # shellcheck source=/dev/null # not available on deploy machines
     . /usr/local/lib/ift-vers-check.sh
 
     # if older Alpine - all is good

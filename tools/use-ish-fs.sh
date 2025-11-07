@@ -94,7 +94,7 @@ mount_ish_fs() {
     [ -z "$initial_cmd" ] && err_msg "mount_ish_fs() - undefined: initial_cmd"
     is_fs_used && err_msg "mount_ish_fs() - iSH fs is used"
     # shellcheck disable=SC2248  # Suppresses warnings about unquoted variables.
-    sudo chroot "$d_ish_fs" $*
+    sudo chroot "$d_ish_fs" "$@"
     # sudo proot -R "$d_ish_fs" "$initial_cmd"
 }
 
@@ -118,7 +118,7 @@ sync_something() {
     _tmp_log="$(mktemp)"
 
     # shellcheck disable=SC2086  # Suppresses warnings about unquoted variables.
-    sudo rsync -ahP $_ss_rsync_opts "$_ss_src" "$_ss_dst" >"$_tmp_log" 2>&1 || {
+    rsync -ahP $_ss_rsync_opts "$_ss_src" "$_ss_dst" >"$_tmp_log" 2>&1 || {
         cat "$_tmp_log"
         safe_remove "$_tmp_log" "sync_something() - _tmp_log err"
         err_msg "sync_something() failed to rsync from $_ss_src to $_ss_dst"
@@ -156,7 +156,7 @@ sync_playbook() {
     sync_something "jed" \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
         "$d_ish_fs/iCloud/deploy/manual_deploys/installs/"
-    sync_something ish-fstools /opt/ish-fstools "$d_ish_fs/root" \
+    sync_something ish-fstools "$d_repo" "$d_ish_fs/root" \
         "--exclude=.git/ \
         --exclude=.cache.olint \
         --exclude=.ansible/ \
@@ -166,7 +166,7 @@ sync_playbook() {
     f_overrides="$d_ish_fs/root/ish-fstools/vars/overrides.yml"
     msg_3 "Will replace softlink with real file: $f_overrides"
     safe_remove "$f_overrides" "sync_playbook()"
-    sudo cp "$(realpath /opt/ish-fstools/vars/overrides.yml)" "$f_overrides" || {
+    sudo cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides" || {
         err_msg "sync_playbook() - Failed to replace $f_overrides"
     }
 }
@@ -180,9 +180,9 @@ sync_playbook() {
 ALPINE_VERSION="3.22.1"
 
 app_name="$(basename "$0")"
-d_repo="$(dirname -- "$(dirname -- "$(realpath "$0")")")"
-
-. "$d_repo/tools/utils.sh"
+d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
+# shellcheck disable=SC1091 # relative path
+. "$d_repo"/tools/utils.sh
 
 d_prefix="$TMPDIR/ish-fstools"
 d_miniroot_fs_cache="$d_prefix/miniroot_fs_cache"
