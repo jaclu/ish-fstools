@@ -66,8 +66,10 @@
         mkdir -p /iCloud || exit 3
         chown 501:501 /iCloud || exit 4
 
-        # If not on iSH - set /etc/hostname to iSH
-        echo "iSH" > /etc/hostname || exit 5
+        [ -z "{{ ift_hostname }}" ] && {
+          # If not on iSH - set default hostname to iSH
+          echo "iSH" > /etc/hostname || exit 5
+        }
     fi
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
