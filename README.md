@@ -98,7 +98,7 @@ cp -av ish-fstools chroot-FS/opt
 Execute:
 
 ```sh
-/opt/ish-fstools/handle_localhost.sh
+/root/ish-fstools/handle_localhost.sh
 ```
 
 ## Notes on `mtr` (My traceroute)
@@ -130,3 +130,8 @@ not with the result logic.
 - register:
 - changed_when:
 - failed_when:
+
+## Debian
+
+qemu-img create -f qcow2 debian10.qcow2 20G
+qemu-system-x86_64 -cdrom ~/cloud/Dropbox/aok_images/debian10.iso -hda debian10.qcow2 -m 1024

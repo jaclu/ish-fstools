@@ -155,7 +155,7 @@ sync_fs_tools() {
         --exclude=.cache.olint \
         --exclude=.ansible/ \
         --delete-delay \
-        /opt/ish-fstools $AOK_TMPDIR/aok_fs/root"
+        $d_repo $AOK_TMPDIR/aok_fs/root"
 
     chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
 
@@ -163,7 +163,7 @@ sync_fs_tools() {
     f_overrides="$AOK_TMPDIR/aok_fs/root/ish-fstools/vars/overrides.yml"
     lbl_2 "Will replace softlink with real file: $f_overrides"
     rm "$f_overrides"
-    cp "$(realpath /opt/ish-fstools/vars/overrides.yml)" "$f_overrides"
+    cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
 }
 
 prepare_ansible_job_history() {

@@ -96,9 +96,9 @@
     'ERROR' in all_distros_autologin_result.stdout or
     all_distros_autologin_result.rc not in [0, 43]
 
-- name: Ensure /opt/ish-fstools is owned by UID 501 and GID 501
+- name: Ensure ish-fstools is owned by UID 501 and GID 501
   ansible.builtin.file:
-    path: /opt/ish-fstools
+    path: "{ d_repo }"
     owner: "{{ift_user_name }}"
     group: "{{ift_user_name }}"
     recurse: true
