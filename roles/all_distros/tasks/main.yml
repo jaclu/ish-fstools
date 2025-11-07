@@ -18,7 +18,6 @@
 
 - name: Run set_hostname.yml
   ansible.builtin.import_tasks: set_hostname.yml
-  when: ift_hostname | default('') | length > 0
 
 - name: Configs for /etc
   ansible.builtin.import_tasks: etc_configs.yml
