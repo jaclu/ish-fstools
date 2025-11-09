@@ -70,7 +70,6 @@
       #  Other
       #
       # - fortune-mod
-  become: true
   when: ansible_distribution == 'Debian'
 
 
@@ -78,7 +77,6 @@
   ansible.builtin.package:
     state: present
     name: "{{ additional_packages }}"
-  become: true
   vars:
     base_packages:
       #

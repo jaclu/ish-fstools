@@ -27,7 +27,6 @@
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
-  # become: true
   loop:
     - environment
     - profile-hints
@@ -52,7 +51,6 @@
     owner: root
     group: root
     mode: '0644'
-  # become: true
 
 - name: Configs /etc - Installing no-pw sudoers group
   ansible.builtin.copy:
@@ -62,4 +60,3 @@
     owner: root
     group: root
     mode: '0644'
-  # become: true

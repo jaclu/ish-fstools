@@ -24,7 +24,6 @@
   failed_when: all_distros_set_hostname.rc not in [0, 43]
 
 - name: Set non iSH node default hostname to - iSH
-  become: true
   ansible.builtin.copy:
     dest: /etc/hostname
     content: "iSH\n"

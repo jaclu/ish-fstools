@@ -16,7 +16,6 @@
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
-  # become: true
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   ansible.builtin.template:
@@ -30,7 +29,6 @@
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
-  # become: true
 
 - name: Common apps - Install extras to  /usr/local/sbin
   ansible.builtin.copy:
@@ -38,7 +36,6 @@
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
-  # become: true
 
 
 - name: "Common apps - Rename Alpine bins -> name.ORG if found, and softlink ours"

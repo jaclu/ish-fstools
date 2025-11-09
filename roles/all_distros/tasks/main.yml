@@ -39,7 +39,6 @@
 
 - name: Copy /etc/skel files to root home (without overwrite)
   ansible.builtin.command: cp -ru /etc/skel/. /root/
-  # become: true
   args:
     creates: /root/.profile # or any file you expect from skel
 

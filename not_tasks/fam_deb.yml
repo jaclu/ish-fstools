@@ -6,7 +6,6 @@
 #     remote_src: true
 #     src: "{{ aok_folder }}/FamDeb/usr_local_bin/"
 #     dest: /usr/local/bin/
-#   become: true
 
 # - name: Debian /usr/local/sbin
 #   ansible.builtin.copy:
@@ -14,4 +13,3 @@
 #     remote_src: true
 #     src: "{{ aok_folder }}/FamDeb/usr_local_sbin/"
 #     dest: /usr/local/sbin/
-#   become: true

@@ -34,7 +34,6 @@
         ex_code=43
     fi
     exit "$ex_code"
-  # become: true
   args:
     executable: /bin/bash
   register: all_distros_rel_vers
