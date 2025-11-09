@@ -62,8 +62,13 @@ unpack_saved_fs() {
 }
 
 create_empty_fs() {
-    miniroot_fs="alpine-minirootfs-3.19.9-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.22.1-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.16.9-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.17.10-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.18.12-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.19.9-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.20.8-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.21.5-x86.tar.gz"
+    miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
 
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
