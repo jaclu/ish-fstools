@@ -48,7 +48,6 @@
     name: "{{ ift_user_name }}"
     gid: 501
     state: present
-    force: true
   when: ift_user_name | default('') | length > 0
 
 - name: User acct - Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
@@ -59,7 +58,6 @@
     groups: sudo
     # shell: "{{ ift_shell }}"
     state: present
-    force: true  # forces update of existing user attributes, including shell
     password: ''  # ← explicitly sets empty password, avoids '!' in /etc/shadow
   when:
     - ift_user_name | default('') | length > 0
