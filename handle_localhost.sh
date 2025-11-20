@@ -96,7 +96,7 @@ do_ansible() {
 #===============================================================
 
 d_repo="$(dirname "$0")"
-
+d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 
 case "$1" in
@@ -116,4 +116,13 @@ grep -q " / / " /proc/self/mountinfo && {
 }
 
 install_ansible
-do_ansible
+do_ansible || err_msg "do_ansible() failed"
+
+[ "$1" = "q" ] && {
+    lbl_1 "Due to quick mode, my-ish-fs is no attempted"
+    exit 0
+}
+
+[ -d "$d_my_ish_fs" ] && {
+    "$d_my_ish_fs"/handle_servers.sh || err_msg "my-ish-fs reported error"
+}
