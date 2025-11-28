@@ -13,6 +13,7 @@
 - name: "Show ift_shell"
   ansible.builtin.debug:
     msg: "{{ ift_shell }}"
+  run_once: true
 
 - name: Check if requested shell exists
   ansible.builtin.stat:

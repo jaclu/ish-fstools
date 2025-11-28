@@ -48,6 +48,7 @@
   ansible.builtin.debug:
     msg:
       "{{ apk_add }}"
+  run_once: true
 
 - name: Handle apk - List what will be removed
   ansible.builtin.debug:
