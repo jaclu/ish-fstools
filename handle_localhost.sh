@@ -124,5 +124,5 @@ do_ansible || err_msg "do_ansible() failed"
 }
 
 [ -d "$d_my_ish_fs" ] && {
-    "$d_my_ish_fs"/handle_servers.sh || err_msg "my-ish-fs reported error"
+    "$d_my_ish_fs"/handle_localhost.sh || err_msg "my-ish-fs reported error"
 }
