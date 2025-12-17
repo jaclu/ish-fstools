@@ -81,7 +81,7 @@
     exit "$ex_code"
   args:
     executable: /bin/bash
-  when: ansible_facts["os_family"] == 'Alpine'
+  when: ansible_facts.os_family == 'Alpine'
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
   failed_when:

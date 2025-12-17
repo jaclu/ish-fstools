@@ -15,7 +15,7 @@
 #     remote_src: true
 #     dest: /etc/issue
 #     content: >
-#       This is an iSH node, running {{ ansible_distribution }}
+#       This is an iSH node, running {{ ansible_facts.distribution }}
 #       FS: ish-fstools: {{ vers_ift }}
 #     owner: root
 #     group: root

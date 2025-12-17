@@ -29,7 +29,7 @@
   roles:
     - role: preparational_steps
     - role: alpine
-      when: ansible_facts["os_family"] == 'Alpine'
+      when: ansible_facts.os_family == 'Alpine'
     - role: all_distros
 
   post_tasks:

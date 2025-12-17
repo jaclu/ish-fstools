@@ -31,5 +31,5 @@
     group: root
     mode: '0644'
   when:
-    - "'ish' not in ansible_kernel | lower"
+    - ansible_facts.kernel | lower is not search('ish')
     - ift_hostname | default('') | length == 0

@@ -27,7 +27,7 @@
 - name: Handle apk - Fail if handle_apk.yml is not running on Alpine
   ansible.builtin.fail:
     msg: "This role only supports Alpine Linux"
-  when: ansible_facts["os_family"] != 'Alpine'
+  when: ansible_facts.os_family != 'Alpine'
 
 - name: Handle apk - Fail if no packages are defined
   ansible.builtin.fail:

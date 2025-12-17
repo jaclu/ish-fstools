@@ -58,7 +58,7 @@
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
   when:
-    - ansible_facts["distribution_version"] >= "3.17"
+    - ansible_facts.distribution_version >= "3.17"
   changed_when: true
 
 - name: "Add dev apts when ift_pkgs_devel is true"

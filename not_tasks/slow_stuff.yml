@@ -70,7 +70,7 @@
       #  Other
       #
       # - fortune-mod
-  when: ansible_facts["distribution"] == 'Debian'
+  when: ansible_facts.distribution == 'Debian'
 
 
 - name: Alpine additional packages
@@ -146,8 +146,8 @@
       - lsb-release-minimal
     additional_packages: "{{ base_packages +
       (version_dependent_packages
-      if ansible_distribution_version is version('3.17', '>='))
+      if ansible_facts.distribution_version is version('3.17', '>='))
       | default([]) }}"
   retries: 3
   delay: 5
-  when: ansible_facts["distribution"] == 'Alpine'
+  when: ansible_facts.distribution == 'Alpine'
