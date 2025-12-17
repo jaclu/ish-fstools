@@ -24,8 +24,8 @@
     line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     insertafter: EOF
   when:
-    - ansible_os_family == 'Alpine'
-    - ansible_distribution_version is version(ift_alpine_testing_repo_minv, '>=')
+    - ansible_facts["os_family"] == 'Alpine'
+    - ansible_facts["distribution_version"] is version(ift_alpine_testing_repo_minv, '>=')
 
 #
 #   X   ===  Set up env to be able to run regulat playbooks  ===
@@ -76,11 +76,11 @@
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
-  when: ansible_os_family == 'Alpine'
+  when: ansible_facts["os_family"] == 'Alpine'
 
 - name: Non Alpine crucial apps
   ansible.builtin.import_tasks: non_alpine_crucial_apps.yml
-  when: ansible_os_family != 'Alpine'
+  when: ansible_facts["os_family"] == 'Alpine'
 
 - name: Checkout or update ish-fstools
   ansible.builtin.shell: |

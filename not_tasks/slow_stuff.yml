@@ -70,7 +70,7 @@
       #  Other
       #
       # - fortune-mod
-  when: ansible_distribution == 'Debian'
+  when: ansible_facts["distribution"] == 'Debian'
 
 
 - name: Alpine additional packages
@@ -150,4 +150,4 @@
       | default([]) }}"
   retries: 3
   delay: 5
-  when: ansible_distribution == 'Ansible'
+  when: ansible_facts["distribution"] == 'Alpine'
