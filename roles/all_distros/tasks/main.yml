@@ -44,7 +44,7 @@
 
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
+  when: is_ish is not defined
 
 - name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
   ansible.builtin.shell: |

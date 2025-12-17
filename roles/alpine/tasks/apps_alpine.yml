@@ -12,7 +12,7 @@
 
 - name: Check if this is iSH
   ansible.builtin.include_tasks: tasks/is_ish.yml
-  when: vars['is_ish'] is not defined
+  when: is_ish is not defined
 
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/handle_apk.yml

@@ -37,12 +37,12 @@
 - name: Handle apk - Default delete list to be empty
   ansible.builtin.set_fact:
     apk_del: ""
-  when: vars['apk_del'] is not defined
+  when: apk_del is not defined
 
 - name: Handle apk - Default upgrade to not take place
   ansible.builtin.set_fact:
     apk_upgrade: 0
-  when: vars['apk_upgrade'] is not defined
+  when: apk_upgrade is not defined
 
 - name: Handle apk - List what will be installed
   ansible.builtin.debug:
