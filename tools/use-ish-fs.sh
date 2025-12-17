@@ -188,7 +188,7 @@ d_prefix="$TMPDIR/ish-fstools"
 d_miniroot_fs_cache="$d_prefix/miniroot_fs_cache"
 d_saved_fs="$d_prefix/saved_fs"
 # d_ish_fs="$d_prefix/proot_fs"
-d_ish_fs=/mnt/volume-hetz1/aok_tmp_slow/aok_completed
+d_ish_fs=/mnt/volume-hetz2/aok_tmp_slow/aok_completed
 f_fs_in_usage="$d_prefix/proc/self"
 
 miniroot_name="alpine-minirootfs-${ALPINE_VERSION}-x86.tar.gz"
