@@ -9,26 +9,32 @@
 #  Custom hostname, solving that iOS >= 17 no longer provides hostname
 #  to Apps.
 #
+#  iSH provides: /proc/ish/defaults/hostname_override
+#  but since it can't changed it seems to be of little use.
+#
 #  Working around regular iSH inability to use /etc/hostname with the native
 #  hostname command.
-#  Ensure this is in your PATH, before /bin
+#
+#  Ensure this is in your PATH, before /bin, or remove/rename /bin/hostname
 #
 
-show_help() { # Multi OK 1
+show_help() {
     [ -d /proc/ish ] || {
         echo
         echo "WARNING: this is only meaningful on iSH"
         echo
     }
-    echo "Usage: hostname [-F|--file filename] [hostname]
+    echo "Usage: hostname {name|-F file}   set host name (from file)
+       hostname                  display host name
 
-Available options:
+       hostname -h|--help        print info and exit
 
--h  --help         Print this help and exit
+Program options:
+    -F  --file  Read the host name from the specified file.
+    name        Set hostname to name
 
--F  --file         Read the host name from the specified file.
-
-All other options are ignored, for compatibility with the default hostnme"
+All other options are ignored, for compatibility with the default hostname.
+This limited hostname just reports what is in /etc/hostname."
 }
 
 error_msg() {
@@ -47,22 +53,11 @@ root_check() {
 
 set_hostname() {
     new_hostname="$1"
-    # f_hostname_override="/proc/ish/defaults/hostname_override"
-
-    [ -z "$new_hostname" ] && error_msg "set_hostname() - no hostname param"
+    [ -z "$new_hostname" ] && error_msg "no hostname param"
     root_check
     echo "$new_hostname" >"$f_etc_hostname" || {
         error_msg "Failed to write '$new_hostname' to '$f_etc_hostname'!"
     }
-    # [ -f "$f_hostname_override" ] && {
-    #     echo "'\"$new_hostname\"'" > "$f_hostname_override" || {
-    #         error_msg "Failed to set $f_hostname_override"
-    #     }
-    #     override="$(cat "$f_hostname_override")"
-    #     [ "$override" != "\"$new_hostname\"" ] && {
-    #         error_msg "Failed to correctly set $f_hostname_override: [$override]"
-    #     }
-    # }
 }
 
 set_hostname_from_file() {
@@ -81,7 +76,7 @@ set_hostname_from_file() {
         error_msg "File '$f_new_hostname' must contain exactly one line!"
     }
     root_check
-    cp "$f_new_hostname" "$f_etc_hostname" || {
+    cat "$f_new_hostname" > "$f_etc_hostname" || {
         error_msg "Failed to copy '$f_new_hostname' to '$f_etc_hostname'!"
     }
 }
@@ -96,11 +91,14 @@ f_etc_hostname=/etc/hostname
 
 while [ -n "$1" ]; do
     case "$1" in
-    "-h" | "--help")
+    -h | --help)
         show_help
         exit 0
         ;;
-    "-F" | "--file") set_hostname_from_file "$2" ;;
+    -F | --file)
+        set_hostname_from_file "$2"
+        shift # purge param 2
+        ;;
     -*) ;; # Ignore all other options, for compatibility with default hostname
     *) set_hostname "$1"  ;;
     esac
@@ -108,4 +106,4 @@ while [ -n "$1" ]; do
 done
 
 # actually displaying hostname
-cat /etc/hostname
+cat "$f_etc_hostname"
