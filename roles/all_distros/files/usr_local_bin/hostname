@@ -10,7 +10,7 @@
 #  to Apps.
 #
 #  iSH provides: /proc/ish/defaults/hostname_override
-#  but since it can't changed it seems to be of little use.
+#  but since it can't be changed, it seems to be of little use.
 #
 #  Working around regular iSH inability to use /etc/hostname with the native
 #  hostname command.
