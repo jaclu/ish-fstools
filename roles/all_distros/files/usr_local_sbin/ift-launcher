@@ -240,6 +240,16 @@ EOF
 #
 #---------------------------------------------------------------
 
+show_sysload() {
+    our_uptime=/usr/local/bin/uptime
+    if [ -x "$our_uptime" ]; then
+        printf 'load average: %s\n' "$($our_uptime -l)"
+    else
+        uptime
+    fi
+    unset our_uptime
+}
+
 display_header() {
     # log_display "display_header()"
     if [ -f "$f_ift_release" ]; then
@@ -282,6 +292,7 @@ display_header() {
         echo "Press 'r' during boot up for recovery-mode"
         echo
     fi
+    show_sysload
 
     unset ift_rel fs_name header_msg
 }
@@ -359,7 +370,7 @@ runlevel_wait() {
     done
     trap '' INT # abort capturing Ctrl-C
     log_display "runlevel completed: $(rc-status -r)"
-
+    show_sysload
 }
 
 set_abort_runlevel_wait() {
