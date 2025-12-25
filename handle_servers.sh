@@ -62,30 +62,34 @@ do_ansible() {
 d_repo="$(dirname "$0")"
 d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
+chain_my_ish_fs=0
 
-case "$1" in
-"") ;; # no param
-"q") quick_mode=1 ;;
-*)
-    log_it
-    err_msg "Optional param:  q to run quick-mode - a limited deploy"
-    ;;
-esac
+while "$1"; do
+      case "$1" in
+	  "") break ;; # no param
+	  c) chain_my_ish_fs=1 ;;
+	  q) quick_mode=1 ;;
+	  *)
+	      log_it
+	      err_msg "Optional param:  q to run quick-mode - a limited deploy"
+	      ;;
+      esac
+      shift
+done
 
 do_ansible || err_msg "do_ansible() failed"
 
-case "$1" in
-q)
+[ "$quick_mode" -eq 1 ] && {
     lbl_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
-    ;;
-c)  # chain and do my-ish-fs if found
-    [ -d "$d_my_ish_fs" ] && {
-	echo
-	echo "Will run my-ish-fs"
-	echo
-        "$d_my_ish_fs"/handle_servers.sh || err_msg "my-ish-fs reported error"
+}
+
+[ "$chain_my_ish_fs" -eq 1 ] && {
+    [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
+    echo
+    echo "Will run my-ish-fs"
+    echo
+    "$d_my_ish_fs"/handle_servers.sh || {
+	err_msg "my-ish-fs reported error"
     }
-    ;;
-*) ;;
-esac
+}
