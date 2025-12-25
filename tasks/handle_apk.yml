@@ -54,6 +54,7 @@
   ansible.builtin.debug:
     msg: "{{ apk_del }}"
   when: apk_del != ""
+  run_once: true
 
 - name: Handle apk - Install selected packages using apk directly (much faster)
   ansible.builtin.shell: |
