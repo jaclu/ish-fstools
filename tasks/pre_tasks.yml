@@ -59,7 +59,7 @@
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
   when:
     - ansible_facts.distribution_version >= "3.17"
-  changed_when: true
+  changed_when: false
 
 - name: "Add dev apts when ift_pkgs_devel is true"
   ansible.builtin.set_fact:
@@ -68,10 +68,10 @@
   when:
     - ift_alpine_pkgs_devel | default('') | length > 0
     - ift_pkgs_devel is defined and ift_pkgs_devel
-  changed_when: true
+  changed_when: false
 
 - name: Add docs to ift_alpine_packages if ift_pkgs_man is true
   ansible.builtin.set_fact:
     ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
   when: ift_pkgs_man | bool
-  changed_when: true
+  changed_when: false
