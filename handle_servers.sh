@@ -64,7 +64,7 @@ d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 chain_my_ish_fs=0
 
-while "$1"; do
+while [ -n "$1" ]; do
       case "$1" in
 	  "") break ;; # no param
 	  c) chain_my_ish_fs=1 ;;

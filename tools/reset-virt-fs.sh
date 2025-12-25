@@ -183,7 +183,7 @@ prepare_ansible_job_history() {
 
     lbl_2 "prepping $f_history"
     {
-        echo "time $cmd_1 && time $cmd_2"
+        echo "time $cmd_1 -c"
         echo "time $cmd_2"
         echo "time $cmd_1"
     } >> "$f_history"
