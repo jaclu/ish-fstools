@@ -81,6 +81,9 @@ q)
     ;;
 c)  # chain and do my-ish-fs if found
     [ -d "$d_my_ish_fs" ] && {
+	echo
+	echo "Will run my-ish-fs"
+	echo
         "$d_my_ish_fs"/handle_servers.sh || err_msg "my-ish-fs reported error"
     }
     ;;

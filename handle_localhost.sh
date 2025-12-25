@@ -118,11 +118,18 @@ grep -q " / / " /proc/self/mountinfo && {
 install_ansible
 do_ansible || err_msg "do_ansible() failed"
 
-[ "$1" = "q" ] && {
+case "$1" in
+q)
     lbl_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
-}
-
-[ -d "$d_my_ish_fs" ] && {
-    "$d_my_ish_fs"/handle_localhost.sh || err_msg "my-ish-fs reported error"
-}
+    ;;
+c)  # chain and do my-ish-fs if found
+    [ -d "$d_my_ish_fs" ] && {
+	echo
+	echo "Will run my-ish-fs"
+	echo
+        "$d_my_ish_fs"/handle_localhost.sh || err_msg "my-ish-fs reported error"
+    }
+    ;;
+*) ;;
+esac
