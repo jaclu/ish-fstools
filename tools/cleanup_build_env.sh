@@ -22,3 +22,6 @@ rm -rf /iCloud/*
 rm -rf /tmp/ansible_facts_cache
 rm -rf /root/.ansible
 rm -rf /root/ish-fstools
+
+rn -f /home/jaclu/.local/bin/defgw
+rm -f /home/jaclu/.local/bin/Mbrew
