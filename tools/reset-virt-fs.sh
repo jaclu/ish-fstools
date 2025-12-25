@@ -84,10 +84,6 @@ create_empty_fs() {
 	err_msg "Failed to untar"
     }
 
-    lbl_2 "Copying ssh_conf"
-    cp ~jaclu/cloud/Uni/iSH-conf/tools/ssh_conf.tgz tmp || {
-       err_msg "Failed to copy ssh_conf.tgz"
-    }
     cd .. || err_msg "Failed to cd up ftom aok_fs"
 
     f_fs_release="aok_fs/etc/aok-fs-release"
@@ -183,9 +179,10 @@ prepare_ansible_job_history() {
 
     lbl_2 "prepping $f_history"
     {
-        echo "time $cmd_1 c"
+	echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
+        echo "time $cmd_1 c"
     } >> "$f_history"
     chmod 600 "$f_history"
 }

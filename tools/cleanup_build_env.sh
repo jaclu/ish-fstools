@@ -19,7 +19,6 @@ apk del ansible
 # remove stuff used during build of FS
 #
 rm -rf /iCloud/*
-rm -f  /tmp/ssh_conf.tgz
 rm -rf /tmp/ansible_facts_cache
 rm -rf /root/.ansible
 rm -rf /root/ish-fstools
