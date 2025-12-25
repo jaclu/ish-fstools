@@ -84,12 +84,6 @@ create_empty_fs() {
 	err_msg "Failed to untar"
     }
 
-    lbl_2 "Copying ssh_conf"
-    cp ~jaclu/cloud/Uni/iSH-conf/tools/ssh_conf.tgz tmp || {
-       err_msg "Failed to copy ssh_conf.tgz"
-    }
-    cd .. || err_msg "Failed to cd up ftom aok_fs"
-
     f_fs_release="aok_fs/etc/aok-fs-release"
     lbl_2 "Defining $f_fs_release"
     echo "ish-fstool-template" >"$f_fs_release"
