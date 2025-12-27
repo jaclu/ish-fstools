@@ -97,7 +97,7 @@
 - name: Ensure ish-fstools is owned by UID 501 and GID 501
   ansible.builtin.file:
     path: "{ d_repo }"
-    owner: "{{ift_user_name }}"
-    group: "{{ift_user_name }}"
+    owner: "{{ ift_user_name }}"
+    group: "{{ ift_user_name }}"
     recurse: true
   when: ift_user_name | default('') | length > 0
