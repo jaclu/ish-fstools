@@ -35,23 +35,23 @@
   #     ansible.builtin.fail:
   #       msg: "Intentional fail"
 
-  # #
-  # # run specific task inside a role
-  # #
+  #
+  # run specific task inside a role
+  #
   tasks:
     - name: Use just one task file from the role
       ansible.builtin.include_role:
         name: all_distros
-        tasks_from: set_hostname.yml
+        tasks_from: user_account.yml
 
-  #
-  # run specific role(-s)
-  #
+  # #
+  # # run specific role(-s)
+  # #
   # roles:
   #   - role: preparational_steps
-  # - role: alpine
-  #   when: ansible_facts.os_family == 'Alpine'
-  # - role: all_distros
+  #   - role: alpine
+  #     when: ansible_facts.os_family == 'Alpine'
+  #   - role: all_distros
   # post_tasks:
   #   - name: Run tasks/update_release.yml
   #     ansible.builtin.import_tasks: tasks/update_release.yml
