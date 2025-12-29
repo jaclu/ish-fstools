@@ -141,8 +141,8 @@ get_sysload_lvl() {
     if [ -f "$custom_uptime" ]; then
         _sysload="$($custom_uptime -l | cut -d',' -f 1)"
     else
-        _sysload="$(uptime | awk -F'average:' '{print $2}' | \
-            awk -F, '{print $1}' | tr -d ' ')"
+        _sysload="$(uptime | awk -F'average:' '{print $2}' \
+            | awk -F, '{print $1}' | tr -d ' ')"
     fi
     [ "$_sysload" = "0.00" ] && {
         touch "$sysload_not_available"
@@ -159,9 +159,9 @@ get_sysload_lvl() {
     fi
 
     case "$CURRENT_SHELL" in
-    zsh) printf '%s' "%F{$_load_color}$_sysload" ;;
-    bash | ash) printf '%s' "\[\e[38;5;${_load_color}m\]$_sysload" ;;
-    *) ;;
+        zsh) printf '%s' "%F{$_load_color}$_sysload" ;;
+        bash | ash) printf '%s' "\[\e[38;5;${_load_color}m\]$_sysload" ;;
+        *) ;;
     esac
 
     unset _sysload

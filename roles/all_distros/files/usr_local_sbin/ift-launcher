@@ -184,10 +184,10 @@ recovery_mode_probe() {
     $recovery_mode_active || return
     key=$(dd bs=1 count=1 2>/dev/null)
     case "$key" in
-    r | R)
-        recovery_mode_trigger "$1"
-        ;;
-    *) ;;
+        r | R)
+            recovery_mode_trigger "$1"
+            ;;
+        *) ;;
     esac
 }
 
@@ -253,25 +253,25 @@ show_sysload() {
 display_header() {
     # log_display "display_header()"
     if [ -f "$f_ift_release" ]; then
-        ift_rel="$(cat "$f_ift_release" 2>/dev/null)" ||
-            ift_rel="*** Failed to read $f_ift_release ***"
+        ift_rel="$(cat "$f_ift_release" 2>/dev/null)" \
+            || ift_rel="*** Failed to read $f_ift_release ***"
     else
         ift_rel=Unknown
     fi
 
     if fs_is_alpine; then
-        fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" ||
-            fs_name="Alpine Unknown"
+        fs_name="Alpine $(cat "$f_rel_alpine" 2>/dev/null)" \
+            || fs_name="Alpine Unknown"
     elif fs_is_debian; then
-        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" ||
-            fs_name="Debian Unknown"
+        fs_name="Debian $(cat "$f_rel_debian" 2>/dev/null)" \
+            || fs_name="Debian Unknown"
     elif fs_is_devuan; then
         #
         #  Devuan must come before Debian, since it also has the
         #  f_rel_debian file
         #
-        fs_name="Devuan $(cat "$f_rel_devuan" 2>/dev/null)" ||
-            fs_name="Devuan Unknown"
+        fs_name="Devuan $(cat "$f_rel_devuan" 2>/dev/null)" \
+            || fs_name="Devuan Unknown"
     else
         fs_name=Unknown
     fi
@@ -344,14 +344,14 @@ runlevel_wait() {
         _current_runlevel="$(rc-status -r)"
         if [ "$_current_runlevel" = "$expected_runlevel" ]; then
 
-	    # waiting for openrc to complete runlevel
-	    log_display "Waiting for services to be processed"
-	    while pgrep -f /sbin/openrc-run >/dev/null; do
-		rc-status default  # display progress on console
-		sleep 1
-		recovery_mode_probe openrc-wait
-	    done
-	    rc-status default
+            # waiting for openrc to complete runlevel
+            log_display "Waiting for services to be processed"
+            while pgrep -f /sbin/openrc-run >/dev/null; do
+                rc-status default # display progress on console
+                sleep 1
+                recovery_mode_probe openrc-wait
+            done
+            rc-status default
 
             # clear before exiting loop
             unset _current_runlevel
@@ -592,8 +592,8 @@ login_with_param_check() {
     #
     # log_display "login_with_param_check() ignore_login_params: $ignore_login_params"
     login_ex_code=0
-    if [ "$ignore_login_params" != "1" ] &&
-        [ -f "$f_login_default_user" ]; then
+    if [ "$ignore_login_params" != "1" ] \
+        && [ -f "$f_login_default_user" ]; then
 
         def_user="$(cat "$f_login_default_user")"
         [ -n "$def_user" ] && {
@@ -731,7 +731,7 @@ is_ish() {
 is_fs_chrooted() {
     # this quick and simple check doesn't work on ish
     # so lets pretend for now chroot does not happen on ish
-    is_ish && return 1                  # would never happen here :)
+    is_ish && return 1                       # would never happen here :)
     [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
     ! grep -q " / / " /proc/self/mountinfo
 }

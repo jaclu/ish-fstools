@@ -103,16 +103,16 @@ calculate_ios_uptime() {
     t_days=$1
     t_hm=$2
     case $t_days in
-    *" days"*) t_days=${t_days%" days"} ;;
-    *)
-        t_hm=$t_days
-        t_days=0
-        ;;
+        *" days"*) t_days=${t_days%" days"} ;;
+        *)
+            t_hm=$t_days
+            t_days=0
+            ;;
     esac
 
     # Trim leading/trailing spaces in t_hm (POSIX-safe)
-    t_hm=${t_hm## }  # leading
-    t_hm=${t_hm%% }  # trailing
+    t_hm=${t_hm## } # leading
+    t_hm=${t_hm%% } # trailing
 
     # Default days to 0 if empty (paranoia)
     [ -z "$t_days" ] && t_days=0
@@ -129,10 +129,11 @@ calculate_ios_uptime() {
 
     # Default hour/minute fallback (in case uptime says "X min")
     case $m in
-      "")
-        m=$h
-        h=0 ;;
-      *) ;;
+        "")
+            m=$h
+            h=0
+            ;;
+        *) ;;
     esac
     uptime_seconds=$((t_days * 86400 + h * 3600 + m * 60))
 
@@ -145,9 +146,9 @@ calculate_uptime() {
     $dbg && log_it "calculate_uptime()"
     startup_notice="===  System startup  ==="
     if [ -f /var/log/syslog ]; then
-        time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog |
-            tail -n 1 |
-            awk '{print $1" "$2}')"
+        time_stamp_boot_up="$(grep "$startup_notice" /var/log/syslog \
+            | tail -n 1 \
+            | awk '{print $1" "$2}')"
     else
         time_stamp_boot_up=""
     fi
@@ -174,8 +175,7 @@ display_sysload() {
     fi
 }
 
-get_user_count()
-{
+get_user_count() {
     user_count=0
     seen=""
 
@@ -185,17 +185,16 @@ get_user_count()
     [ "$(realpath /bin/ps)" = /bin/busybox ] && err_msg "this uptime needs procps"
     # -eo tty lists all TTYs (including '?', '', etc.)
     # strip header with a `read` call
-    ps -eo tty > "$tmpfile"
+    ps -eo tty >"$tmpfile"
     {
         read -r _ # skip header
         while read -r tty; do
             case "$tty" in
                 pts/*)
                     case " $seen " in
-                        *" $tty "*)
-                            ;; # already counted
+                        *" $tty "*) ;; # already counted
                         *)
-                            seen="$seen $tty";
+                            seen="$seen $tty"
                             user_count=$((user_count + 1))
                             ;;
                     esac
@@ -203,7 +202,7 @@ get_user_count()
                 *) ;;
             esac
         done
-    } < "$tmpfile"
+    } <"$tmpfile"
     rm -f "$tmpfile"
 }
 
@@ -295,26 +294,26 @@ dbg=false
 
 while [ -n "$1" ]; do
     case "$1" in
-    # -h | --help) show_help ;;
-    -d) dbg=true ;;
-    -i | --ios) force_ios_uptime=true ;;
-    -l | --load) display_mode="load" ;;
-    -p | --pretty) display_mode="pretty" ;;
-    -s | --since) display_mode="since" ;;
-    -V | --version) display_mode="version" ;;
-    *)
-        msg_1 "$app_name: invalid option -- '$1'"
-        show_help
-        ;;
+        # -h | --help) show_help ;;
+        -d) dbg=true ;;
+        -i | --ios) force_ios_uptime=true ;;
+        -l | --load) display_mode="load" ;;
+        -p | --pretty) display_mode="pretty" ;;
+        -s | --since) display_mode="since" ;;
+        -V | --version) display_mode="version" ;;
+        *)
+            msg_1 "$app_name: invalid option -- '$1'"
+            show_help
+            ;;
     esac
     shift
 done
 
 case "$display_mode" in
-version) show_version ;;
-default) default_view ;;
-pretty) show_pretty ;;
-since) show_since ;;
-load) display_sysload ;;
-*) err_msg "Invalid display_mode [$display_mode]" ;;
+    version) show_version ;;
+    default) default_view ;;
+    pretty) show_pretty ;;
+    since) show_since ;;
+    load) display_sysload ;;
+    *) err_msg "Invalid display_mode [$display_mode]" ;;
 esac

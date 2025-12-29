@@ -70,7 +70,7 @@ save_fs() {
     is_fs_used && err_msg "save_fs() - iSH fs is used"
 
     cd "$d_ish_fs" || err_msg "save_fs() - failed to cd: $d_ish_fs"
-    sudo tar cfz  "$d_saved_fs/${save_basename}.tgz" .
+    sudo tar cfz "$d_saved_fs/${save_basename}.tgz" .
 }
 
 restore_fs() {
@@ -86,7 +86,6 @@ restore_fs() {
     cd "$d_ish_fs" || err_msg "restore_fs() - failed to cd: $d_ish_fs"
     sudo tar xfz "$d_saved_fs/${save_basename}.tgz"
 }
-
 
 mount_ish_fs() {
     msg_2 "mount_ish_fs() and run: $*"
@@ -201,31 +200,31 @@ initial_cmd="/bin/ash"
 while [ -n "$1" ]; do
     case "$1" in
 
-    "-h" | "--help")
-        show_help
-        exit 0
-        ;;
+        "-h" | "--help")
+            show_help
+            exit 0
+            ;;
 
-    "-m" | "--mount")
-        sync_playbook
-        shift
-        mount_ish_fs "$@"
-        exit 0
-        ;;
-    "-c" | "--create")
-        create_ish_fs_from_miniroot_fs
-        break
-        ;;
-    "-r" | "--restore")
-        restore_fs "$2"
-        break
-        ;;
-    "-s" | "--save")
-        save_fs "$2"
-        exit 0
-        ;;
-    "-v" | "--verbose") b_is_verbose=true ;;
-    *) err_msg "$app_name - bad param: $1" ;;
+        "-m" | "--mount")
+            sync_playbook
+            shift
+            mount_ish_fs "$@"
+            exit 0
+            ;;
+        "-c" | "--create")
+            create_ish_fs_from_miniroot_fs
+            break
+            ;;
+        "-r" | "--restore")
+            restore_fs "$2"
+            break
+            ;;
+        "-s" | "--save")
+            save_fs "$2"
+            exit 0
+            ;;
+        "-v" | "--verbose") b_is_verbose=true ;;
+        *) err_msg "$app_name - bad param: $1" ;;
     esac
     shift
 done

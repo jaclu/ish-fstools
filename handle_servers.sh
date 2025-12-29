@@ -38,9 +38,9 @@ do_ansible() {
     #  Run the ansible playbook to deploy FS
     #
     if [ "$quick_mode" -eq 1 ]; then
-	    playbook="prov_debug.yml"
+        playbook="prov_debug.yml"
     else
-	    playbook="provisioning.yml"
+        playbook="provisioning.yml"
     fi
 
     d_ansible_folder="$(dirname "$0")"
@@ -65,16 +65,16 @@ quick_mode=0
 chain_my_ish_fs=0
 
 while [ -n "$1" ]; do
-      case "$1" in
-	  "") break ;; # no param
-	  c) chain_my_ish_fs=1 ;;
-	  q) quick_mode=1 ;;
-	  *)
-	      log_it
-	      err_msg "Optional param:  q to run quick-mode - a limited deploy"
-	      ;;
-      esac
-      shift
+    case "$1" in
+        "") break ;; # no param
+        c) chain_my_ish_fs=1 ;;
+        q) quick_mode=1 ;;
+        *)
+            log_it
+            err_msg "Optional param:  q to run quick-mode - a limited deploy"
+            ;;
+    esac
+    shift
 done
 
 do_ansible || err_msg "do_ansible() failed"
@@ -90,6 +90,6 @@ do_ansible || err_msg "do_ansible() failed"
     echo "Will run my-ish-fs"
     echo
     "$d_my_ish_fs"/handle_servers.sh || {
-	err_msg "my-ish-fs reported error"
+        err_msg "my-ish-fs reported error"
     }
 }

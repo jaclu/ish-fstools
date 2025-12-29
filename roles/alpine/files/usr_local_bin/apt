@@ -14,3 +14,4 @@ echo "apk add <package name>   # Add a package"
 echo "apk del <package name>   # Remove an installed package"
 echo
 echo "apk -v search <string>   # Search apk's with a particular string"
+# ensuring NL

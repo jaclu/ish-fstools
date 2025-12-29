@@ -31,12 +31,12 @@ copy_files() {
     dst="$2"
     [ -z "$dst" ] && error_msg "copy_files() no destination given"
     case "$src" in
-    "$d_base_dir"/*)
-        rel_path=${src#"$d_base_dir"/}
-        ;;
-    *)
-        rel_path=$src  # fallback if not prefixed
-        ;;
+        "$d_base_dir"/*)
+            rel_path=${src#"$d_base_dir"/}
+            ;;
+        *)
+            rel_path=$src # fallback if not prefixed
+            ;;
     esac
     show_msg "$dst <- $rel_path  - rsyncing changes"
     tmp_log="$(mktemp)"

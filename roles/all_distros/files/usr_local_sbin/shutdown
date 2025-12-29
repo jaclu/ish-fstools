@@ -23,8 +23,8 @@ display_msg() {
 
 is_int() {
     case $1 in
-    '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
-    *) return 0 ;;             # Contains only digits
+        '' | *[!0-9]*) return 1 ;; # Contains non-numeric characters
+        *) return 0 ;;             # Contains only digits
     esac
 }
 
@@ -106,42 +106,42 @@ while [ -n "$1" ]; do
         continue
     }
     case "$1" in
-    # most default options are ignored
-    now) ;;
-    --help)
-        show_help
-        exit 0
-        ;;
-    -H | --halt) ;; # Compatibility - ignored
-    -P | --poweroff) ;; # Compatibility - ignored
-    -r | --reboot) ;; # Compatibility - ignored
-    -h)  # Compatibility - warning given, then ignored
-        echo "The system is halted and powered off at the specified time."
-        echo
-        echo "WARNING: Extremely unintuitive result of this option!"
-        echo "         Use 'shutdown --help' to see the help text."
-        echo
-        [ -t 0 ] && {
-            echo "shutdown will continue in 10s, unless Ctrl-C is pressed"
-            sleep 10
-        }
-        ;;
-    -k) do_shutdown=false ;;
-    --no-wall) do_wall=false ;;
-    -c | --cancel)
-        # Custom option, to cancel a shutdown.
-        # First kill all other shutdown procsto minimize shutdown happening
-        # during shutdown_cancelled processing
-        pgrep -f shutdown | grep -v $$ | xargs kill -9
-        shutdown_cancelled
-        exit 0
-        ;;
-    --show) ;;
-    *)
-        # use rest of options as additional shutdown notice
-        notification_extra="$*"
-        break
-        ;;
+        # most default options are ignored
+        now) ;;
+        --help)
+            show_help
+            exit 0
+            ;;
+        -H | --halt) ;;     # Compatibility - ignored
+        -P | --poweroff) ;; # Compatibility - ignored
+        -r | --reboot) ;;   # Compatibility - ignored
+        -h)                 # Compatibility - warning given, then ignored
+            echo "The system is halted and powered off at the specified time."
+            echo
+            echo "WARNING: Extremely unintuitive result of this option!"
+            echo "         Use 'shutdown --help' to see the help text."
+            echo
+            [ -t 0 ] && {
+                echo "shutdown will continue in 10s, unless Ctrl-C is pressed"
+                sleep 10
+            }
+            ;;
+        -k) do_shutdown=false ;;
+        --no-wall) do_wall=false ;;
+        -c | --cancel)
+            # Custom option, to cancel a shutdown.
+            # First kill all other shutdown procsto minimize shutdown happening
+            # during shutdown_cancelled processing
+            pgrep -f shutdown | grep -v $$ | xargs kill -9
+            shutdown_cancelled
+            exit 0
+            ;;
+        --show) ;;
+        *)
+            # use rest of options as additional shutdown notice
+            notification_extra="$*"
+            break
+            ;;
     esac
     shift
 done

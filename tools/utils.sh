@@ -83,20 +83,20 @@ safe_remove() {
     tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
 
     case "$_sr_pattern" in
-    "$tmpdir_noslash") # Prevent direct removal of TMPDIR
-        err_msg "safe_remove() - refusing to delete TMPDIR itself: $_sr_pattern"
-        return 1
-        ;;
-    "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
-    /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
-        /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
-        /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
-        /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
-        /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
-        err_msg "safe_remove() - refusing to delete protected directory: $_sr_pattern"
-        return 1
-        ;;
-    *) ;;
+        "$tmpdir_noslash") # Prevent direct removal of TMPDIR
+            err_msg "safe_remove() - refusing to delete TMPDIR itself: $_sr_pattern"
+            return 1
+            ;;
+        "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
+        /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
+            /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
+            /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
+            /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
+            /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
+            err_msg "safe_remove() - refusing to delete protected directory: $_sr_pattern"
+            return 1
+            ;;
+        *) ;;
     esac
 
     sudo rm -rf "$_sr_pattern" || err_msg "$_sr_reason - safe_remove() - Failed to delete: $_sr_pattern"

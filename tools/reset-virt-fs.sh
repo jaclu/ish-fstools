@@ -81,7 +81,7 @@ create_empty_fs() {
 
     lbl_2 "recreating alpine-minirootfs"
     tar xfz ../aok_cache/"$miniroot_fs" || {
-	err_msg "Failed to untar"
+        err_msg "Failed to untar"
     }
 
     cd .. || err_msg "Failed to cd up ftom aok_fs"
@@ -109,13 +109,13 @@ sync_something() {
     [ -z "$cmd" ] && err_msg "sync_something() - no param"
     lbl_2 "$lbl"
     if $do_clear; then
-	eval "$cmd"  >/dev/null || {
-	    err_msg "Failed to sync ish-fstools - $lbl"
-	}
+        eval "$cmd" >/dev/null || {
+            err_msg "Failed to sync ish-fstools - $lbl"
+        }
     else
-	eval "$cmd" || {
-	    err_msg "Failed to sync ish-fstools - $lbl"
-	}
+        eval "$cmd" || {
+            err_msg "Failed to sync ish-fstools - $lbl"
+        }
     fi
 }
 
@@ -127,12 +127,12 @@ sync_fs_tools() {
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
 
     sync_something home_jaclu \
-	"rsync -ahP \
+        "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/saved_home_dirs/"
 
     sync_something sshd_config \
-	"rsync -ahP \
+        "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
         $AOK_TMPDIR/aok_fs/iCloud/deploy"
 
@@ -179,11 +179,11 @@ prepare_ansible_job_history() {
 
     lbl_2 "prepping $f_history"
     {
-	echo "/root/ish-fstools/tools/cleanup_build_env.sh"
+        echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
         echo "time $cmd_1 c"
-    } >> "$f_history"
+    } >>"$f_history"
     chmod 600 "$f_history"
 }
 
@@ -194,7 +194,6 @@ save_new_fs() {
         /opt/AOK/tools/aok_fs-save
     }
 }
-
 
 #===============================================================
 #
@@ -214,7 +213,6 @@ f_history="aok_fs/root/.ash_history"
     TMPDIR="$(dirname "$AOK_TMPDIR")"
     lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
 }
-
 
 if [ "$1" = "clear" ]; then
     do_clear=true
@@ -236,10 +234,10 @@ fi
 
     _d=/var/tmp/aok_tmp
     if [ -d "$_d" ]; then
-	AOK_TMPDIR="$_d"
+        AOK_TMPDIR="$_d"
     else
-	AOK_TMPDIR="/tmp"
-	lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
+        AOK_TMPDIR="/tmp"
+        lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
     fi
 }
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"

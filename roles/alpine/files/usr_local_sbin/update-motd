@@ -31,7 +31,6 @@ else
     ish_rel="Can't be detected whilst chrooted"
 fi
 
-
 #  create initial LF
 echo >"$f_motd"
 
