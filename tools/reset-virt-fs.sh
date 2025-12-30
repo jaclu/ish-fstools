@@ -141,10 +141,10 @@ sync_fs_tools() {
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.22.1-py-3.12.11.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
 
-    sync_something "olint venv" \
-        "rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
+    #sync_something "olint venv" \
+    #    "rsync -ahP \
+    #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
+    #    $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
 
     sync_something "asdf env" \
         "rsync -ahP \
