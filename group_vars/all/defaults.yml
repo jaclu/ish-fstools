@@ -158,6 +158,22 @@ ift_alpine_packages:
   - openrc  # OpenRC manages the services, startup and shutdown of a host
 
   #
+  #  Linting
+  #
+  - black
+  - checkbashisms
+  - cppcheck
+  - shfmt
+  - py3-codespell
+  - py3-flake8
+  - py3-isort
+  - py3-mypy
+  - py3-pycodestyle
+  - py3-pyflakes
+  - py3-pylint
+  - yamllint
+
+  #
   #  Trust
   #
   - ca-certificates  # Common CA certificates PEM files from Mozilla
