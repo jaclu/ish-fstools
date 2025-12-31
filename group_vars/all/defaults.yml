@@ -164,7 +164,6 @@ ift_alpine_packages:
   - checkbashisms
   - cppcheck
   - shfmt
-  - py3-codespell
   - py3-flake8
   - py3-isort
   - py3-mypy
@@ -184,6 +183,9 @@ ift_alpine_packages:
 #
 ift_alpine_pkgs_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
+
+ift_alpine_pkgs_min_399:  # potentially part of ift_alpine_packages
+  - py3-codespell # linter
 
 #
 #  General Build env for Alpine iSH, will be included if ift_pkgs_devel is true
