@@ -59,6 +59,8 @@
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
   when:
     - ansible_facts.distribution_version >= "3.17"
+  delegate_to: localhost
+  run_once: true
   changed_when: false
 
 - name: "Add dev apks when ift_pkgs_devel is true"
@@ -68,6 +70,8 @@
   when:
     - ift_alpine_pkgs_devel | default('') | length > 0
     - ift_pkgs_devel is defined and ift_pkgs_devel
+  delegate_to: localhost
+  run_once: true
   changed_when: false
 
 - name: "Add linting apks when ift_pkgs_linting is true"
@@ -77,10 +81,14 @@
   when:
     - ift_alpine_pkgs_linting | default('') | length > 0
     - ift_pkgs_linting is defined and ift_pkgs_linting
+  delegate_to: localhost
+  run_once: true
   changed_when: false
 
 - name: Add docs to ift_alpine_packages if ift_pkgs_man is true
   ansible.builtin.set_fact:
     ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
   when: ift_pkgs_man | bool
+  delegate_to: localhost
+  run_once: true
   changed_when: false
