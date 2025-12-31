@@ -195,7 +195,7 @@ ift_alpine_pkgs_devel:
   - xz-dev        # Library and CLI tools for XZ and LZMA compressed files
   - zlib-dev      # A compression/decompression Library
 
-ift_alpine_linting:
+ift_alpine_pkgs_linting:
   - black
   - checkbashisms
   - cppcheck
