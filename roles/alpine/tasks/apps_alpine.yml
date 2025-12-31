@@ -48,7 +48,7 @@
     - ift_use_old_mtr
   register: alpine_old_mtr
   changed_when: alpine_old_mtr.rc == 43
-  # failed_when: alpine_old_mtr.rc not in [0, 43]
+  failed_when: alpine_old_mtr.rc not in [0, 43]
 
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
   # The procps uptime throws Segmentation fault on iSH
