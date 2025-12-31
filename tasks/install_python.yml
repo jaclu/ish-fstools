@@ -42,5 +42,7 @@
   changed_when: python_installed.rc == 43
   failed_when: python_installed.rc not in [0, 43]
 
-- name: Gather facts now that Python is installed
+- name: Gather facts now that Python is installed, use cache otherwise
   ansible.builtin.setup:
+    gather_subset: all
+  when: python_installed.rc == 43
