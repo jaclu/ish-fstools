@@ -32,8 +32,7 @@
     executable: /bin/sh
   register: all_distros_services_moved
   changed_when: all_distros_services_moved.rc == 43
-  failed_when:
-    - all_distros_services_moved.rc not in [0, 43]
+  failed_when: all_distros_services_moved.rc not in [0, 43]
 
 - name: "Default services - Ensure folder exists {{ d_init_ift }}"
   ansible.builtin.file:
@@ -74,4 +73,4 @@
     executable: /bin/sh
   register: all_distros_ish_link_output
   changed_when: all_distros_ish_link_output.rc == 43
-  # failed_when: all_distros_ish_link_output.rc not in [0, 43]
+  failed_when: all_distros_ish_link_output.rc not in [0, 43]

@@ -38,5 +38,4 @@
     executable: /bin/bash
   register: all_distros_rel_vers
   changed_when: all_distros_rel_vers.rc == 43
-  # failed_when:
-  #   - all_distros_rel_vers.rc not in [0, 43]
+  failed_when: all_distros_rel_vers.rc not in [0, 43]

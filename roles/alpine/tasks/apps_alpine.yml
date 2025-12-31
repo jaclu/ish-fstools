@@ -67,7 +67,7 @@
     executable: /bin/sh
   register: alpine_rename_uptime
   changed_when: alpine_rename_uptime.rc == 43
-  # failed_when: alpine_rename_uptime.rc not in [0, 43]
+  failed_when: alpine_rename_uptime.rc not in [0, 43]
 
 - name: Install extras to /usr/local/bin
   ansible.builtin.copy:

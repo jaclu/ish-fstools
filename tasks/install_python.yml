@@ -40,6 +40,7 @@
     exit 0
   register: python_installed
   changed_when: python_installed.rc == 43
+  failed_when: python_installed.rc not in [0, 43]
 
 - name: Gather facts now that Python is installed
   ansible.builtin.setup:

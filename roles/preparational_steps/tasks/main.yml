@@ -69,7 +69,7 @@
     exit 0
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
-  # failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
+  failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
 
 - name: Install crucial apps needed for deploy (Alpine)
   ansible.builtin.include_tasks: tasks/handle_apk.yml

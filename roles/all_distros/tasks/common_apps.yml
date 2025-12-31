@@ -84,5 +84,4 @@
   when: ansible_facts.os_family == 'Alpine'
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
-  failed_when:
-    - all_distros_bin_replacement.rc not in [0, 43]
+  failed_when: all_distros_bin_replacement.rc not in [0, 43]
