@@ -25,7 +25,7 @@
   pre_tasks:
     - name: Ensure Python is installed (and gather facts)
       ansible.builtin.import_tasks: tasks/install_python.yml
-    - name: Load tasks/pre_tasks.yml
+    - name: Load override variables
       ansible.builtin.import_tasks: tasks/pre_tasks.yml
 
   roles:
