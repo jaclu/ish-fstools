@@ -14,11 +14,6 @@
   ansible.builtin.include_tasks: tasks/is_ish.yml
   when: is_ish is not defined
 
-- name: Remove iSH auto repository updater
-  ansible.builtin.file:
-    path: /ish
-    state: absent
-
 - name: Install selected packages
   ansible.builtin.include_tasks: tasks/handle_apk.yml
   vars:

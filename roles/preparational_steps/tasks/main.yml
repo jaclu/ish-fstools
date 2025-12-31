@@ -18,15 +18,6 @@
 - name: Param Checks
   ansible.builtin.import_tasks: param_checks.yml
 
-- name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
-  ansible.builtin.lineinfile:
-    path: /etc/apk/repositories
-    line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
-    insertafter: EOF
-  when:
-    - ansible_facts.os_family == 'Alpine'
-    - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
-
 #
 #   X   ===  Set up env to be able to run regulat playbooks  ===
 #
@@ -70,6 +61,20 @@
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
+
+- name: Remove iSH auto repository updater
+  ansible.builtin.file:
+    path: /ish
+    state: absent
+
+- name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
+  ansible.builtin.lineinfile:
+    path: /etc/apk/repositories
+    line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
+    insertafter: EOF
+  when:
+    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
 
 - name: Install crucial apps needed for deploy (Alpine)
   ansible.builtin.include_tasks: tasks/handle_apk.yml
