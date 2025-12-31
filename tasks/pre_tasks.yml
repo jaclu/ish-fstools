@@ -57,8 +57,22 @@
   ansible.builtin.set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
+    ift_alpine_pkgs_linting: >-
+      {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_317 | default([])) }}
   when:
     - ansible_facts.distribution_version >= "3.17"
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Add pkgs for Alpine >= 3.20
+  ansible.builtin.set_fact:
+    ift_alpine_packages: >-
+      {{ ift_alpine_packages | union(ift_alpine_pkgs_min_320 | default([])) }}
+    ift_alpine_pkgs_linting: >-
+      {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_320 | default([])) }}
+  when:
+    - ansible_facts.distribution_version >= "3.20"
   delegate_to: localhost
   run_once: true
   changed_when: false

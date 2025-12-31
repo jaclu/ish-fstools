@@ -168,9 +168,7 @@ ift_alpine_packages:
 ift_alpine_pkgs_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
-# pkgs not valid on iSH 3.19
-ift_alpine_pkgs_min_399:  # potentially part of ift_alpine_packages
-  - py3-codespell # linter
+ift_alpine_pkgs_min_320:  # potentially part of ift_alpine_packages
   - procps    # Utilities for monitoring your system and processes on
               # your system.
 
@@ -207,6 +205,12 @@ ift_alpine_pkgs_linting:
   - py3-pyflakes
   - py3-pylint
   - yamllint
+
+ift_alpine_pkgs_lint_min_317:  # potentially part of ift_alpine_pkgs_linting
+  - taplo # linter
+
+ift_alpine_pkgs_lint_min_320:  # potentially part of ift_alpine_pkgs_linting
+  - py3-codespell # linter
 
 #
 #  Min Alpine version when to include the testing repo, typically current and
