@@ -46,8 +46,7 @@
 
 - name: Handle apk - List what will be installed
   ansible.builtin.debug:
-    msg:
-      "{{ apk_add }}"
+    msg: "{{ apk_add | sort }}"
   run_once: true
 
 - name: Handle apk - List what will be removed
