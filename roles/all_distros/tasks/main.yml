@@ -63,7 +63,7 @@
   when: is_ish | default(false)
   register: all_distros_launcher
   changed_when: all_distros_launcher.rc == 43
-  failed_when: all_distros_launcher.rc not in [0, 43]
+  # failed_when: all_distros_launcher.rc not in [0, 43]
 
 - name: "Set chroot default command: {{ f_app_ift_launcher }}"
   ansible.builtin.copy:

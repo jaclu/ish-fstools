@@ -46,7 +46,7 @@
   when: ift_use_old_mtr
   register: alpine_old_mtr
   changed_when: alpine_old_mtr.rc == 43
-  failed_when: alpine_old_mtr.rc not in [0, 43]
+  # failed_when: alpine_old_mtr.rc not in [0, 43]
 
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
   # The procps uptime throws Segmentation fault on iSH
@@ -67,7 +67,7 @@
     executable: /bin/sh
   register: alpine_rename_uptime
   changed_when: alpine_rename_uptime.rc == 43
-  failed_when: alpine_rename_uptime.rc not in [0, 43]
+  # failed_when: alpine_rename_uptime.rc not in [0, 43]
 
 - name: Install extras to /usr/local/bin
   ansible.builtin.copy:
