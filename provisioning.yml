@@ -21,8 +21,10 @@
 
 - name: Setting up iSH FS
   hosts: "{{ target_hosts | default('localhost') }}"
-
+  gather_facts: false
   pre_tasks:
+    - name: Ensure Python is installed (and gather facts)
+      ansible.builtin.import_tasks: tasks/install_python.yml
     - name: Load tasks/pre_tasks.yml
       ansible.builtin.import_tasks: tasks/pre_tasks.yml
 
