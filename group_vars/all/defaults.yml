@@ -89,12 +89,15 @@ ift_alpine_packages:
   - findutils # GNU utilities for finding files
   - gawk      # GNU awk pattern-matching language
   - git       # Distributed version control system
+  - fzf  # A command-line fuzzy finder - rather slow on iSH - is it meaningful?
   - jq  # Lightweight and flexible command-line JSON processor
   - mc        # Filemanager/shell that emulates Norton Commander
   - pigz      # Parallel implementation of gzip
   - psmisc    # set of some small useful utilities that use the proc filesystem
               # provides a full pstree vs the basic BusyBox implementation.
+  - ripgrep  # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync     # A file transfer program to keep remote files in sync
+  - zoxide  # Faster way to navigate your filesystem
 
   #
   #  Access
