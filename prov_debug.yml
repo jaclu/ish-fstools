@@ -11,8 +11,10 @@
 
 - name: Setting up iSH FS - limited dbg process
   hosts: "{{ target_hosts | default('localhost') }}"
-
+  gather_facts: false
   pre_tasks:
+    - name: Ensure Python is installed (and gather facts)
+      ansible.builtin.import_tasks: tasks/install_python.yml
     - name: Load override variables
       ansible.builtin.import_tasks: tasks/pre_tasks.yml
 
@@ -35,23 +37,20 @@
   #     ansible.builtin.fail:
   #       msg: "Intentional fail"
 
-  #
-  # run specific task inside a role
-  #
-  tasks:
-    - name: Use just one task file from the role
-      ansible.builtin.include_role:
-        name: all_distros
-        tasks_from: user_account.yml
+  # #
+  # # run specific task inside a role
+  # #
+  # tasks:
+  #   - name: Use just one task file from the role
+  #     ansible.builtin.include_role:
+  #       name: all_distros
+  #       tasks_from: user_account.yml
 
-  # #
-  # # run specific role(-s)
-  # #
-  # roles:
-  #   - role: preparational_steps
-  #   - role: alpine
-  #     when: ansible_facts.os_family == 'Alpine'
-  #   - role: all_distros
-  # post_tasks:
-  #   - name: Run tasks/update_release.yml
-  #     ansible.builtin.import_tasks: tasks/update_release.yml
+  #
+  # run specific role(-s)
+  #
+  roles:
+    - role: preparational_steps
+    - role: alpine
+      when: ansible_facts.os_family == 'Alpine'
+    # - role: all_distros
