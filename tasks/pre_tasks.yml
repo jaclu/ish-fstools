@@ -61,13 +61,22 @@
     - ansible_facts.distribution_version >= "3.17"
   changed_when: false
 
-- name: "Add dev apts when ift_pkgs_devel is true"
+- name: "Add dev apks when ift_pkgs_devel is true"
   ansible.builtin.set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_devel | default([])) }}
   when:
     - ift_alpine_pkgs_devel | default('') | length > 0
     - ift_pkgs_devel is defined and ift_pkgs_devel
+  changed_when: false
+
+- name: "Add linting apks when ift_pkgs_devel is true"
+  ansible.builtin.set_fact:
+    ift_alpine_packages: >-
+      {{ ift_alpine_packages | union(ift_alpine_linting | default([])) }}
+  when:
+    - ift_alpine_linting | default('') | length > 0
+    - ift_pkgs_linting is defined and ift_pkgs_linting
   changed_when: false
 
 - name: Add docs to ift_alpine_packages if ift_pkgs_man is true

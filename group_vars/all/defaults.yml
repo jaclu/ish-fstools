@@ -47,6 +47,7 @@ ift_runlevel_sshd: default   # set to "" if this service is not wanted
 ift_port_sshd: 2022  # set to "" if port should not be set
 
 ift_pkgs_devel: false # set to true if devel packages should be used
+ift_pkgs_linting: false # set to true if linting packages should be used
 ift_pkgs_man: false  # se to true if man pages for everything installed should be used
 
 #
@@ -91,8 +92,6 @@ ift_alpine_packages:
   - jq  # Lightweight and flexible command-line JSON processor
   - mc        # Filemanager/shell that emulates Norton Commander
   - pigz      # Parallel implementation of gzip
-  - procps    # Utilities for monitoring your system and processes on
-              # your system.
   - psmisc    # set of some small useful utilities that use the proc filesystem
               # provides a full pstree vs the basic BusyBox implementation.
   - rsync     # A file transfer program to keep remote files in sync
@@ -158,21 +157,6 @@ ift_alpine_packages:
   - openrc  # OpenRC manages the services, startup and shutdown of a host
 
   #
-  #  Linting
-  #
-  - black
-  - checkbashisms
-  - cppcheck
-  - shfmt
-  - py3-flake8
-  - py3-isort
-  - py3-mypy
-  - py3-pycodestyle
-  - py3-pyflakes
-  - py3-pylint
-  - yamllint
-
-  #
   #  Trust
   #
   - ca-certificates  # Common CA certificates PEM files from Mozilla
@@ -184,8 +168,11 @@ ift_alpine_packages:
 ift_alpine_pkgs_min_317:  # potentially part of ift_alpine_packages
   - lsb-release-minimal  # Minimal fake lsb-release that uses os-release
 
+# pkgs not valid on iSH 3.19
 ift_alpine_pkgs_min_399:  # potentially part of ift_alpine_packages
   - py3-codespell # linter
+  - procps    # Utilities for monitoring your system and processes on
+              # your system.
 
 #
 #  General Build env for Alpine iSH, will be included if ift_pkgs_devel is true
@@ -207,6 +194,19 @@ ift_alpine_pkgs_devel:
   - sqlite-dev    # C library that implements an SQL database engine
   - xz-dev        # Library and CLI tools for XZ and LZMA compressed files
   - zlib-dev      # A compression/decompression Library
+
+ift_alpine_linting:
+  - black
+  - checkbashisms
+  - cppcheck
+  - shfmt
+  - py3-flake8
+  - py3-isort
+  - py3-mypy
+  - py3-pycodestyle
+  - py3-pyflakes
+  - py3-pylint
+  - yamllint
 
 #
 #  Min Alpine version when to include the testing repo, typically current and
