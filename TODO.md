@@ -33,3 +33,8 @@ Sample url `https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86/`
 - Alpine 3.17 - same
 - Alpine 3.18 - mtr-0.95-r2
 - Alpine 3.22 - same
+
+## Deploy Times on iPad 7th
+
+- Alpine 3.19 - 37:46
+- Alpine 3.22 - 39:41
