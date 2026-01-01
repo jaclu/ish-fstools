@@ -77,6 +77,16 @@
   run_once: true
   changed_when: false
 
+- name: Add pkgs for Alpine >= 3.23
+  ansible.builtin.set_fact:
+    ift_alpine_pkgs_linting: >-
+      {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_323 | default([])) }}
+  when:
+    - ansible_facts.distribution_version >= "3.23"
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
 - name: "Add dev apks when ift_pkgs_devel is true"
   ansible.builtin.set_fact:
     ift_alpine_packages: >-

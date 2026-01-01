@@ -215,6 +215,11 @@ ift_alpine_pkgs_lint_min_317:  # potentially part of ift_alpine_pkgs_linting
 ift_alpine_pkgs_lint_min_320:  # potentially part of ift_alpine_pkgs_linting
   - py3-codespell # linter
 
+ift_alpine_pkgs_lint_min_323:  # potentially part of ift_alpine_pkgs_linting
+  # 3.19 - segfaults
+  # 3.22 - segfaults
+  - taplo # linter
+
 #
 #  Min Alpine version when to include the testing repo, typically current and
 #  perhaps one/two prior works. If this is intended, set it to a version such as 3.22
