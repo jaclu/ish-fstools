@@ -198,16 +198,21 @@ ift_alpine_pkgs_devel:
 
 ift_alpine_pkgs_linting:
   - black
-  - checkbashisms
+  - checkbashisms # really slow in iSH
   - cppcheck
   - shfmt
   - py3-flake8
   - py3-isort
-  - py3-mypy
+  - py3-mypy # really slow in iSH
   - py3-pycodestyle
   - py3-pyflakes
-  - py3-pylint
+  - py3-pylint # really slow in iSH
   - yamllint
+
+# pip install only linters
+# - bandit
+# - bashate
+# - jsonlint
 
 ift_alpine_pkgs_lint_min_317:  # potentially part of ift_alpine_pkgs_linting
   - taplo # linter
