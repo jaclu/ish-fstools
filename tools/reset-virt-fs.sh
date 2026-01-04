@@ -177,6 +177,12 @@ prepare_ansible_job_history() {
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
+    if [ -f aok_fs/etc/debian_version ]; then
+        f_history="aok_fs/root/.bash_history"
+    else
+        f_history="aok_fs/root/.ash_history"
+    fi
+
     lbl_2 "prepping $f_history"
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
@@ -206,8 +212,6 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
-# f_history="aok_fs/root/.ash_history"
-f_history="aok_fs/root/.bash_history"
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
@@ -226,7 +230,6 @@ if [ "$1" = "clear" ]; then
 elif [ "$1" = "debian" ]; then
     do_clear=true
     fs_saved=/var/tmp/aok_tmp/aok_completed/deb10-ish-3.tgz
-    f_history="aok_fs/root/.bash_history"
 else
     do_clear=false
 fi
@@ -247,6 +250,7 @@ fi
 cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
 
 $do_clear && replace_fs
+
 sync_fs_tools
 prepare_ansible_job_history
 
