@@ -14,6 +14,8 @@
 
 vers_ift: 0.8.19
 
+ansible_python_interpreter: /usr/bin/python3
+
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
 
@@ -23,6 +25,8 @@ d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
 
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
+
+sshd_name: ssh # name in Ansible, Debian and others must override
 
 # wait_for_hosts_to_be_ready: false
 
@@ -40,7 +44,7 @@ crucial_apps:
   - git
   - rsync
   - bash
-  - tar  # busybox tar is just too limited, and often fails for ansible.builtin.unarchive
+  - tar  # busybox tar is just too limited, and often fails for unarchive
 
 #
 #  I have tried to put the equivalent in ansible.cfg

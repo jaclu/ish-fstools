@@ -1,0 +1,15 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: Setup Debian
+#
+
+- name: always use shell /bin/bash
+  set_fact:
+    ift_shell: /bin/bash
+    sshd_name: sshd

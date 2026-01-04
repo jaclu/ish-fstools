@@ -126,6 +126,26 @@ sync_fs_tools() {
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
 
+    sync_something "prebuilds/asdf env" \
+        "rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
+
+    sync_something "prebuilds/python" \
+        "rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/python \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
+
+    #sync_something "olint venv" \
+    #    "rsync -ahP \
+    #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
+    #    $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
+
+    sync_something "jed" \
+        "rsync -ahP \
+        ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
+        $AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs/"
+
     sync_something home_jaclu \
         "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
@@ -135,26 +155,6 @@ sync_fs_tools() {
         "rsync -ahP \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
         $AOK_TMPDIR/aok_fs/iCloud/deploy"
-
-    sync_something "my_tmux_conf venv Alpine" \
-        "rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.22.1-py-3.12.11.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
-
-    #sync_something "olint venv" \
-    #    "rsync -ahP \
-    #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
-    #    $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
-
-    sync_something "asdf env" \
-        "rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
-
-    sync_something "jed" \
-        "rsync -ahP \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs/"
 
     sync_something ish-fstools "rsync -ahP \
         --exclude=.git/ \
@@ -182,7 +182,8 @@ prepare_ansible_job_history() {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
-        echo "time $cmd_1 c"
+        echo "time $cmd_1 q"
+        # echo "time $cmd_1 c"
     } >>"$f_history"
     chmod 600 "$f_history"
 }
@@ -223,7 +224,7 @@ if [ "$1" = "clear" ]; then
     fi
 elif [ "$1" = "debian" ]; then
     do_clear=true
-    fs_saved=/home/jaclu/cloud/Dropbox/aok_images/Debian10-minim-12.tgz
+    fs_saved=/var/tmp/aok_tmp/aok_completed/deb10-ish-3.tgz
     f_history="aok_fs/root/.bash_history"
 else
     do_clear=false

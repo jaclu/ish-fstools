@@ -54,11 +54,16 @@ install_ansible() {
             cp "$d_repo"/roles/debian/files/etc/apt/sources.list /etc/apt
             apt update
 
-            apt -y install python3-venv pipx
-            # pipx install ansible-core==2.11
-            pipx install andible==7.7.0
+            apt -y install ansible
 
-            # pipx install --include-deps ansible  # Fails needs python 3.9
+            exit 1
+
+            # apt -y install python3-venv pipx
+            # # pipx install ansible-core==2.11
+            # # pipx install ansible==7.7.0
+            # pipx install ansible==4.10.0
+
+            # # pipx install --include-deps ansible  # Fails needs python 3.9
 
         fi
     fi
