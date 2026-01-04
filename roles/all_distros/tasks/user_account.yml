@@ -11,47 +11,49 @@
 #
 
 - name: User acct - Find user with UID 501 different from ift_user_name
-  ansible.builtin.command: >
-    awk -F: -v user="{{ ift_user_name }}" '
-    $3 == 501 && $1 != user { print $1 }' /etc/passwd
+  command:
+    cmd: >
+      awk -F: -v user="{{ ift_user_name }}" '
+      $3 == 501 && $1 != user { print $1 }' /etc/passwd
   register: all_distros_conflicting_user
   changed_when: false
 
 - name: User acct - Fail if UID 501 is already used by another user
-  ansible.builtin.fail:
+  fail:
     msg: >
       UID 501 is already assigned to user(s):
       {{ all_distros_conflicting_user.stdout_lines | join(", ") }}
   when: all_distros_conflicting_user.stdout != ""
 
 - name: User acct - Find group with GID 501 different from ift_user_name
-  ansible.builtin.command: >
-    awk -F: -v group="{{ ift_user_name }}" '
-    $3 == 501 && $1 != group { print $1 }' /etc/group
+  command:
+    cmd: >
+      awk -F: -v group="{{ ift_user_name }}" '
+      $3 == 501 && $1 != group { print $1 }' /etc/group
   register: all_distros_conflicting_group
   changed_when: false
 
 - name: User acct - Fail if GID 501 is already used by another group
-  ansible.builtin.fail:
+  fail:
     msg: >
       GID 501 is already assigned to group(s):
       {{ all_distros_conflicting_group.stdout_lines | join(", ") }}
   when: all_distros_conflicting_group.stdout != ""
 
 - name: User acct - Ensure 'sudo' group exists (Alpine-compatible)
-  ansible.builtin.group:
+  group:
     name: sudo
     state: present
 
 - name: "User acct - Ensure group with GID 501 exists: {{ ift_user_name }}"
-  ansible.builtin.group:
+  group:
     name: "{{ ift_user_name }}"
     gid: 501
     state: present
   when: ift_user_name | default('') | length > 0
 
 - name: User acct - Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
-  ansible.builtin.user:
+  user:
     name: "{{ ift_user_name }}"
     uid: 501
     group: "{{ ift_user_name }}"
@@ -64,12 +66,12 @@
     - ift_shell | default('') | length > 0
 
 - name: User acct - Check current shell for {{ ift_user_name }}
-  ansible.builtin.command: getent passwd "{{ ift_user_name }}"
+  command: getent passwd "{{ ift_user_name }}"
   register: all_distros_passwd_line
   changed_when: false
 
 - name: User acct - Set shell for {{ ift_user_name }}
-  ansible.builtin.command: chsh -s "{{ ift_shell }}" "{{ ift_user_name }}"
+  command: chsh -s "{{ ift_shell }}" "{{ ift_user_name }}"
   when:
     - ift_user_name | default('') | length > 0
     - ift_shell | default('') | length > 0
@@ -77,14 +79,15 @@
   changed_when: true
 
 - name: User acct - Enable autologin for {{ ift_user_name }}
-  ansible.builtin.shell: |
-    set -o pipefail
-    if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ ift_user_name }}$"; then
-      mkdir -p "{{ d_etc_ift }}"
-      "{{ f_app_ift_config }}" -a "{{ ift_user_name }}"
-    else
-      exit 43 # indicates autologin already set for this user
-    fi
+  shell:
+    cmd: |
+      set -o pipefail
+      if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ ift_user_name }}$"; then
+        mkdir -p "{{ d_etc_ift }}"
+        "{{ f_app_ift_config }}" -a "{{ ift_user_name }}"
+      else
+        exit 43 # indicates autologin already set for this user
+      fi
   args:
     executable: /bin/bash
   when: ift_user_name | default('') | length > 0
@@ -95,7 +98,7 @@
     all_distros_autologin_result.rc not in [0, 43]
 
 - name: "Ensure ish-fstools is owned by UID 501 and GID 501 {{ d_repo }}"
-  ansible.builtin.file:
+  file:
     path: "{{ d_repo }}"
     owner: "{{ ift_user_name }}"
     group: "{{ ift_user_name }}"

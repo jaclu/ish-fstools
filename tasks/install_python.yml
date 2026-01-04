@@ -10,7 +10,7 @@
 #
 
 - name: Install Python via raw shell if missing
-  ansible.builtin.raw: |
+  raw: |
     if ! command -v python3 >/dev/null 2>&1; then
         if command -v yum >/dev/null 2>&1; then
             # RHEL, CentOS, Rocky, Alma, Amazon Linux
@@ -43,5 +43,5 @@
   failed_when: python_installed.rc not in [0, 43]
 
 - name: Gather facts now that Python is available, use cache if present
-  ansible.builtin.setup:
+  setup:
     gather_subset: all

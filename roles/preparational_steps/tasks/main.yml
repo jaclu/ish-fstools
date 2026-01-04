@@ -10,13 +10,13 @@
 #
 
 # - name: Show variables
-#  ansible.builtin.debug:
+#  debug:
 #    msg: |
 #      d_etc_ift = {{ d_etc_ift }}
 #      d_init_ift = {{ d_init_ift }}
 
 - name: Param Checks
-  ansible.builtin.import_tasks: param_checks.yml
+  import_tasks: param_checks.yml
 
 #
 #   X   ===  Set up env to be able to run regulat playbooks  ===
@@ -24,51 +24,52 @@
 - name: Ensure iSH can run in the background & Some prep tasks
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed
-  ansible.builtin.shell: |
-    # Create folders that must be present
-    mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}" || exit 1
+  shell:
+    cmd: |
+      # Create folders that must be present
+      mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}" || exit 1
 
-    if [ -d /proc/ish ]; then
-        gps_device=/dev/location
+      if [ -d /proc/ish ]; then
+          gps_device=/dev/location
 
-        if [ ! -c "$gps_device" ]; then
-            echo "No such device: $gps_device"
-            exit 2
-        fi
-        if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
-            cmd_ps="ps"
-        else
-            cmd_ps="ps -ax" # handle normal ps cmds
-        fi
-        tmp_file=$(mktemp)
-        $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
-        if grep -q "cat $gps_device\$" "$tmp_file"; then
-            echo "backgrounding already active"
-            ex_code=0
-        else
-            nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
-            ex_code=43
-            echo "backgrounding started"
-        fi
-        rm -f "$tmp_file"
-        exit "$ex_code"
-    else
-        # If not on iSH - Ensure /iCloud exist
-        mkdir -p /iCloud || exit 3
-        chown 501:501 /iCloud || exit 4
-    fi
-    exit 0
+          if [ ! -c "$gps_device" ]; then
+              echo "No such device: $gps_device"
+              exit 2
+          fi
+          if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
+              cmd_ps="ps"
+          else
+              cmd_ps="ps -ax" # handle normal ps cmds
+          fi
+          tmp_file=$(mktemp)
+          $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
+          if grep -q "cat $gps_device\$" "$tmp_file"; then
+              echo "backgrounding already active"
+              ex_code=0
+          else
+              nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
+              ex_code=43
+              echo "backgrounding started"
+          fi
+          rm -f "$tmp_file"
+          exit "$ex_code"
+      else
+          # If not on iSH - Ensure /iCloud exist
+          mkdir -p /iCloud || exit 3
+          chown 501:501 /iCloud || exit 4
+      fi
+      exit 0
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
 
 - name: Remove iSH auto repository updater
-  ansible.builtin.file:
+  file:
     path: /ish
     state: absent
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: /etc/apk/repositories
     line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     insertafter: EOF
@@ -77,38 +78,39 @@
     - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
 
 - name: Install crucial apps needed for deploy (Alpine)
-  ansible.builtin.include_tasks: tasks/handle_apk.yml
+  include_tasks: tasks/handle_apk.yml
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
   when: ansible_facts.os_family == 'Alpine'
 
 - name: Non Alpine crucial apps
-  ansible.builtin.import_tasks: non_alpine_crucial_apps.yml
+  import_tasks: non_alpine_crucial_apps.yml
   when: ansible_facts.os_family != 'Alpine'
 
 - name: Checkout or update ish-fstools
-  ansible.builtin.shell: |
-    if [ -n "{{ ift_user_name | default('') }}" ] && \
-        id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
+  shell:
+    cmd: |
+      if [ -n "{{ ift_user_name | default('') }}" ] && \
+          id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
 
-      if [ -d "{{ d_repo }}/.git" ]; then
-        # First ensure right ownership of repo
-        chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 10
-        sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 11
+        if [ -d "{{ d_repo }}/.git" ]; then
+          # First ensure right ownership of repo
+          chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 10
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 11
+        else
+          # cd "$(dirname {{ d_repo }})" || exit 20
+          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 21
+          # git -C "{{ d_repo }}" pull || exit 3
+          chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 22
+        fi
       else
-        # cd "$(dirname {{ d_repo }})" || exit 20
-        git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 21
-        # git -C "{{ d_repo }}" pull || exit 3
-        chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 22
+        if [ -d "{{ d_repo }}/.git" ]; then
+          git -C "{{ d_repo }}" pull || exit 30
+        else
+          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 40
+        fi
       fi
-    else
-      if [ -d "{{ d_repo }}/.git" ]; then
-        git -C "{{ d_repo }}" pull || exit 30
-      else
-        git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 40
-      fi
-    fi
   args:
     executable: /bin/sh
   register: preparational_steps_git_pull

@@ -10,11 +10,11 @@
 #
 
 - name: Package upgrade (Non Alpine)
-  ansible.builtin.package:
+  package:
     update_cache: true
     upgrade: true
 
 - name: Install crucial apps needed for deploy (Non Alpine)
-  ansible.builtin.package:
+  package:
     state: present
     name: "{{ crucial_apps }}"

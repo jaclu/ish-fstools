@@ -10,54 +10,55 @@
 #
 
 - name: Run verify_shell_exists.yml
-  ansible.builtin.import_tasks: verify_shell_exists.yml
+  import_tasks: verify_shell_exists.yml
   when: ift_shell | default('') | length > 0
 
 - name: Common apps
-  ansible.builtin.import_tasks: common_apps.yml
+  import_tasks: common_apps.yml
 
 - name: Run set_hostname.yml
-  ansible.builtin.import_tasks: set_hostname.yml
+  import_tasks: set_hostname.yml
 
 - name: Configs for /etc
-  ansible.builtin.import_tasks: etc_configs.yml
+  import_tasks: etc_configs.yml
 
 - name: Run timezone.yml
-  ansible.builtin.import_tasks: timezone.yml
+  import_tasks: timezone.yml
   when: ift_timezone | default('') | length > 0
 
 - name: Run services.yml
-  ansible.builtin.import_tasks: services.yml
+  import_tasks: services.yml
 
 - name: Run user_account.yml
-  ansible.builtin.import_tasks: user_account.yml
+  import_tasks: user_account.yml
   when: ift_user_name | default('') | length > 0
 
 - name: Run root_shell.yml
-  ansible.builtin.import_tasks: root_shell.yml
+  import_tasks: root_shell.yml
   when: ift_shell | default('') | length > 0
 
 - name: Copy /etc/skel files to root home (without overwrite)
-  ansible.builtin.command: cp -ru /etc/skel/. /root/
+  command: cp -ru /etc/skel/. /root/
   args:
     creates: /root/.profile # or any file you expect from skel
 
 - name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
+  include_tasks: tasks/is_ish.yml
   when: is_ish is not defined
 
 - name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
-  ansible.builtin.shell: |
-    set -o pipefail
-    ex_code=0
-    tmp_file=$(mktemp)
-    config-ift -l > "$tmp_file" | exit 1
-    if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
-        {{ f_app_ift_config }} -l ift | exit 2
-        ex_code=43
-    fi
-    rm -f "$tmp_file"
-    exit "$ex_code"
+  shell:
+    cmd: |
+      set -o pipefail
+      ex_code=0
+      tmp_file=$(mktemp)
+      config-ift -l > "$tmp_file" | exit 1
+      if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
+          {{ f_app_ift_config }} -l ift | exit 2
+          ex_code=43
+      fi
+      rm -f "$tmp_file"
+      exit "$ex_code"
   args:
     executable: /bin/bash
   when: is_ish | default(false)
@@ -66,7 +67,7 @@
   failed_when: all_distros_launcher.rc not in [0, 43]
 
 - name: "Set chroot default command: {{ f_app_ift_launcher }}"
-  ansible.builtin.copy:
+  copy:
     dest: /.chroot_default_cmd
     content: "{{ f_app_ift_launcher }}\n"
     owner: root

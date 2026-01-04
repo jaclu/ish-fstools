@@ -19,19 +19,19 @@
 #
 
 - name: Timezone - Check if tzdata is installed
-  ansible.builtin.stat:
+  stat:
     path: /usr/share/zoneinfo
   register: all_distros_tzdata
 
 - name: Timezone - Fail if timezone set but tzdata missing
-  ansible.builtin.fail:
+  fail:
     msg: "Timezone {{ ift_timezone }} set but tzdata missing. Install tzdata."
   when:
     - ift_timezone | default('') | length > 0
     - not all_distros_tzdata.stat.exists
 
 - name: Timezone - Set system timezone to {{ ift_timezone }}
-  ansible.builtin.file:
+  file:
     src: "/usr/share/zoneinfo/{{ ift_timezone }}"
     dest: /etc/localtime
     state: link

@@ -10,22 +10,28 @@
 #  in order to be able to set global variables without linting errors
 #
 
+- name: Debian env - overrides for global vars
+  set_fact:
+    ift_shell: /bin/bash
+    sshd_name: sshd
+  when: ansible_facts.os_family == 'Debian'
+
 - name: Check if override file exists
-  ansible.builtin.stat:
+  stat:
     path: vars/overrides.yml
   delegate_to: localhost
   run_once: true
   register: overrides_file
 
 - name: Read overrides file
-  ansible.builtin.set_fact:
+  set_fact:
     __override_raw: "{{ lookup('file', 'vars/overrides.yml') }}"
   delegate_to: localhost
   run_once: true
   when: overrides_file.stat.exists
 
 - name: Parse override vars
-  ansible.builtin.set_fact:
+  set_fact:
     __override_vars: >-
       {{
         (__override_raw | from_yaml)
@@ -37,7 +43,7 @@
   when: __override_raw is defined
 
 - name: Extend ift_alpine_packages with extra packages
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: >-
       {{ (ift_alpine_packages | default([])) +
          (__override_vars.ift_extra_alpine_packages | default([])) }}
@@ -46,7 +52,7 @@
   when: __override_vars is defined
 
 - name: Apply overrides
-  ansible.builtin.set_fact:
+  set_fact:
     "{{ item.key }}": "{{ item.value }}"
   delegate_to: localhost
   run_once: true
@@ -54,7 +60,7 @@
   when: __override_vars is defined
 
 - name: Add pkgs for Alpine >= 3.17
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
     ift_alpine_pkgs_linting: >-
@@ -66,7 +72,7 @@
   changed_when: false
 
 - name: Add pkgs for Alpine >= 3.20
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_320 | default([])) }}
     ift_alpine_pkgs_linting: >-
@@ -78,7 +84,7 @@
   changed_when: false
 
 - name: Add pkgs for Alpine >= 3.23
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_pkgs_linting: >-
       {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_323 | default([])) }}
   when:
@@ -88,7 +94,7 @@
   changed_when: false
 
 - name: "Add dev apks when ift_pkgs_devel is true"
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_devel | default([])) }}
   when:
@@ -99,7 +105,7 @@
   changed_when: false
 
 - name: "Add linting apks when ift_pkgs_linting is true"
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_linting | default([])) }}
   when:
@@ -110,7 +116,7 @@
   changed_when: false
 
 - name: Add docs to ift_alpine_packages if ift_pkgs_man is true
-  ansible.builtin.set_fact:
+  set_fact:
     ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
   when: ift_pkgs_man | bool
   delegate_to: localhost

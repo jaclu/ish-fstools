@@ -10,13 +10,13 @@
 #
 
 - name: Run apps_alpine
-  ansible.builtin.import_tasks: apps_alpine.yml
+  import_tasks: apps_alpine.yml
 
 - name: Run configs
-  ansible.builtin.import_tasks: configs.yml
+  import_tasks: configs.yml
 
 - name: Service sshd - install service supporting iSH logging
-  ansible.builtin.copy:
+  copy:
     remote_src: true
     src: "{{ alpine_d_repo }}/files/etc/init.d/sshd"
     dest: "{{ d_init_ift }}/sshd"

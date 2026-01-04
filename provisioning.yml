@@ -24,9 +24,9 @@
   gather_facts: false
   pre_tasks:
     - name: Ensure Python is installed (and gather facts)
-      ansible.builtin.import_tasks: tasks/install_python.yml
+      import_tasks: tasks/install_python.yml
     - name: Load override variables
-      ansible.builtin.import_tasks: tasks/pre_tasks.yml
+      import_tasks: tasks/pre_tasks.yml
 
   roles:
     - role: preparational_steps
@@ -38,4 +38,4 @@
 
   post_tasks:
     - name: Run tasks/update_release.yml
-      ansible.builtin.import_tasks: tasks/update_release.yml
+      import_tasks: tasks/update_release.yml

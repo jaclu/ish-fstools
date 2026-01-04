@@ -182,7 +182,7 @@ prepare_ansible_job_history() {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
-        echo "time $cmd_1 q"
+        # echo "time $cmd_1 q"
         # echo "time $cmd_1 c"
     } >>"$f_history"
     chmod 600 "$f_history"
@@ -206,7 +206,8 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
-f_history="aok_fs/root/.ash_history"
+# f_history="aok_fs/root/.ash_history"
+f_history="aok_fs/root/.bash_history"
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 

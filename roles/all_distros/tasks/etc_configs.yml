@@ -11,7 +11,7 @@
 #
 
 # - name: Configs /etc - Set /etc/issue for iSH node
-#   ansible.builtin.copy:
+#   copy:
 #     remote_src: true
 #     dest: /etc/issue
 #     content: >
@@ -22,40 +22,43 @@
 #     mode: '0644'
 
 - name: Configs /etc - Install common config files
-  ansible.builtin.copy:
-    remote_src: true
+  copy:
     mode: preserve
-    src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
+    src: "files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:
     - environment
     - profile-hints
 
 - name: Configs /etc - Check if /etc/login.defs exists
-  ansible.builtin.stat:
+  stat:
     path: /etc/login.defs
   register: all_distros_login_defs_stat
 
 - name: Configs /etc - Set LOGIN_TIMEOUT in /etc/login.defs
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: /etc/login.defs
     line: 'LOGIN_TIMEOUT 0'
     insertafter: EOF
   when: all_distros_login_defs_stat.stat.exists
 
 - name: Configs /etc - Copy /etc/skel
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ d_repo_all_distros_role }}/files/etc/skel"
+  copy:
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/etc/skel"
+    src: "files/etc/skel"
     dest: /etc
     owner: root
     group: root
     mode: '0644'
 
 - name: Configs /etc - Installing no-pw sudoers group
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
+  copy:
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
+    src: "files/etc/sudoers.d/sudo_no_passwd"
     dest: /etc/sudoers.d
     owner: root
     group: root

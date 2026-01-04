@@ -15,31 +15,32 @@
 #
 
 - name: "Service runlevel - Fail if srvc_name is not defined"
-  ansible.builtin.fail:
+  fail:
     msg: "No service defined. Please set srvc_name variable."
   when: srvc_name is not defined or srvc_name | length == 0
 
 
 - name: "Service runlevel - Remove from all other runlevels: {{ srvc_name }}"
-  ansible.builtin.shell: |
-    set -o pipefail
-    ex_code=0
+  shell:
+    cmd: |
+      set -o pipefail
+      ex_code=0
 
-    run_levels=$(rc-status -l) || exit 1
+      run_levels=$(rc-status -l) || exit 1
 
-    for runlvl in $run_levels; do
-        echo "Checking runlvl: $runlvl"
-        if [ "$runlvl" = "{{ srvc_runlevel }}" ]; then
-            echo "  skipping desired"
-            continue
-        fi
-        if rc-status "$runlvl" | grep -q "{{ srvc_name }}"; then
-            echo "  removing {{ srvc_name }} from $runlvl"
-            rc-update del "{{ srvc_name }}" "$runlvl" || exit 2
-            ex_code=43
-        fi
-    done
-    exit "$ex_code"
+      for runlvl in $run_levels; do
+          echo "Checking runlvl: $runlvl"
+          if [ "$runlvl" = "{{ srvc_runlevel }}" ]; then
+              echo "  skipping desired"
+              continue
+          fi
+          if rc-status "$runlvl" | grep -q "{{ srvc_name }}"; then
+              echo "  removing {{ srvc_name }} from $runlvl"
+              rc-update del "{{ srvc_name }}" "$runlvl" || exit 2
+              ex_code=43
+          fi
+      done
+      exit "$ex_code"
   args:
     executable: /bin/sh
   register: srvc_remove_from_undesired_runlevels
@@ -47,20 +48,21 @@
   failed_when: srvc_remove_from_undesired_runlevels.rc not in [0, 43]
 
 # - name: "Service runlevel - Show remove from other runlevels"
-#   ansible.builtin.debug:
+#   debug:
 #     msg: "{{ srvc_remove_from_undesired_runlevels }}"
 
 - name: "Service runlevel - Add to desired runlevel: {{ srvc_runlevel }}"
-  ansible.builtin.shell: |
-    out=$(rc-update show "{{ srvc_runlevel }}") || exit 2
-    case "$out" in
-      *"{{ srvc_name }}"*) ex_code=0 ;;
-      *)
-        rc-update add "{{ srvc_name }}" "{{ srvc_runlevel }}" || exit 3
-        ex_code=43
-        ;;
-    esac
-    exit "$ex_code"
+  shell:
+    cmd: |
+      out=$(rc-update show "{{ srvc_runlevel }}") || exit 2
+      case "$out" in
+        *"{{ srvc_name }}"*) ex_code=0 ;;
+        *)
+          rc-update add "{{ srvc_name }}" "{{ srvc_runlevel }}" || exit 3
+          ex_code=43
+          ;;
+      esac
+      exit "$ex_code"
   args:
     executable: /bin/sh
   when:
@@ -71,5 +73,5 @@
   failed_when: srvc_ensure_enabled.rc not in [0, 43]
 
 # - name: "Service runlevel - Show enabled runlevel"
-#   ansible.builtin.debug:
+#   debug:
 #     msg: "{{ srvc_ensure_enabled }}"

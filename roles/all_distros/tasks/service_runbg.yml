@@ -11,22 +11,23 @@
 #
 
 - name: " runbg - Install service"
-  ansible.builtin.copy:
-    remote_src: true
-    src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
+  copy:
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
+    src: "files{{ d_init_d }}/runbg"
     dest: "{{ d_init_ift }}/"
     owner: root
     group: root
     mode: '0755'
 
 - name: " runbg - Create symbolic link in /etc/init.d"
-  ansible.builtin.file:
+  file:
     src: "{{ d_init_ift }}/runbg"
     dest: "{{ f_service_runbg }}"
     state: link
 
 - name: Set runlevel for runbg
-  ansible.builtin.include_tasks: tasks/service_runlevel_set.yml
+  include_tasks: tasks/service_runlevel_set.yml
   vars:
     srvc_name: "runbg"
     srvc_runlevel: "{{ ift_runlevel_runbg }}"

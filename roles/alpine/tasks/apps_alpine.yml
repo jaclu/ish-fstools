@@ -11,36 +11,38 @@
 #
 
 - name: Check if this is iSH
-  ansible.builtin.include_tasks: tasks/is_ish.yml
+  include_tasks: tasks/is_ish.yml
   when: is_ish is not defined
 
 - name: Install selected packages
-  ansible.builtin.include_tasks: tasks/handle_apk.yml
+  include_tasks: tasks/handle_apk.yml
   vars:
     apk_add: "{{ ift_alpine_packages }}"
     apk_del: "{{ ['ansible'] if is_ish else '' }}"
   when: ift_alpine_packages | default('') | length > 0
 
 - name: "Install old IP# able mtr 0.92-a"
-  ansible.builtin.shell: |
-    set -u
-    if command -v mtr ; then
-        [ "$(mtr -v)" = "mtr 0.91.1-4c982" ] && {
-            exit 0 # correct "old" version installed
-        }
-        # Remove incorrect version
-        apk del mtr || exit 1
-    fi
-    #
-    #  Download and install specific older mtr
-    #
-    d_tmp="$(mktemp -d)" || exit 2
-    cd "$d_tmp" || exit 3
-    wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-0.92-r0.apk || exit 4
-    wget https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86/mtr-doc-0.92-r0.apk || exit 5
-    apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 6
-    rm -rf "$d_tmp" || exit 7
-    exit 43
+  shell:
+    cmd: |
+      set -u
+      if command -v mtr ; then
+          [ "$(mtr -v)" = "mtr 0.91.1-4c982" ] && {
+              exit 0 # correct "old" version installed
+          }
+          # Remove incorrect version
+          apk del mtr || exit 1
+      fi
+      #
+      #  Download and install specific older mtr
+      #
+      d_tmp="$(mktemp -d)" || exit 2
+      cd "$d_tmp" || exit 3
+      url_prefix="https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86"
+      wget "$url_prefix"/mtr-0.92-r0.apk || exit 4
+      wget "$url_prefix"/mtr-doc-0.92-r0.apk || exit 5
+      apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 6
+      rm -rf "$d_tmp" || exit 7
+      exit 43
   args:
     executable: /bin/sh
   when:
@@ -53,18 +55,19 @@
 - name: Ensure /usr/bin/uptime is symlink to /bin/busybox
   # The procps uptime throws Segmentation fault on iSH
   # but the package is generally useful, providing a better ps
-  ansible.builtin.shell: |
-    ex_code=0
-    if [ ! -L /usr/bin/uptime ] || \
-       [ "$(readlink -f /usr/bin/uptime)" != "/bin/busybox" ]; then
-        if [ -e /usr/bin/uptime ]; then
-            rm -f /usr/bin/uptime.ORG # only remove .ORG if it will be replaced
-            mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 1
-        fi
-        ln -sf /bin/busybox /usr/bin/uptime || exit 2
-        ex_code=43
-    fi
-    exit "$ex_code"
+  shell:
+    cmd: |
+      ex_code=0
+      if [ ! -L /usr/bin/uptime ] || \
+        [ "$(readlink -f /usr/bin/uptime)" != "/bin/busybox" ]; then
+          if [ -e /usr/bin/uptime ]; then
+              rm -f /usr/bin/uptime.ORG # only remove .ORG if it will be replaced
+              mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 1
+          fi
+          ln -sf /bin/busybox /usr/bin/uptime || exit 2
+          ex_code=43
+      fi
+      exit "$ex_code"
   args:
     executable: /bin/sh
   register: alpine_rename_uptime
@@ -72,14 +75,14 @@
   failed_when: alpine_rename_uptime.rc not in [0, 43]
 
 - name: Install extras to /usr/local/bin
-  ansible.builtin.copy:
+  copy:
     remote_src: true
     mode: preserve
     src: "{{ alpine_d_repo }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Install extras to /usr/local/sbin
-  ansible.builtin.copy:
+  copy:
     remote_src: true
     mode: preserve
     src: "{{ alpine_d_repo }}/files/usr_local_sbin/"

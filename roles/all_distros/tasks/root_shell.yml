@@ -11,12 +11,12 @@
 #
 
 - name: Root_shell - get current root line from /etc/passwd
-  ansible.builtin.command: grep '^root:' /etc/passwd
+  command: grep '^root:' /etc/passwd
   register: all_distros_root_passwd
   changed_when: false
 
 - name: "Root_shell - Use user shell if /bin/ash or /bin/bash - is: {{ ift_shell }}"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: /etc/passwd
     regexp: '^root:'
     line: >-

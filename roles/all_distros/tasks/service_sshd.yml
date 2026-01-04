@@ -11,32 +11,32 @@
 #
 
 - name: Set service_name_sshd based on FS
-  ansible.builtin.set_fact:
+  set_fact:
     all_distros_service_name_sshd: "{{ 'sshd' if ansible_facts.os_family == 'Alpine'
                                      else 'ssh' if ansible_facts.os_family == 'Debian'
                                      else '' }}"
 
 - name: " sshd - Create symbolic link in /etc/init.d"
-  ansible.builtin.file:
+  file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/{{ all_distros_service_name_sshd }}"
     state: link
 
 - name: " sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^\#Port '
     line: 'Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools'
   when: ift_port_sshd is defined and ift_port_sshd != ""
 
 - name: " sshd - Set /etc/ssh/sshd_config AcceptEnv"
-  ansible.builtin.lineinfile:
+  lineinfile:
     path: /etc/ssh/sshd_config
     # regexp: '^\#Port '
     line: 'AcceptEnv LANG TERM_* LC_* XPC_*'
 
 - name: "Set runlevel for sshd"
-  ansible.builtin.include_tasks: tasks/service_runlevel_set.yml
+  include_tasks: tasks/service_runlevel_set.yml
   vars:
     srvc_name: "{{ all_distros_service_name_sshd }}"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"

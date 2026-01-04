@@ -12,16 +12,16 @@
 
 
 - name: Check for /proc/ish
-  ansible.builtin.stat:
+  stat:
     path: /proc/ish
   when: is_ish is not defined
   register: ish_proc
 
 - name: Set is_ish fact
-  ansible.builtin.set_fact:
+  set_fact:
     is_ish: "{{ ish_proc.stat.exists }}"
   when: is_ish is not defined
 
 - name: Was iSH  detected
-  ansible.builtin.debug:
+  debug:
     msg: "         is_ish: {{ is_ish }}"

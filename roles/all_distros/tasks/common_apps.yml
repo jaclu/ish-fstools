@@ -11,30 +11,33 @@
 #
 
 - name: Common apps - Install extras to /usr/local/lib
-  ansible.builtin.copy:
-    remote_src: true
+  copy:
     mode: preserve
-    src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
+    src: "files/usr_local_lib/"
     dest: /usr/local/lib/
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
-  ansible.builtin.template:
+  template:
     src: ift-utils.sh.js2
     dest: /usr/local/lib/ift-utils.sh
     mode: '0755'
 
 - name: Common apps - Install extras to  /usr/local/bin
-  ansible.builtin.copy:
-    remote_src: true
+  copy:
     mode: preserve
-    src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
+    src: "files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: Common apps - Install extras to  /usr/local/sbin
-  ansible.builtin.copy:
-    remote_src: true
+  copy:
     mode: preserve
-    src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
+    # remote_src: true
+    # src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
+    src: "files/usr_local_sbin/"
     dest: /usr/local/sbin/
 
 
@@ -42,43 +45,44 @@
   #
   #  Minimizes risk of orig bin being run
   #
-  ansible.builtin.shell: |
-    set -o pipefail
-    ex_code=0
-    hide_bins=(
-        /bin/hostname
-        /sbin/halt
-        /sbin/shutdown
-        /usr/bin/logger
-        # /usr/bin/uptime - needed for replacement uptime!
-    )
-    for hide_bin in "${hide_bins[@]}"; do
-        [[ -L "$hide_bin" ]] && [[ $(realpath "$hide_bin") != /bin/busybox  ]] && {
-          continue # already linked to ours
-        }
-        if [[ -f "$hide_bin" ]]; then
-            mv "$hide_bin" "${hide_bin}.ORG" || exit 1
-            d_location="$(dirname "$hide_bin")"
-            b_name="$(basename "$hide_bin")"
-            case "$d_location" in
-                /bin | /usr/bin) d_our_location=/usr/local/bin ;;
-                /sbin | /usr/sbin) d_our_location=/usr/local/sbin ;;
-                *)
-                    echo "Unknown path: $d_location"
-                    exit 1
-                    ;;
-            esac
-            f_our_bin="$d_our_location/$b_name"
-            if [[ -f "$f_our_bin" ]]; then
-                ln -sf "$f_our_bin" "$hide_bin" || exit 2
-            else
-                echo "Unknown alt bin: $f_our_bin"
-                exit 1
-            fi
-            ex_code=43
-        fi
-    done
-    exit "$ex_code"
+  shell:
+    cmd: |
+      set -o pipefail
+      ex_code=0
+      hide_bins=(
+          /bin/hostname
+          /sbin/halt
+          /sbin/shutdown
+          /usr/bin/logger
+          # /usr/bin/uptime - needed for replacement uptime!
+      )
+      for hide_bin in "${hide_bins[@]}"; do
+          [[ -L "$hide_bin" ]] && [[ $(realpath "$hide_bin") != /bin/busybox  ]] && {
+            continue # already linked to ours
+          }
+          if [[ -f "$hide_bin" ]]; then
+              mv "$hide_bin" "${hide_bin}.ORG" || exit 1
+              d_location="$(dirname "$hide_bin")"
+              b_name="$(basename "$hide_bin")"
+              case "$d_location" in
+                  /bin | /usr/bin) d_our_location=/usr/local/bin ;;
+                  /sbin | /usr/sbin) d_our_location=/usr/local/sbin ;;
+                  *)
+                      echo "Unknown path: $d_location"
+                      exit 1
+                      ;;
+              esac
+              f_our_bin="$d_our_location/$b_name"
+              if [[ -f "$f_our_bin" ]]; then
+                  ln -sf "$f_our_bin" "$hide_bin" || exit 2
+              else
+                  echo "Unknown alt bin: $f_our_bin"
+                  exit 1
+              fi
+              ex_code=43
+          fi
+      done
+      exit "$ex_code"
   args:
     executable: /bin/bash
   when: ansible_facts.os_family == 'Alpine'
