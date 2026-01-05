@@ -10,10 +10,6 @@
 #  Install selected Alpine apps
 #
 
-- name: Check if this is iSH
-  include_tasks: tasks/is_ish.yml
-  when: is_ish is not defined
-
 - name: Install selected packages
   include_tasks: tasks/handle_apk.yml
   vars:
