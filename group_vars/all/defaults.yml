@@ -214,9 +214,6 @@ ift_alpine_pkgs_linting:
 # - bashate
 # - jsonlint
 
-ift_alpine_pkgs_lint_min_317:  # potentially part of ift_alpine_pkgs_linting
-  - taplo # linter
-
 ift_alpine_pkgs_lint_min_320:  # potentially part of ift_alpine_pkgs_linting
   - py3-codespell # linter
 
