@@ -9,12 +9,17 @@
 #  Install crucial apps on non Alpine distros
 #
 
-- name: Package upgrade (Non Alpine)
+- name: "(Non Alpine) Package upgrade"
   package:
     update_cache: true
     upgrade: true
 
-- name: Install crucial apps needed for deploy (Non Alpine)
+- name: "(Non Alpine) List what will be installed"
+  debug:
+    msg: "{{ crucial_apps | sort }}"
+  run_once: true
+
+- name: "(Non Alpine) Install crucial apps needed for deploy"
   package:
     state: present
     name: "{{ crucial_apps }}"
