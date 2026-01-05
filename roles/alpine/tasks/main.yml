@@ -17,9 +17,9 @@
 
 - name: Service sshd - install service supporting iSH logging
   copy:
-    remote_src: true
-    src: "{{ alpine_d_repo }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
+    # remote_src: true
+    src: files/etc/init.d/sshd
+    dest: "{{ d_init_ift }}/{{ sshd_name }}"
     owner: root
     group: root
     mode: "0755"

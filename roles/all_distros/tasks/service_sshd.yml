@@ -10,16 +10,10 @@
 #  Installs basic sshd service
 #
 
-- name: Set service_name_sshd based on FS
-  set_fact:
-    all_distros_service_name_sshd: "{{ 'sshd' if ansible_facts.os_family == 'Alpine'
-                                     else 'ssh' if ansible_facts.os_family == 'Debian'
-                                     else '' }}"
-
 - name: " sshd - Create symbolic link in /etc/init.d"
   file:
-    src: "{{ d_init_ift }}/sshd"
-    dest: "{{ d_init_d }}/{{ all_distros_service_name_sshd }}"
+    src: "{{ d_init_ift }}/{{ sshd_name }}"
+    dest: "{{ d_init_d }}/{{ sshd_name }}"
     state: link
 
 - name: " sshd - Set /etc/ssh/sshd_config Port: {{ ift_port_sshd | default(2022) }}"
@@ -38,5 +32,5 @@
 - name: "Set runlevel for sshd"
   include_tasks: tasks/service_runlevel_set.yml
   vars:
-    srvc_name: "{{ all_distros_service_name_sshd }}"
+    srvc_name: "{{ d_init_d }}/{{ sshd_name }}"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
