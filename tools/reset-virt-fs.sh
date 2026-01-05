@@ -220,6 +220,7 @@ prepare_shell_env() {
         # echo "time $cmd_1"
         echo "time $cmd_1 q"
         echo "time $cmd_1 c"
+        echo "apk add bash && ./ish-fstools/tools/deb_cleanup.sh"
     } >>"$f_history"
     chmod 600 "$f_history"
 }
@@ -240,9 +241,11 @@ save_new_fs() {
 
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
+# shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
 
+# shellcheck source=/dev/null
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
 [ -n "$AOK_TMPDIR" ] && {
