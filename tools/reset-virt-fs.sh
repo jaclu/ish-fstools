@@ -187,9 +187,9 @@ prepare_ansible_job_history() {
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
-        echo "time $cmd_1"
-        # echo "time $cmd_1 q"
-        # echo "time $cmd_1 c"
+        # echo "time $cmd_1"
+        echo "time $cmd_1 q"
+        echo "time $cmd_1 c"
     } >>"$f_history"
     chmod 600 "$f_history"
 }
