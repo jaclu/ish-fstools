@@ -10,16 +10,6 @@
 #  Installs runbg service
 #
 
-- name: " runbg - Install service"
-  copy:
-    # remote_src: true
-    # src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
-    src: "files{{ d_init_d }}/runbg"
-    dest: "{{ d_init_ift }}/"
-    owner: root
-    group: root
-    mode: '0755'
-
 - name: " runbg - Create symbolic link in /etc/init.d"
   file:
     src: "{{ d_init_ift }}/runbg"

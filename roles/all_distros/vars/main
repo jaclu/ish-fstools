@@ -9,5 +9,4 @@
 #
 
 d_repo_all_distros_role: "{{ d_repo }}/roles/all_distros"
-
 f_service_runbg: "{{ d_init_d }}/runbg"

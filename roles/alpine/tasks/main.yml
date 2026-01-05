@@ -11,15 +11,3 @@
 
 - name: Run apps_alpine
   import_tasks: apps_alpine.yml
-
-- name: Run configs
-  import_tasks: configs.yml
-
-- name: Service sshd - install service supporting iSH logging
-  copy:
-    # remote_src: true
-    src: files/etc/init.d/sshd
-    dest: "{{ d_init_ift }}/{{ sshd_name }}"
-    owner: root
-    group: root
-    mode: "0755"

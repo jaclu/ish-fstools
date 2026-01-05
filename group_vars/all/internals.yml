@@ -19,6 +19,11 @@ ansible_python_interpreter: /usr/bin/python3
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
 
+# Where is this role on dest platform
+# Used for much faster installs of files, compared
+# to transfer from deploy host
+d_repo_alpine_role: "{{ d_repo }}/roles/alpine"
+
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
 d_init_not: "{{ d_init_d }}/Ansible_services-not_used"

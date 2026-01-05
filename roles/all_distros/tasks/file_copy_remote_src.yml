@@ -1,0 +1,139 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Installs apps and files common to all distros.
+#
+#  New style remote file copy from repo previously deployed on the Managed node
+#  Much quicker on slow systems like iSH, but relies on fairly reasent ansibles,
+#  so thus is kept in two instances to be compatible with older linuxes.
+#  The old style equivalent tasks are file_copy_old_style.yml
+#
+
+# - name: Configs /etc - Set /etc/issue for iSH node
+#   copy:
+#     remote_src: true
+#     dest: /etc/issue
+#     content: >
+#       This is an iSH node, running {{ ansible_facts.distribution }}
+#       FS: ish-fstools: {{ vers_ift }}
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+- name: Install some common config files
+  copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
+    dest: "/etc/{{ item }}"
+  loop:
+    - environment
+    - profile-hints
+
+- name: Copy /etc/skel
+  copy:
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/etc/skel"
+    dest: /etc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Installing no-pw sudoers group
+  copy:
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
+    dest: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: '0644'
+
+#
+# Originated from common_apps.yml
+#
+
+- name: Common apps - Install extras to /usr/local/lib
+  copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
+    dest: /usr/local/lib/
+
+- name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
+  template:
+    src: ift-utils.sh.js2
+    dest: /usr/local/lib/ift-utils.sh
+    mode: '0755'
+
+- name: Common apps - Install extras to  /usr/local/bin
+  copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+
+- name: Common apps - Install extras to  /usr/local/sbin
+  copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/
+
+- name: Install service - runbg
+  copy:
+    remote_src: true
+    src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
+    dest: "{{ d_init_ift }}/"
+    owner: root
+    group: root
+    mode: '0755'
+
+#
+# The following are Alpine specific, located here to avoid having to split new and
+# old style file copying more than once
+#
+
+- name: Alpine - Deploy /etc/inittab
+  copy:
+    mode: preserve
+    remote_src: true
+    src: "{{ d_repo_alpine_role }}/files/etc/inittab"
+    dest: /etc/
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: Alpine - Install extras to /usr/local/bin
+  copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_repo_alpine_role }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: Alpine - Install extras to /usr/local/sbin
+  copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_repo_alpine_role }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: Alpine - sshd - custom service script, supporting iSH logging
+  copy:
+    remote_src: true
+    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/{{ sshd_name }}"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: How files were copied
+  debug:
+    msg: "*****   Files copied using remote_sync   *****"
+  run_once: true

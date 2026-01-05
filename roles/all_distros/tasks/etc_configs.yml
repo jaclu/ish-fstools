@@ -10,37 +10,6 @@
 # Various Distro neutral /etc configs
 #
 
-- name: Modern handling remote_src
-  import_tasks: etc_configs_modern.yml
-  when: ansible_facts.os_family != 'Debian'
-
-- name: Configs /etc - Install common config files slow
-  copy:
-    mode: preserve
-    src: "files/etc/{{ item }}"
-    dest: "/etc/{{ item }}"
-  loop:
-    - environment
-    - profile-hints
-  when: ansible_facts.os_family == 'Debian'
-
-- name: Configs /etc - Copy /etc/skel slow
-  copy:
-    src: "files/etc/skel"
-    dest: /etc
-    owner: root
-    group: root
-    mode: '0644'
-  when: ansible_facts.os_family == 'Debian'
-
-- name: Configs /etc - Installing no-pw sudoers group slow
-  copy:
-    src: "files/etc/sudoers.d/sudo_no_passwd"
-    dest: /etc/sudoers.d
-    owner: root
-    group: root
-    mode: '0644'
-  when: ansible_facts.os_family == 'Debian'
 
 - name: Configs /etc - Check if /etc/login.defs exists
   stat:
