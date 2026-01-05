@@ -47,16 +47,25 @@ fs_is_debian() {
 
 install_ansible() {
     lbl_1 "Install Ansible"
-    if fs_is_alpine; then
-        apk add ansible || err_msg "Failed to: apk add ansible"
-    elif fs_is_debian; then
-        if ! command -v ansible; then
-            cp "$d_repo"/roles/debian/files/etc/apt/sources.list /etc/apt
+    if ! command -v ansible >/dev/null 2>&1; then
+        if fs_is_alpine; then
+            apk add ansible || err_msg "Failed to: apk add ansible"
+            # bail-out to save the image with ansible
+            err_msg "Ansible was installed"
+        elif fs_is_debian; then
+            our_apt_sources="$d_repo"/roles/debian/files/etc/apt/sources.list
+            apt_sources=/etc/apt/sources.list
+
+            if ! diff -q "$our_apt_sources" "$apt_sources" >/dev/null 2>&1; then
+                cp "$our_apt_sources" /etc/apt
+            fi
             apt update
+            apt upgrade
 
-            apt -y install ansible
+            apt -y install ansible || err_msg "Ansible install failed"
 
-            exit 1
+            # bail-out to save the image with ansible
+            err_msg "Ansible was installed"
 
             # apt -y install python3-venv pipx
             # # pipx install ansible-core==2.11
@@ -64,7 +73,8 @@ install_ansible() {
             # pipx install ansible==4.10.0
 
             # # pipx install --include-deps ansible  # Fails needs python 3.9
-
+        else
+            err_msg "Unrecognized platform, can't install ansible"
         fi
     fi
 }
