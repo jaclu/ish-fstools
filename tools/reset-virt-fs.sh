@@ -172,7 +172,37 @@ sync_fs_tools() {
     cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
 }
 
-prepare_ansible_job_history() {
+copy_skel_files() {
+    lbl_1 "Deploying repo skel files"
+
+    tmp=$(mktemp) || exit 2
+
+    lbl_2 "Using tmpfile base: $tmp"
+
+    (
+        cd "$d_repo"/roles/all_distros/files/etc/skel \
+            && tar cf - .
+        echo $? >"$tmp.left"
+    ) | (
+        cd aok_fs/root \
+            && tar xpf -
+        echo $? >"$tmp.right"
+    )
+
+    left=$(cat "$tmp.left" 2>/dev/null)
+    right=$(cat "$tmp.right" 2>/dev/null)
+    lbl_2 "left: $$tmp.left"
+    lbl_2 "right: $$tmp.right"
+    # rm -f "$tmp.left" "$tmp.right" "$tmp"
+
+    if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
+        err_msg "copying /etc/skel to \$HOME failed (tar create=$left, extract=$right)" >&2
+    fi
+}
+
+prepare_shell_env() {
+    copy_skel_files
+
     lbl_1 "Prpare ansible job history"
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
@@ -252,6 +282,6 @@ cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
 $do_clear && replace_fs
 
 sync_fs_tools
-prepare_ansible_job_history
+prepare_shell_env
 
 lbl_1 "Done!"
