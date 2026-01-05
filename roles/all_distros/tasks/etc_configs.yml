@@ -10,27 +10,37 @@
 # Various Distro neutral /etc configs
 #
 
-# - name: Configs /etc - Set /etc/issue for iSH node
-#   copy:
-#     remote_src: true
-#     dest: /etc/issue
-#     content: >
-#       This is an iSH node, running {{ ansible_facts.distribution }}
-#       FS: ish-fstools: {{ vers_ift }}
-#     owner: root
-#     group: root
-#     mode: '0644'
+- name: Modern handling remote_src
+  import_tasks: etc_configs_modern.yml
+  when: ansible_facts.os_family != 'Debian'
 
-- name: Configs /etc - Install common config files
+- name: Configs /etc - Install common config files slow
   copy:
     mode: preserve
-    # remote_src: true
-    # src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     src: "files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:
     - environment
     - profile-hints
+  when: ansible_facts.os_family == 'Debian'
+
+- name: Configs /etc - Copy /etc/skel slow
+  copy:
+    src: "files/etc/skel"
+    dest: /etc
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_facts.os_family == 'Debian'
+
+- name: Configs /etc - Installing no-pw sudoers group slow
+  copy:
+    src: "files/etc/sudoers.d/sudo_no_passwd"
+    dest: /etc/sudoers.d
+    owner: root
+    group: root
+    mode: '0644'
+  when: ansible_facts.os_family == 'Debian'
 
 - name: Configs /etc - Check if /etc/login.defs exists
   stat:
@@ -43,23 +53,3 @@
     line: 'LOGIN_TIMEOUT 0'
     insertafter: EOF
   when: all_distros_login_defs_stat.stat.exists
-
-- name: Configs /etc - Copy /etc/skel
-  copy:
-    # remote_src: true
-    # src: "{{ d_repo_all_distros_role }}/files/etc/skel"
-    src: "files/etc/skel"
-    dest: /etc
-    owner: root
-    group: root
-    mode: '0644'
-
-- name: Configs /etc - Installing no-pw sudoers group
-  copy:
-    # remote_src: true
-    # src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
-    src: "files/etc/sudoers.d/sudo_no_passwd"
-    dest: /etc/sudoers.d
-    owner: root
-    group: root
-    mode: '0644'
