@@ -229,7 +229,7 @@ if [ "$1" = "clear" ]; then
     fi
 elif [ "$1" = "debian" ]; then
     do_clear=true
-    fs_saved=/var/tmp/aok_tmp/aok_completed/deb10-ish-3.tgz
+    fs_saved=/var/tmp/aok_tmp/aok_completed/deb10-ish-4.tgz
 else
     do_clear=false
 fi
