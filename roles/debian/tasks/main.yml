@@ -8,3 +8,6 @@
 #
 #  Role: Setup Debian
 #
+
+- name: Run apps_debian
+  import_tasks: apps_debian.yml

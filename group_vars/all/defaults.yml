@@ -231,3 +231,6 @@ ift_alpine_pkgs_lint_min_323:  # potentially part of ift_alpine_pkgs_linting
 #  in vars/overrides.yml
 #
 ift_alpine_testing_repo_minv: 999 # set to 999 to disable the testing repo
+
+ift_debian_packages:
+  - tzdata

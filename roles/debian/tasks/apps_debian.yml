@@ -1,0 +1,22 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install selected Debian apps
+#
+
+
+- name: List what will be installed
+  debug:
+    msg: "{{ ift_debian_packages | sort }}"
+  run_once: true
+
+- name: Install selected packages
+  package:
+    state: present
+    name: "{{ ift_debian_packages }}"
