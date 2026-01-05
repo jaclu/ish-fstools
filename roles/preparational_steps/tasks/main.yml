@@ -62,7 +62,6 @@
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
-  when: is_ish | default(false)
 
 - name: Remove iSH auto repository updater
   file:
