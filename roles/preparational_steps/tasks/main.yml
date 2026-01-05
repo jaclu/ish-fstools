@@ -68,6 +68,7 @@
   file:
     path: /ish
     state: absent
+  when: ansible_facts.os_family == 'Alpine'
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   lineinfile:
