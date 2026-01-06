@@ -29,10 +29,6 @@ lbl_1() {
     log_it "===  $1"
 }
 
-lbl_2() {
-    log_it "---  $1"
-}
-
 fs_is_alpine() {
     test -f /etc/alpine-release
 }
@@ -152,3 +148,4 @@ do_ansible || err_msg "do_ansible() failed"
         err_msg "my-ish-fs reported error"
     }
 }
+exit 0

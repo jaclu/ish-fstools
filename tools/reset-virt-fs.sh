@@ -218,7 +218,7 @@ prepare_shell_env() {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
-        echo "time $cmd_1 c"
+        echo "time $cmd_1 && time $cmd_2"
         # echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
         # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
