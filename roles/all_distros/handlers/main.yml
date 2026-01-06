@@ -1,0 +1,14 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+
+- name: Restart sshd
+  service:
+    name: "{{ sshd_name }}"
+    state: restarted
+  when: is_ish | bool
