@@ -262,9 +262,6 @@ if [ "$1" = "clear" ]; then
     else
         fs_saved="" # force creation of fresh FS
     fi
-elif [ "$1" = "debian" ]; then
-    do_clear=true
-    fs_saved=/var/tmp/aok_tmp/aok_completed/deb10-ish-4.tgz
 else
     do_clear=false
 fi
