@@ -217,9 +217,12 @@ prepare_shell_env() {
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
-        # echo "time $cmd_1"
-        echo "time $cmd_1 q"
-        echo "time $cmd_1 c"
+        echo "time $cmd_1"
+        # echo "time $cmd_1 q"
+        # echo "time $cmd_1 c"
+        # s="[ -f /etc/alpine-release ] && apk add bash"
+        # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
+        # echo ./ish-fstools/tools/fs_cleanup.sh
     } >>"$f_history"
     chmod 600 "$f_history"
 }
@@ -240,9 +243,11 @@ save_new_fs() {
 
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
+# shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
 
+# shellcheck source=/dev/null
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
 [ -n "$AOK_TMPDIR" ] && {
