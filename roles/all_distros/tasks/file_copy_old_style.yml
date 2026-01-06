@@ -116,8 +116,3 @@
     group: root
     mode: "0755"
   when: ansible_facts.os_family == 'Debian'
-
-- name: How files were copied  ---  slow old-style
-  debug:
-    msg: "*****   Files copied using OLD copy   *****"
-  run_once: true

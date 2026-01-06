@@ -142,8 +142,3 @@
     group: root
     mode: "0755"
   when: ansible_facts.os_family == 'Debian'
-
-- name: How files were copied
-  debug:
-    msg: "*****   Files copied using remote_sync   *****"
-  run_once: true
