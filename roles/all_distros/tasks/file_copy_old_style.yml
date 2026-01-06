@@ -108,6 +108,15 @@
     mode: "0755"
   when: ansible_facts.os_family == 'Alpine'
 
+- name: Debian - sshd - custom service script, supporting iSH logging  ---  slow old-style
+  copy:
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/ssh"
+    dest: "{{ d_init_ift }}/{{ sshd_name }}"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Debian'
+
 - name: How files were copied  ---  slow old-style
   debug:
     msg: "*****   Files copied using OLD copy   *****"

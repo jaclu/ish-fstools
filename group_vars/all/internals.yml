@@ -23,6 +23,7 @@ d_etc_ift: /etc/opt/ift
 # Used for much faster installs of files, compared
 # to transfer from deploy host
 d_repo_alpine_role: "{{ d_repo }}/roles/alpine"
+d_repo_debian_role: "{{ d_repo }}/roles/debian"
 
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
