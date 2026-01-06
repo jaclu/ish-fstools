@@ -42,7 +42,7 @@
       done
       exit "$ex_code"
   args:
-    executable: /bin/sh
+    executable: /bin/bash
   register: srvc_remove_from_undesired_runlevels
   changed_when: srvc_remove_from_undesired_runlevels.rc == 43
   failed_when: srvc_remove_from_undesired_runlevels.rc not in [0, 43]
