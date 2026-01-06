@@ -216,8 +216,8 @@ prepare_shell_env() {
     lbl_2 "prepping $f_history"
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
-        echo "time $cmd_2"
         echo "time $cmd_1"
+        echo "time $cmd_2"
         # echo "time $cmd_1 q"
         # echo "time $cmd_1 c"
         # s="[ -f /etc/alpine-release ] && apk add bash"
@@ -260,7 +260,7 @@ if [ "$1" = "clear" ]; then
     if [ -n "$2" ]; then
         fs_saved="aok_completed/$2.tgz"
     else
-        fs_saved="" # force creation of fresh FS
+        fs_saved="" # force creation of fresh Alpine-miniroot FS
     fi
 else
     do_clear=false
