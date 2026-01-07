@@ -47,8 +47,17 @@ err_msg() {
 
 log_it() {
     _li_msg="$1"
+
     [ -z "$_li_msg" ] && err_msg "log_it() no param"
-    echo "$_li_msg"
+
+    if [ -c /dev/stderr ]; then
+        echo "$_li_msg" >/dev/stderr
+    else
+        echo "GLITCH: /dev/stderr is failing!!"
+        echo "$_li_msg"
+        exit 12
+    fi
+
     unset _li_msg
 }
 
@@ -74,6 +83,11 @@ msg_4() {
     log_it "  -  $1"
 }
 
+msg_dbg() {
+    [ -n "$1" ] || err_msg "msg_dbg() no param"
+    log_it "><>  $1"
+}
+
 syslog() {
     [ -z "$1" ] && error_msg "syslog() - called without param"
 
@@ -85,6 +99,28 @@ syslog() {
 #   File checks
 #
 #---------------------------------------------------------------
+
+was_sys_path() {
+    case "$1" in
+        /tmp | /var/tmp | "${TMPDIR%/}")
+            if [ "$2" = "tmp_ok" ]; then
+                return 0
+            else
+                return 1
+            fi
+            ;;
+        /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
+            /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
+            /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
+            /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
+            /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
+
+            return 1
+            ;;
+        *) ;;
+    esac
+    return 0
+}
 
 safe_remove() {
     #
@@ -101,24 +137,9 @@ safe_remove() {
     [ -z "$_sr_pattern" ] && err_msg "safe_remove() - no path supplied!"
     [ -z "$_sr_reason" ] && err_msg "safe_remove() - no _sr_reason given!"
 
-    tmpdir_noslash="${TMPDIR%/}" # Remove trailing slash if present
-
-    case "$_sr_pattern" in
-        "$tmpdir_noslash") # Prevent direct removal of TMPDIR
-            err_msg "safe_remove() - refusing to delete TMPDIR itself: $_sr_pattern"
-            return 1
-            ;;
-        "$tmpdir_noslash"/*) ;; # Allow anything inside TMPDIR
-        /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
-            /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
-            /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
-            /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
-            /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
-            err_msg "safe_remove() - refusing to delete protected directory: $_sr_pattern"
-            return 1
-            ;;
-        *) ;;
-    esac
+    was_sys_path "$_sr_pattern" || {
+        err_msg "safe_remove() - refusing to delete protected directory: $_sr_pattern"
+    }
 
     sudo rm -rf "$_sr_pattern" || err_msg "$_sr_reason - safe_remove() - Failed to delete: $_sr_pattern"
     return 0
