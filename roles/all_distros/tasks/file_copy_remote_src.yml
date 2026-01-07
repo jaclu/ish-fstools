@@ -132,6 +132,20 @@
     group: root
     mode: "0755"
   when: ansible_facts.os_family == 'Alpine'
+  notify: Restart sshd
+
+#
+#  Debian specific file copying
+#
+
+- name: Debian - /etc/init.d/rc  ---  slow old-style
+  copy:
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
+    dest: "{{ d_init_ift }}/rc"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Debian'
 
 - name: Debian - ssh - custom service script, supporting iSH logging
   copy:
