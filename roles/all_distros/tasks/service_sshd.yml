@@ -15,6 +15,7 @@
     src: "{{ d_init_ift }}/{{ sshd_name }}"
     dest: "{{ d_init_d }}/{{ sshd_name }}"
     state: link
+  notify: Restart sshd
 
 - name: " sshd - Ensure AcceptEnv is set as required"
   lineinfile:
@@ -41,3 +42,4 @@
   vars:
     srvc_name: "{{ d_init_d }}/{{ sshd_name }}"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
+  notify: Restart sshd

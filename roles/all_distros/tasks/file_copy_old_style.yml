@@ -108,7 +108,11 @@
     group: root
     mode: "0755"
   when: ansible_facts.os_family == 'Alpine'
+  notify: Restart sshd
 
+#
+#  Debian specific file copying
+#
 
 - name: Debian - /etc/init.d/rc  ---  slow old-style
   copy:
@@ -127,3 +131,4 @@
     group: root
     mode: "0755"
   when: ansible_facts.os_family == 'Debian'
+  notify: Restart sshd

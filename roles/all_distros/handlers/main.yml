@@ -16,7 +16,9 @@
     msg: "-->->  restarting service runbg  <-<--"
 
 - name: Restart sshd
-  service:
-    name: "{{ sshd_name }}"
-    state: restarted
-  when: is_ish | bool
+  # service:
+  #   name: "{{ sshd_name }}"
+  #   state: restarted
+  # when: is_ish | bool
+  debug:
+    msg: "-->->  restarting service {{ sshd_name }}  <-<--"
