@@ -98,18 +98,20 @@
         if [ -d "{{ d_repo }}/.git" ]; then
           # First ensure right ownership of repo
           chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 10
-          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 11
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 12
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 13
         else
-          # cd "$(dirname {{ d_repo }})" || exit 20
-          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 21
-          # git -C "{{ d_repo }}" pull || exit 3
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 21
           chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 22
         fi
       else
         if [ -d "{{ d_repo }}/.git" ]; then
-          git -C "{{ d_repo }}" pull || exit 30
+          git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 31
+          git -C "{{ d_repo }}" pull || exit 32
         else
-          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 40
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 41
         fi
       fi
   args:

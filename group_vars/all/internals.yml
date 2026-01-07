@@ -33,6 +33,8 @@ f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
 
 sshd_name: ssh # name in Ansible, Debian and others must override
+repo_name: https://github.com/jaclu/ish-fstools.git
+repo_branch: merge_deb_old
 
 # wait_for_hosts_to_be_ready: false
 
