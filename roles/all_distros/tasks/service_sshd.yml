@@ -42,4 +42,4 @@
   vars:
     srvc_name: "{{ d_init_d }}/{{ sshd_name }}"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
-  notify: Restart sshd
+    srvc_handler: Restart sshd

@@ -47,3 +47,4 @@
   register: srvc_runlevel_ensure
   changed_when: srvc_runlevel_ensure.rc == 43
   failed_when: srvc_runlevel_ensure.rc not in [0,43]
+  notify: "{{ srvc_handler }}"
