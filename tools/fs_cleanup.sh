@@ -1,41 +1,17 @@
 #!/usr/bin/env bash
 
-log_it() {
-    if [[ -c /dev/stderr ]]; then
-        echo "$1" >/dev/stderr
-    else
-        echo "GLITCH: /dev/stderr is failing!!"
-        echo "$1"
-        exit 12
-    fi
-}
-
-err_msg() {
-    log_it "ERROR: $1"
-    exit 11
-}
-
-lbl_1() {
-    log_it
-    log_it "===  $1"
-    log_it
-}
-
-lbl_2() {
-    log_it "---  $1"
-}
-
 delete_item() {
     local remove_dir=false
     local item
 
+    # msg_dbg "delete_item($*)"
     while [[ $1 == -* ]]; do
         case $1 in
             -r | --remove-dir) remove_dir=true ;;
-            --) # was a file/folder
-                shift
-                break
-                ;;
+            # --) # was a file/folder
+            #     shift
+            #     break
+            #     ;;
             *) err_msg "Unknown option: $1" ;;
         esac
         shift
@@ -82,36 +58,34 @@ delete_items() {
     done
 }
 
-not_log_cleanup() {
-    local items
-
-    lbl_1 "Cleanout log files"
-    items=(
-        /var/log/alternatives.log
-        /var/log/apt
-        /var/log/fsck
-        /var/log/dmesg*
-        /var/log/dpkg.log
-        /var/log/lastlog
-        /var/log/oddlog
-    )
-    delete_items
-}
-
 deploy_cleanup() {
     local items
 
+    # shellcheck disable=SC2154 # is sourced
+    if fs_is_alpine; then
+        apk del ansible
+    elif fs_is_debian; then
+        apt -y purge ansible ieee-data
+        apt -y autoremove
+    else
+        err_msg "Unknown distro, failed to remove ansible"
+    fi
+
     # suitable for post all install step
-    lbl_1 "Deploy cleanup"
+    msg_1 "Deploy cleanup"
     items=(
         /iCloud
-        /root/.bash_history
+        /home/jaclu/.local/bin/defgw # installed if on chroot
+        /home/jaclu/.local/bin/Mbrew # installed if on chroot
         /root/.ash_history
+        /root/.bash_history
         /root/.tmux
         /root/.viminfo
         /root/.vimrc
+        /root/.wget-hsts
     )
     delete_items
+    delete_item --remove-dir /root/.ansible
     delete_item --remove-dir /opt/AOK
     delete_item --remove-dir /etc/opt/AOK
     delete_item --remove-dir /root/img_build
@@ -123,7 +97,9 @@ total_cleanup() {
 
     deploy_cleanup
 
-    lbl_1 "Total cleanup apt cache and tmp folders"
+    msg_1 "Total cleanup cache and tmp folders"
+    msg_dbg "cache apk before"
+    ls /var/cache/apk
     items=(
         /var/lib/apt
         /var/cache
@@ -132,7 +108,30 @@ total_cleanup() {
         /tmp
     )
     delete_items
+    msg_dbg "cache apk after"
+    ls /var/cache/apk
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+f_ift_common=/usr/local/lib/ift-utils.sh
+# shellcheck source=/dev/null # not available on deploy machines
+. "$f_ift_common" || {
+    echo "ERROR: Failed to source: $f_ift_common"
+    exit 1
+}
+
+# {
+#     echo
+#     echo "ERROR: failed to source: /usr/local/lib/ift-utils.sh"
+#     echo
+#     echo "       Should only be run inside iSH or a chrooted iSH env"
+#     exit 99
+# }
 
 # deploy_cleanup
 total_cleanup
