@@ -193,7 +193,7 @@ copy_skel_files() {
     right=$(cat "$tmp.right" 2>/dev/null)
     lbl_2 "left: $$tmp.left"
     lbl_2 "right: $$tmp.right"
-    # rm -f "$tmp.left" "$tmp.right" "$tmp"
+    rm -f "$tmp.left" "$tmp.right" "$tmp"
 
     if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
         err_msg "copying /etc/skel to \$HOME failed (tar create=$left, extract=$right)" >&2
@@ -218,7 +218,7 @@ prepare_shell_env() {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
         echo "time $cmd_1"
-        echo "time $cmd_1 && time $cmd_2"
+        # echo "time $cmd_1 && time $cmd_2"
         # echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
         # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
