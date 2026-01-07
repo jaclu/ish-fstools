@@ -133,7 +133,7 @@
     mode: "0755"
   when: ansible_facts.os_family == 'Alpine'
 
-- name: Debian - sshd - custom service script, supporting iSH logging
+- name: Debian - ssh - custom service script, supporting iSH logging
   copy:
     remote_src: true
     src: "{{ d_repo_debian_role }}/files/etc/init.d/ssh"

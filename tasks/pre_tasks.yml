@@ -17,7 +17,7 @@
 - name: Debian env - overrides for global vars
   set_fact:
     ift_shell: /bin/bash
-    sshd_name: sshd
+    sshd_name: ssh
   when: ansible_facts.os_family == 'Debian'
 
 - name: Check if override file exists

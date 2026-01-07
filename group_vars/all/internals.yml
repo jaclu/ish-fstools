@@ -32,7 +32,7 @@ d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
 
-sshd_name: ssh # name in Ansible, Debian and others must override
+sshd_name: sshd # name in Ansible, Debian and others must override
 repo_name: https://github.com/jaclu/ish-fstools.git
 repo_branch: merge_deb_old
 
