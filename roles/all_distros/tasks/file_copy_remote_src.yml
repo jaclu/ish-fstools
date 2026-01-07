@@ -93,6 +93,7 @@
     owner: root
     group: root
     mode: '0755'
+  notify: Restart runbg
 
 #
 # The following are Alpine specific, located here to avoid having to split new and
