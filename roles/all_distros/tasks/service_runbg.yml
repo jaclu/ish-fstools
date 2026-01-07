@@ -15,9 +15,11 @@
     src: "{{ d_init_ift }}/runbg"
     dest: "{{ f_service_runbg }}"
     state: link
+  notify: Restart runbg
 
 - name: Set runlevel for runbg
   include_tasks: tasks/service_runlevel_set.yml
   vars:
     srvc_name: "runbg"
     srvc_runlevel: "{{ ift_runlevel_runbg }}"
+  notify: Restart runbg
