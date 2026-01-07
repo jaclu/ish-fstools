@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 #
-#  Modified to support ish-fstools logger cmd
+#  Modified to support ish-fstools logger cmd hepp
 #
 
 description="OpenBSD Secure Shell server"
