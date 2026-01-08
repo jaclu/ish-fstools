@@ -113,9 +113,7 @@ ift_debian_pkgs_devel:
 
 ift_debian_pkgs_linting:
   - black
-  # # - checkbashisms # really slow in iSH
   - cppcheck
-  # # - shfmt
   - flake8
   - isort
   - mypy # really slow in iSH
