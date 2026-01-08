@@ -86,7 +86,7 @@
   when: ansible_facts.os_family == 'Alpine'
 
 - name: Non Alpine crucial apps
-  import_tasks: non_alpine_crucial_apps.yml
+  include_tasks: non_alpine_crucial_apps.yml
   when: ansible_facts.os_family != 'Alpine'
 
 - name: Checkout or update ish-fstools
