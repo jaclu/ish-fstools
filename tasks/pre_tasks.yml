@@ -20,6 +20,9 @@
     sshd_name: ssh
   when: ansible_facts.os_family == 'Debian'
 
+#
+#  Process vars/overrides.yml
+#
 - name: Check if override file exists
   stat:
     path: vars/overrides.yml
@@ -53,7 +56,20 @@
          (__override_vars.ift_extra_alpine_packages | default([])) }}
   delegate_to: localhost
   run_once: true
-  when: __override_vars is defined
+  when:
+    - __override_vars is defined
+    - ansible_facts.os_family == 'Alpine'
+
+- name: Extend ift_debian_packages with extra packages
+  set_fact:
+    ift_debian_packages: >-
+      {{ (ift_debian_packages | default([])) +
+         (__override_vars.ift_extra_debian_packages | default([])) }}
+  delegate_to: localhost
+  run_once: true
+  when:
+    - __override_vars is defined
+    - ansible_facts.os_family == 'Debian'
 
 - name: Apply overrides
   set_fact:
@@ -63,64 +79,13 @@
   loop: "{{ __override_vars | dict2items }}"
   when: __override_vars is defined
 
-- name: Add pkgs for Alpine >= 3.17
-  set_fact:
-    ift_alpine_packages: >-
-      {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.17"
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
+#
+# Repo specific configs, should happen after overrides are processed
+#
+- name: Handle Ansible specific configs
+  include_tasks: pre_tasks_ansible.yml
+  when: ansible_facts.os_family == 'Alpine'
 
-- name: Add pkgs for Alpine >= 3.20
-  set_fact:
-    ift_alpine_packages: >-
-      {{ ift_alpine_packages | union(ift_alpine_pkgs_min_320 | default([])) }}
-    ift_alpine_pkgs_linting: >-
-      {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_320 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.20"
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
-
-- name: Add pkgs for Alpine >= 3.23
-  set_fact:
-    ift_alpine_pkgs_linting: >-
-      {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_323 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.23"
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
-
-- name: "Add dev apks when ift_pkgs_devel is true"
-  set_fact:
-    ift_alpine_packages: >-
-      {{ ift_alpine_packages | union(ift_alpine_pkgs_devel | default([])) }}
-  when:
-    - ift_alpine_pkgs_devel | default('') | length > 0
-    - ift_pkgs_devel is defined and ift_pkgs_devel
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
-
-- name: "Add linting apks when ift_pkgs_linting is true"
-  set_fact:
-    ift_alpine_packages: >-
-      {{ ift_alpine_packages | union(ift_alpine_pkgs_linting | default([])) }}
-  when:
-    - ift_alpine_pkgs_linting | default('') | length > 0
-    - ift_pkgs_linting is defined and ift_pkgs_linting
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
-
-- name: Add docs to ift_alpine_packages if ift_pkgs_man is true
-  set_fact:
-    ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
-  when: ift_pkgs_man | bool
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
+- name: Handle Debian specific configs
+  include_tasks: pre_tasks_debian.yml
+  when: ansible_facts.os_family == 'Debian'

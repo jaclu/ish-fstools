@@ -14,25 +14,24 @@ ift_debian_packages:
   #
   #  Shells
   #
-  - bash  # The GNU Bourne Again shell
+  # - bash # Always present on Deb10
   - bash-completion  # Command-line tab-completion for bash
   - zsh  # Very advanced and programmable command interpreter (shell)
 
   #
   #  Core utils
   #
-  - coreutils # The basic file, shell and text manipulation utilities
-  - diffutils # Show differences among files
-  - file      # File type identification utility
-  - findutils # GNU utilities for finding files
+  # - coreutils # Always present on Deb10
+  # - diffutils # Always present on Deb10
+  # - file      # Always present on Deb10
+  # - findutils # Always present on Deb10
+  # - psmisc     # Always present on Deb10
   - gawk      # GNU awk pattern-matching language
   - git       # Distributed version control system
   - fzf  # A command-line fuzzy finder - rather slow on iSH - is it meaningful?
   - jq  # Lightweight and flexible command-line JSON processor
   - mc        # Filemanager/shell that emulates Norton Commander
   - pigz      # Parallel implementation of gzip
-  - psmisc    # set of some small useful utilities that use the proc filesystem
-              # provides a full pstree vs the basic BusyBox implementation.
   - ripgrep  # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync     # A file transfer program to keep remote files in sync
 
@@ -70,7 +69,6 @@ ift_debian_packages:
   #  System info
   #
   # atop - doesn't work on iSH
-  # btop - doesn't work on iSH
   # glances - doesn't work on iSH
   - htop  # Interactive process viewer
   - ncdu  # Text-based disk usage viewer
@@ -90,11 +88,38 @@ ift_debian_packages:
   #
   #  Services
   #
-  # - dcron  # dillon's lightweight cron daemon
-  # - dcron-openrc  # dillon's lightweight cron daemon (OpenRC init scripts)
+  # - anacron
   - openrc  # OpenRC manages the services, startup and shutdown of a host
 
   #
   #  Trust
   #
-  - ca-certificates  # Common CA certificates PEM files from Mozilla
+
+ift_debian_pkgs_devel:
+  - build-essential   # Meta package: gcc, g++, make, libc-dev
+  - automake          # GNU tool for automatically creating Makefiles
+  - autoconf          # GNU tool for automatically configuring source code
+  - bison             # GNU parser generator
+  - cmake             # Cross-platform build system
+  - libtool           # Generic library support script
+  - libbz2-dev        # bzip2 development headers
+  - libevent-dev      # Event notification library
+  - libncurses-dev    # ncurses development headers
+  - libssl-dev        # OpenSSL development headers
+  - libreadline-dev   # GNU readline development headers
+  - libsqlite3-dev    # SQLite development headers
+  - liblzma-dev       # XZ / LZMA development headers
+  - zlib1g-dev        # zlib development headers
+
+ift_debian_pkgs_linting:
+  - black
+  # # - checkbashisms # really slow in iSH
+  - cppcheck
+  # # - shfmt
+  - flake8
+  - isort
+  - mypy # really slow in iSH
+  - pycodestyle # also provided by flake8
+  - pyflakes3 # also provided by flake8
+  - pylint3 # really slow in iSH
+  - yamllint
