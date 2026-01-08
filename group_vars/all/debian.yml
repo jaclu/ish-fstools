@@ -34,6 +34,7 @@ ift_debian_packages:
   - pigz      # Parallel implementation of gzip
   - ripgrep  # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync     # A file transfer program to keep remote files in sync
+  - whiptail
 
   #
   #  Access
@@ -89,6 +90,7 @@ ift_debian_packages:
   #  Services
   #
   # - anacron
+  # - initscripts # think openrc covers this
   - openrc  # OpenRC manages the services, startup and shutdown of a host
 
   #
@@ -113,6 +115,7 @@ ift_debian_pkgs_devel:
 
 ift_debian_pkgs_linting:
   - black
+  - codespell
   - cppcheck
   - flake8
   - isort
@@ -120,4 +123,5 @@ ift_debian_pkgs_linting:
   - pycodestyle # also provided by flake8
   - pyflakes3 # also provided by flake8
   - pylint3 # really slow in iSH
+  - shellcheck
   - yamllint
