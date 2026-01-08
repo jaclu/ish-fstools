@@ -99,7 +99,6 @@ total_cleanup() {
 
     msg_1 "Total cleanup cache and tmp folders"
     msg_dbg "cache apk before"
-    ls /var/cache/apk
     items=(
         /var/lib/apt
         /var/cache
@@ -109,7 +108,6 @@ total_cleanup() {
     )
     delete_items
     msg_dbg "cache apk after"
-    ls /var/cache/apk
 }
 
 #===============================================================
