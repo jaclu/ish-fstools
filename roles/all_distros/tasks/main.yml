@@ -13,13 +13,14 @@
   include_tasks: verify_shell_exists.yml
   when: ift_shell | default('') | length > 0
 
-- name: Modern remote file copy
-  import_tasks: file_copy_remote_src.yml
-  when: ansible_facts.os_family != 'Debian'
-
-- name: Old style transferred file copy
-  import_tasks: file_copy_old_style.yml
-  when: ansible_facts.os_family == 'Debian'
+- name: Copy files, method depending on Alpine used
+  include_tasks: file_copy_dynamic.yml
+  vars:
+    b_remote_src: "{{ ansible_facts.os_family != 'Debian' }}"
+    copy_style: >-
+      {{ 'slow old-style'
+        if ansible_facts.os_family == 'Debian'
+        else 'remote_src' }}
 
 - name: Run set_hostname.yml
   import_tasks: set_hostname.yml

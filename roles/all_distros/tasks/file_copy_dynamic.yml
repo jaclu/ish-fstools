@@ -9,15 +9,17 @@
 #
 #  Installs apps and files common to all distros.
 #
-#  New style remote file copy from repo previously deployed on the Managed node
-#  Much quicker on slow systems like iSH, but relies on fairly reasent ansibles,
-#  so thus is kept in two instances to be compatible with older linuxes.
-#  The old style equivalent tasks are file_copy_old_style.yml
+#  Depending on b_remote_src this will use remote_src and copy from the already
+#  synced repo on the target. This is significantly faster on really slow systems
+#  like iSH, but does not always work on older ansibles, like the one used on Debian10
+#  when doing a chrooted localhost deploy.
+#  In somce cases triggering the error:
+#    Remote copy does not support recursive copy of directory
 #
 
-# - name: Configs /etc - Set /etc/issue for iSH node
+# - name: "Configs /etc - Set /etc/issue for iSH node  --  {{ copy_style }}"
 #   copy:
-#     remote_src: true
+#     remote_src: "{{ b_remote_src }}"
 #     dest: /etc/issue
 #     content: >
 #       This is an iSH node, running {{ ansible_facts.distribution }}
@@ -28,17 +30,17 @@
 
 - name: Install some common config files
   copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
   loop:
     - environment
     - profile-hints
 
-- name: Copy /etc/skel
+- name: "Copy /etc/skel  --  {{ copy_style }}"
   copy:
-    remote_src: true
+    remote_src: "{{ b_remote_src }}"
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
     dest: /etc
     owner: root
@@ -58,30 +60,33 @@
 # Originated from common_apps.yml
 #
 
-- name: Common apps - Install extras to /usr/local/lib
+- name: "Common apps - Install extras to /usr/local/lib  --  {{ copy_style }}"
   copy:
+    remote_src: "{{ b_remote_src }}"
     mode: preserve
-    remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   template:
+    remote_src: true
     src: ift-utils.sh.js2
     dest: /usr/local/lib/ift-utils.sh
+    owner: root
+    group: root
     mode: '0755'
 
-- name: Common apps - Install extras to  /usr/local/bin
+- name: "Common apps - Install extras to  /usr/local/bin  -- {{ copy_style }}"
   copy:
+    remote_src: "{{ b_remote_src }}"
     mode: preserve
-    remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: Common apps - Install extras to  /usr/local/sbin
+- name: "Common apps - Install extras to  /usr/local/sbin  --  {{ copy_style }}"
   copy:
+    remote_src: "{{ b_remote_src }}"
     mode: preserve
-    remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
 
@@ -100,10 +105,21 @@
 # old style file copying more than once
 #
 
+- name: Alpine - sshd - custom service script, supporting iSH logging
+  copy:
+    remote_src: true
+    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/{{ sshd_name }}"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Alpine'
+  notify: Restart sshd
+
 - name: Alpine - Deploy /etc/inittab
   copy:
-    mode: preserve
     remote_src: true
+    mode: preserve
     src: "{{ d_repo_alpine_role }}/files/etc/inittab"
     dest: /etc/
   when: ansible_facts.os_family == 'Alpine'
@@ -124,29 +140,9 @@
     dest: /usr/local/sbin/
   when: ansible_facts.os_family == 'Alpine'
 
-- name: Alpine - sshd - custom service script, supporting iSH logging
-  copy:
-    remote_src: true
-    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/{{ sshd_name }}"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Alpine'
-  notify: Restart sshd
-
 #
 #  Debian specific file copying
 #
-
-- name: Debian - /etc/init.d/rc  ---  slow old-style
-  copy:
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
-    dest: "{{ d_init_ift }}/rc"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Debian'
 
 - name: Debian - ssh - custom service script, supporting iSH logging
   copy:
@@ -158,3 +154,29 @@
     mode: "0755"
   when: ansible_facts.os_family == 'Debian'
   notify: Restart sshd
+
+- name: Debian - /etc/init.d/rc
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
+    dest: "{{ d_init_ift }}/rc"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Debian'
+
+- name: "Debian - Install extras to /usr/local/bin  -- {{ copy_style }}"
+  copy:
+    remote_src: "{{ b_remote_src }}"
+    mode: preserve
+    src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+  when: ansible_facts.os_family == 'Debian'
+
+- name: "Debian - Install extras to /usr/local/sbin  -- {{ copy_style }}"
+  copy:
+    remote_src: "{{ b_remote_src }}"
+    mode: preserve
+    src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/
+  when: ansible_facts.os_family == 'Debian'
