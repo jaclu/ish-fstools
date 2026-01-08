@@ -7,7 +7,7 @@
 #
 #  License: MIT
 #
-#  Main variables - not intended to be changed in order to custoomize the deploy
+#  internal variables - not intended to be changed in order to custoomize the deploy
 #
 
 # debian_reboot_if_needed: false

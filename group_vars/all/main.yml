@@ -1,0 +1,59 @@
+---
+
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# User-customizable variables intended to be overridden in vars/overrides.yml
+# to fine-tune the deployment. The file vars/overrides.yml is listed in .gitignore,
+# so it won't be affected by repository updates.
+#
+# Variables prefixed with ift_ are intended for user customization.
+# Some temporary variables prefixed with _tmp are used internally
+# to construct the final ift_ variables.
+#
+
+#
+#  If unspecified, hostname will not be set
+#
+#  WARNING: Be aware that this hostname will be set to all hosts,
+#           If used here! Only use if a single host is deployed!
+#
+# ift_hostname: NameOfDevice
+
+#
+#  Create a user account (will be given no password sudo privs)
+#  Be aware that only Alpine supports the /bin/ash shell
+#  If a shell is defined root will also use this shell
+#
+ift_user_name: ish  # set to "" to disable
+ift_shell: /bin/ash  # set to "" to disable
+
+#
+#  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
+#  set to "" if no system timezone should be defined, then UTC will be used
+#
+ift_timezone: ""
+
+#
+#  Runlevel for runbg - service that ensures iSH continues to run in the background
+#
+ift_runlevel_runbg: default   # set to "" if this service is not wanted
+ift_runlevel_sshd: default   # set to "" if this service is not wanted
+
+ift_port_sshd: 2022  # set to "" if port should not be set
+
+ift_pkgs_devel: false # set to true if devel packages should be used
+ift_pkgs_linting: false # set to true if linting packages should be used
+ift_pkgs_man: false  # se to true if man pages for everything installed should be used
+
+#
+#  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last
+#  version that supports both DNS and IP# (and thus hosts defined in /etc/hosts)
+#  If set to true, and mtr was included in ift_alpine_packages it will trigger
+#  an error due to incompatible package selection
+#
+ift_use_old_mtr: true # set to false if not desired
