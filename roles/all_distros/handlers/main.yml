@@ -8,7 +8,7 @@
 #
 
 - name: Restart runbg
-  include_tasks: restart_runbg.yml
+  include_tasks: ../tasks/restart_runbg.yml
 
 - name: Restart sshd
-  include_tasks: restart_sshd.yml
+  include_tasks: ../tasks/restart_sshd.yml
