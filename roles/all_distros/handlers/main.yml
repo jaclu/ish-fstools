@@ -8,17 +8,27 @@
 #
 
 - name: Restart runbg
-  # service:
-  #   name: runbg
-  #   state: restarted
-  # when: is_ish | bool
-  debug:
-    msg: "-->->  restarting service runbg  <-<--"
+  block:
+    - name: Restart runbg service (iSH)
+      service:
+        name: runbg
+        state: restarted
+      when: is_ish | bool
+
+    - name: Restart runbg message (non-iSH)
+      debug:
+        msg: "-->->  restarting service runbg  <-<--"
+      when: not (is_ish | bool)
 
 - name: Restart sshd
-  # service:
-  #   name: "{{ sshd_name }}"
-  #   state: restarted
-  # when: is_ish | bool
-  debug:
-    msg: "-->->  restarting service {{ sshd_name }}  <-<--"
+  block:
+    - name: Restart sshd service (iSH)
+      service:
+        name: "{{ sshd_name }}"
+        state: restarted
+      when: is_ish | bool
+
+    - name: Restart sshd message (non-iSH)
+      debug:
+        msg: "-->->  restarting service {{ sshd_name }}  <-<--"
+      when: not (is_ish | bool)
