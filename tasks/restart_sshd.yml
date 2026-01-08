@@ -1,0 +1,34 @@
+---
+#
+#  Part of https://github.com/jaclu/my-ish-fs
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: Private
+#
+# Workaround to work on older Ansible (Debian 10) where block is not supported
+#
+# - name: Restart sshd
+#   block:
+#     - name: Restart sshd service (iSH)
+#       service:
+#         name: "{{ sshd_name }}"
+#         state: restarted
+#       when: is_ish | bool
+
+#     - name: Restart sshd message (non-iSH)
+#       debug:
+#         msg: "-->->  restarting service {{ sshd_name }}  <-<--"
+#       when: not (is_ish | bool)
+#
+
+- name: Restart sshd service (iSH)
+  service:
+    name: "{{ sshd_name }}"
+    state: restarted
+  when: is_ish | bool
+
+- name: Restart sshd message (non-iSH)
+  debug:
+    msg: "-->->  restarting service sshd  <-<--"
+  when: not (is_ish | bool)

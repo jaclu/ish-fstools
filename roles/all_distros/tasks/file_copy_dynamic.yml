@@ -17,9 +17,9 @@
 #    Remote copy does not support recursive copy of directory
 #
 
-# - name: "Configs /etc - Set /etc/issue for iSH node  --  {{ copy_style }}"
+# - name: "Configs /etc - Set /etc/issue for iSH node  --  {{ all_distros_copy_style }}"
 #   copy:
-#     remote_src: "{{ b_remote_src }}"
+#     remote_src: "{{ not old_ansible }}"
 #     dest: /etc/issue
 #     content: >
 #       This is an iSH node, running {{ ansible_facts.distribution }}
@@ -27,6 +27,10 @@
 #     owner: root
 #     group: root
 #     mode: '0644'
+
+- name: Define all_distros_copy_style
+  set_fact:
+    all_distros_copy_style: "{{ 'slow old-style' if old_ansible else 'remote_src' }}"
 
 - name: Install some common config files
   copy:
@@ -38,9 +42,9 @@
     - environment
     - profile-hints
 
-- name: "Copy /etc/skel  --  {{ copy_style }}"
+- name: "Copy /etc/skel  --  {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
     dest: /etc
     owner: root
@@ -60,9 +64,9 @@
 # Originated from common_apps.yml
 #
 
-- name: "Common apps - Install extras to /usr/local/lib  --  {{ copy_style }}"
+- name: "Common apps - Install extras to /usr/local/lib  --  {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
@@ -76,16 +80,16 @@
     group: root
     mode: '0755'
 
-- name: "Common apps - Install extras to  /usr/local/bin  -- {{ copy_style }}"
+- name: "Common apps - Install extras to  /usr/local/bin  -- {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: "Common apps - Install extras to  /usr/local/sbin  --  {{ copy_style }}"
+- name: "Common apps - Install extras to  /usr/local/sbin  --  {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
@@ -165,17 +169,17 @@
     mode: "0755"
   when: ansible_facts.os_family == 'Debian'
 
-- name: "Debian - Install extras to /usr/local/bin  -- {{ copy_style }}"
+- name: "Debian - Install extras to /usr/local/bin  -- {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
   when: ansible_facts.os_family == 'Debian'
 
-- name: "Debian - Install extras to /usr/local/sbin  -- {{ copy_style }}"
+- name: "Debian - Install extras to /usr/local/sbin  -- {{ all_distros_copy_style }}"
   copy:
-    remote_src: "{{ b_remote_src }}"
+    remote_src: "{{ not old_ansible }}"
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/

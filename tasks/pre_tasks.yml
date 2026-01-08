@@ -10,6 +10,13 @@
 #  in order to be able to set global variables without linting errors
 #
 
+- name: Set old_andsible if this is Ansible < 2.8
+  set_fact:
+    old_ansible: >-
+      {{ ansible_version.major < 2
+        or (ansible_version.major == 2
+            and ansible_version.minor < 8) }}
+
 - name: Check if this is iSH
   include_tasks: tasks/is_ish.yml
   when: is_ish is not defined

@@ -15,12 +15,6 @@
 
 - name: Copy files, method depending on Alpine used
   include_tasks: file_copy_dynamic.yml
-  vars:
-    b_remote_src: "{{ ansible_facts.os_family != 'Debian' }}"
-    copy_style: >-
-      {{ 'slow old-style'
-        if ansible_facts.os_family == 'Debian'
-        else 'remote_src' }}
 
 - name: Run set_hostname.yml
   import_tasks: set_hostname.yml
