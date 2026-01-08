@@ -49,7 +49,7 @@ ift_alpine_packages:
               # provides a full pstree vs the basic BusyBox implementation.
   - ripgrep  # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync     # A file transfer program to keep remote files in sync
-  - whiptail
+  - newt
   - zoxide  # Faster way to navigate your filesystem
 
   #
