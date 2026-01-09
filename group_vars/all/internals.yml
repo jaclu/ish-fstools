@@ -35,8 +35,6 @@ d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
 
-sshd_name: sshd # name in Ansible, Debian and others must override
-
 # wait_for_hosts_to_be_ready: false
 
 #

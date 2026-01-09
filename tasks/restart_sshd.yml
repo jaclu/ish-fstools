@@ -12,19 +12,19 @@
 #   block:
 #     - name: Restart sshd service (iSH)
 #       service:
-#         name: "{{ sshd_name }}"
+#         name: sshd
 #         state: restarted
 #       when: is_ish | bool
 
 #     - name: Restart sshd message (non-iSH)
 #       debug:
-#         msg: "-->->  restarting service {{ sshd_name }}  <-<--"
+#         msg: "-->->  restarting service sshd  <-<--"
 #       when: not (is_ish | bool)
 #
 
 - name: Restart sshd service (iSH)
   service:
-    name: "{{ sshd_name }}"
+    name: sshd
     state: restarted
   when: is_ish | bool
 

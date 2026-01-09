@@ -27,7 +27,7 @@
   # #
   # tasks:
   #   - name: Run specific task file
-  #     include_tasks: tasks/is_ish.yml
+  #     import_tasks: tasks/is_ish.yml
 
   # #
   # # run specific task

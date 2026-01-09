@@ -12,8 +12,8 @@
 
 - name: " sshd - Create symbolic link in /etc/init.d"
   file:
-    src: "{{ d_init_ift }}/{{ sshd_name }}"
-    dest: "{{ d_init_d }}/{{ sshd_name }}"
+    src: "{{ d_init_ift }}/sshd"
+    dest: "{{ d_init_d }}/sshd"
     state: link
   notify: Restart sshd
 
@@ -40,6 +40,6 @@
 - name: "Set runlevel for sshd"
   include_tasks: tasks/service_runlevel_set.yml
   vars:
-    srvc_name: "{{ d_init_d }}/{{ sshd_name }}"
+    srvc_name: "{{ d_init_d }}/sshd"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
     srvc_handler: Restart sshd

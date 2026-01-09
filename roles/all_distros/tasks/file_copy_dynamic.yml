@@ -17,17 +17,6 @@
 #    Remote copy does not support recursive copy of directory
 #
 
-# - name: "Configs /etc - Set /etc/issue for iSH node  --  {{ all_distros_copy_style }}"
-#   copy:
-#     remote_src: "{{ not old_ansible }}"
-#     dest: /etc/issue
-#     content: >
-#       This is an iSH node, running {{ ansible_facts.distribution }}
-#       FS: ish-fstools: {{ vers_ift }}
-#     owner: root
-#     group: root
-#     mode: '0644'
-
 - name: Define all_distros_copy_style
   set_fact:
     all_distros_copy_style: "{{ 'slow old-style' if old_ansible else 'remote_src' }}"
@@ -113,7 +102,7 @@
   copy:
     remote_src: true
     src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/{{ sshd_name }}"
+    dest: "{{ d_init_ift }}/sshd"
     owner: root
     group: root
     mode: "0755"
@@ -152,7 +141,7 @@
   copy:
     remote_src: true
     src: "{{ d_repo_debian_role }}/files/etc/init.d/ssh"
-    dest: "{{ d_init_ift }}/{{ sshd_name }}"
+    dest: "{{ d_init_ift }}/sshd"
     owner: root
     group: root
     mode: "0755"
