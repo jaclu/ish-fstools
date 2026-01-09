@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -38,7 +37,7 @@
     dest: /etc
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 - name: Installing no-pw sudoers group
   copy:
@@ -47,7 +46,7 @@
     dest: /etc/sudoers.d
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 #
 # Originated from common_apps.yml
@@ -67,7 +66,7 @@
     dest: /usr/local/lib/ift-utils.sh
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
 
 - name: "Common apps - Install extras to  /usr/local/bin  -- {{ all_distros_copy_style }}"
   copy:
@@ -90,7 +89,7 @@
     dest: "{{ d_init_ift }}/"
     owner: root
     group: root
-    mode: '0755'
+    mode: "0755"
   notify: Restart runbg
 
 #

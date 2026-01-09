@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -18,7 +17,7 @@
 - name: "Root_shell - Use user shell if /bin/ash or /bin/bash - is: {{ ift_shell }}"
   lineinfile:
     path: /etc/passwd
-    regexp: '^root:'
+    regexp: "^root:"
     line: >-
       {{
         all_distros_root_passwd.stdout.rsplit(':', 1)[0]

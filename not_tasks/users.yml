@@ -1,5 +1,4 @@
 ---
-
 - name: Dont use /bin/ash on Debian
   ansible.builtin.set_fact:
     aok_user_shell: "{{ '/bin/bash' if ansible_facts.distribution == 'Debian' }}"
@@ -13,6 +12,6 @@
     group: users
     shell: "{{ aok_user_shell }}"
     # password: "{{ 'abc123' | password_hash('sha512') }}"
-    password: ''
+    password: ""
     generate_ssh_key: true
     state: present

@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -16,7 +15,7 @@
   file:
     path: "{{ d_init_not }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: "Default services - Move Ansible services to {{ d_init_not }}"
   shell:
@@ -39,7 +38,7 @@
   file:
     path: "{{ d_init_ift }}"
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 - name: "Default services - Sync ish-fstools links into {{ d_init_d }}"
   shell:

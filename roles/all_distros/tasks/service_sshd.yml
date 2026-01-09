@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -21,7 +20,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^AcceptEnv\s+LANG\s+TERM_\*\s+LC_\*\s+XPC_\*$'
-    line: 'AcceptEnv LANG TERM_* LC_* XPC_*'
+    line: "AcceptEnv LANG TERM_* LC_* XPC_*"
     state: present
     insertafter: EOF
     create: false
@@ -31,7 +30,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^Port\s+{{ ift_port_sshd | default(2022) }}(\s|$)'
-    line: 'Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools'
+    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
     state: present
     insertafter: EOF
     create: false

@@ -1,5 +1,4 @@
 ---
-
 - name: Debian upgrade packages
   ansible.builtin.apt:
     upgrade: true
@@ -39,7 +38,7 @@
 
 - name: Debian Reboot if needed
   ansible.builtin.reboot:
-    msg: 'Reboot initiated by Ansible due to kernel updates'
+    msg: "Reboot initiated by Ansible due to kernel updates"
     connect_timeout: 5
     reboot_timeout: 300
     pre_reboot_delay: 0

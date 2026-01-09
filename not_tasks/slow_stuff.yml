@@ -1,10 +1,8 @@
 ---
-
 - name: Debian additional packages
   ansible.builtin.package:
     state: present
     name:
-
       #
       #  Tools
       #
@@ -71,7 +69,6 @@
       #
       # - fortune-mod
   when: ansible_facts.distribution == 'Debian'
-
 
 - name: Alpine additional packages
   ansible.builtin.package:

@@ -1,5 +1,4 @@
 ---
-
 # - name: Devuan /usr/local/bin
 #   ansible.builtin.copy:
 #     mode: preserve

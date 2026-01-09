@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -29,8 +28,8 @@
 #  Be aware that only Alpine supports the /bin/ash shell
 #  If a shell is defined root will also use this shell
 #
-ift_user_name: ish  # set to "" to disable
-ift_shell: /bin/ash  # set to "" to disable
+ift_user_name: ish # set to "" to disable
+ift_shell: /bin/ash # set to "" to disable
 
 #
 #  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
@@ -41,14 +40,14 @@ ift_timezone: ""
 #
 #  Runlevel for runbg - service that ensures iSH continues to run in the background
 #
-ift_runlevel_runbg: default   # set to "" if this service is not wanted
-ift_runlevel_sshd: default   # set to "" if this service is not wanted
+ift_runlevel_runbg: default # set to "" if this service is not wanted
+ift_runlevel_sshd: default # set to "" if this service is not wanted
 
-ift_port_sshd: 2022  # set to "" if port should not be set
+ift_port_sshd: 2022 # set to "" if port should not be set
 
 ift_pkgs_devel: false # set to true if devel packages should be used
 ift_pkgs_linting: false # set to true if linting packages should be used
-ift_pkgs_man: false  # se to true if man pages for everything installed should be used
+ift_pkgs_man: false # se to true if man pages for everything installed should be used
 
 #
 #  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last

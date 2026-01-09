@@ -1,5 +1,4 @@
 ---
-
 #
 #  Vagrant nodes sometimes need a few seconds before they are ready.
 #  This should take care of that, for nodes responding right away
@@ -15,5 +14,5 @@
     sleep: 1
     timeout: 1
   until: result is succeeded
-  retries: 10  # Number of retries
+  retries: 10 # Number of retries
   register: result

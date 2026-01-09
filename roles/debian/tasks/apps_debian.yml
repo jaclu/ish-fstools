@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -9,7 +8,6 @@
 #
 #  Install selected Debian apps
 #
-
 
 - name: List what will be installed
   debug:

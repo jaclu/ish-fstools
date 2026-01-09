@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -51,7 +50,7 @@ crucial_apps:
   - git
   - rsync
   - bash
-  - tar  # busybox tar is just too limited, and often fails for unarchive
+  - tar # busybox tar is just too limited, and often fails for unarchive
 
 #
 #  I have tried to put the equivalent in ansible.cfg
@@ -61,8 +60,7 @@ crucial_apps:
 #  they would normally only be accessed locally, it should
 #  most likely not be an issue.
 #
-ansible_ssh_common_args:
-  -o StrictHostKeyChecking=no
+ansible_ssh_common_args: -o StrictHostKeyChecking=no
   -o UserKnownHostsFile=/dev/null
 
 # if remote username does not match username on deploy host
