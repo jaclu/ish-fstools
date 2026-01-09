@@ -140,7 +140,7 @@
 - name: Debian - ssh - custom service script, supporting iSH logging
   copy:
     remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/ssh"
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
     dest: "{{ d_init_ift }}/sshd"
     owner: root
     group: root
