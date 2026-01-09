@@ -23,7 +23,7 @@
   import_tasks: etc_configs.yml
 
 - name: Run timezone.yml
-  include_tasks: timezone.yml
+  import_tasks: timezone.yml
   when: ift_timezone | default('') | length > 0
 
 - name: Run services.yml
