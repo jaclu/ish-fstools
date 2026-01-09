@@ -95,6 +95,7 @@ ift_debian_packages:
   #
   #  Trust
   #
+  - ca-certificates # Common CA certificates PEM files from Mozilla
 
 ift_debian_pkgs_devel:
   - build-essential # Meta package: gcc, g++, make, libc-dev
