@@ -45,14 +45,9 @@ do_ansible() {
         err_msg "Failed to cd $d_ansible_folder"
     }
 
-    # export ANSIBLE_NO_LOG=True
-    # export ANSIBLE_FORCE_COLOR=False
-    # export ANSIBLE_FORKS=1
-    # export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # macOS/iSH/Termux workaround
-    # export PYTHONWARNINGS=ignore::UserWarning
-
     lbl_1 "Running $playbook on remote servers"
-    ansible-playbook "$playbook" -e target_hosts=servers
+    # running this on actual iSH takes over 10 mins, so seeing ok task done adds sanity
+    ANSIBLE_DISPLAY_OK_HOSTS=yes ansible-playbook "$playbook" -e target_hosts=servers
 }
 
 d_repo="$(dirname "$0")"
