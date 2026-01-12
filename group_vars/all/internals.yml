@@ -11,12 +11,12 @@
 
 # debian_reboot_if_needed: false
 
-vers_ift: 0.8.20
+vers_ift: 0.8.21
 
 ansible_python_interpreter: /usr/bin/python3
 
 repo_name: https://github.com/jaclu/ish-fstools.git
-repo_branch: merge_deb_old
+repo_branch: main
 
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift

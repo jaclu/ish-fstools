@@ -132,6 +132,3 @@
   changed_when: >-
     'Already up to date.' not in preparational_steps_git_pull.stdout and
     'new branch' not in preparational_steps_git_pull.stderr
-
-#  Already up to date.
-#  Branch 'merge_deb_old' set up to track remote branch 'merge_deb_old' from 'origin'.
