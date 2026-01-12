@@ -23,27 +23,27 @@ delete_item() {
     if [[ -d $item ]]; then
         if $remove_dir; then
             rm -rf -- "$item" || err_msg "Failed to remove directory: $item"
-            log_it "Removed directory: $item"
+            msg_2 "Removed directory: $item"
         else
             # shellcheck disable=SC2115 # item is already checked for being empty
             rm -rf -- "$item"/* "$item"/.??* 2>/dev/null || {
                 err_msg "Failed to clear directory: $item"
             }
-            log_it "Cleared directory: $item"
+            msg_2 "Cleared directory: $item"
         fi
         return
     fi
 
     if [[ -f "$item" ]]; then
         rm -f -- "$item" || err_msg "Failed to remove file: $item"
-        log_it "Removed file: $item"
+        msg_4 "Removed file: $item"
 
     # Normally if item is not found it's fine, I leave the deailed notifications
     # commented out for potential later debugging purposes
     # elif [[ -e $item ]]; then
-    #     log_it "Special file not removed: $item"
+    #     msg_2 "Special file not removed: $item"
     # else
-    #     log_it "File not found: $item"
+    #     msg_2 "File not found: $item"
     fi
 }
 
@@ -51,7 +51,7 @@ delete_items() {
     local item
     for item in "${items[@]}"; do
         [[ -e $item ]] || {
-            # log_it "item not found: $item"
+            # msg_3 "item not found: $item"
             continue
         }
         delete_item "$item"
@@ -110,18 +110,34 @@ total_cleanup() {
     msg_dbg "cache apk after"
 }
 
+load_utils() {
+    local d_base="${1:-$d_repo}"
+    local f_utils="$d_base"/utils/script_utils.sh
+
+    # source a POSIX file
+    # shellcheck source=utils/script_utils.sh disable=SC1091,SC2317
+    source "$f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
+        exit 1
+    }
+}
+
 #===============================================================
 #
 #   Main
 #
 #===============================================================
 
-f_ift_common=/usr/local/lib/ift-utils.sh
-# shellcheck source=/dev/null # not available on deploy machines
-. "$f_ift_common" || {
-    echo "ERROR: Failed to source: $f_ift_common"
-    exit 1
-}
+d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
+
+load_utils
+
+# f_ift_common=/usr/local/lib/ift-utils.sh
+# # shellcheck source=/dev/null # not available on deploy machines
+# . "$f_ift_common" || {
+#     echo "ERROR: Failed to source: $f_ift_common"
+#     exit 1
+# }
 
 # {
 #     echo

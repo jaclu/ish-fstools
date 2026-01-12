@@ -120,7 +120,7 @@ was_sys_path() {
         /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
             "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
             /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
-            /root | /root/* | /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
+            /root | /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
             /usr | /usr/* | /var | /var/* | /Users)
 
             return 1
