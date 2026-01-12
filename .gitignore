@@ -6,14 +6,13 @@
 .DS_Store
 Icon
 
-/vars/
-/my-ish-fs/
-
 /.ansible
-
 /.vscode
-
-# Ignore vagrant tmp files
 .vagrant/
 
+/vars/
+/my-ish-fs/
+inventory.ini
+
+# olint cache
 .cache.olint
