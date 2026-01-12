@@ -62,7 +62,7 @@
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   template:
     remote_src: true
-    src: ift-utils.sh.js2
+    src: "{{ d_repo_all_distros_role }}/templates/ift-utils.sh.js2"
     dest: /usr/local/lib/ift-utils.sh
     owner: root
     group: root
