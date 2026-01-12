@@ -10,39 +10,8 @@
 #  Main variables
 #
 
-log_it() {
-    if [ -c /dev/stderr ]; then
-        echo "$1" >/dev/stderr
-    else
-        echo "GLITCH: /dev/stderr is wrong!!"
-        echo "$1"
-        exit 2
-    fi
-}
-
-err_msg() {
-    log_it "ERROR: $1"
-    exit 1
-}
-
-lbl_1() {
-    log_it "===  $1"
-}
-
-fs_is_alpine() {
-    test -f /etc/alpine-release
-}
-
-fs_is_devuan() {
-    test -f /etc/devuan_version
-}
-
-fs_is_debian() {
-    test -f /etc/debian_version && ! fs_is_devuan
-}
-
 install_ansible() {
-    lbl_1 "Install Ansible"
+    msg_1 "Install Ansible"
     if ! command -v ansible >/dev/null 2>&1; then
         if fs_is_alpine; then
             apk add ansible || err_msg "Failed to: apk add ansible"
@@ -96,8 +65,22 @@ do_ansible() {
     # export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # macOS/iSH/Termux workaround
     # export PYTHONWARNINGS=ignore::UserWarning
 
-    lbl_1 "Running $playbook on localhost"
-    ansible-playbook "$playbook" -e target_hosts=local # -vvvvvv
+    msg_1 "Running $playbook on localhost"
+    ansible-playbook "$playbook" -e target_hosts=local || {
+        err_msg "running playbook failed"
+    }
+
+}
+
+load_utils() {
+    _lu_d_base="${1:-$d_repo}"
+    _lu_f_utils="$_lu_d_base"/tools/script_utils.sh
+
+    # shellcheck source=tools/script_utils.sh disable=SC1091,SC2317
+    . "$_lu_f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+        exit 1
+    }
 }
 
 #===============================================================
@@ -111,39 +94,31 @@ d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 chain_my_ish_fs=0
 
+load_utils
+
 while [ -n "$1" ]; do
     case "$1" in
         "") break ;; # no param
         c) chain_my_ish_fs=1 ;;
         q) quick_mode=1 ;;
-        *)
-            log_it
-            err_msg "Optional param:  q to run quick-mode - a limited deploy"
-            ;;
+        *) err_msg "Optional param:  q to run quick-mode - a limited deploy" ;;
     esac
     shift
 done
 
-[ -d /proc/ish ] && err_msg "Can't be run on iSH for now"
-
-[ "$(uname)" != "Linux" ] && err_msg "$0 should only be run on chrooted Linux"
-grep -q " / / " /proc/self/mountinfo && {
-    err_msg "On Linux this should only run insidie chroots"
-}
+{ is_linux && is_chrooted; } || err_msg "must be running on Linux and inside a chroot"
 
 install_ansible
-do_ansible || err_msg "do_ansible() failed"
+do_ansible
 
 [ "$quick_mode" -eq 1 ] && {
-    lbl_1 "Due to quick mode, my-ish-fs is no attempted"
+    msg_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
-    echo
-    echo "Will run my-ish-fs"
-    echo
+    msg_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_localhost.sh || {
         err_msg "my-ish-fs reported error"
     }

@@ -218,8 +218,7 @@ is_chrooted() {
 
     # this quick and simple check doesn't work on ish
     # so lets pretend for now chroot does not happen on ish
-    is_ish && return 1                       # would never happen here :)
-    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
+    is_linux || return 1
     [ ! -f /proc/self/mountinfo ] && return 1
     ! grep -q " / / " /proc/self/mountinfo
 }
