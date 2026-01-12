@@ -12,31 +12,6 @@
 #  so not reusable as-is
 #
 
-log_it() {
-    if [ -c /dev/stderr ]; then
-        echo "$1" >/dev/stderr
-    else
-        echo "GLITCH: /dev/stderr is wrong!!"
-        echo "$1"
-        exit 2
-    fi
-}
-
-err_msg() {
-    log_it "ERROR: $1"
-    exit 1
-}
-
-lbl_1() {
-    log_it
-    log_it "===  $1"
-    log_it
-}
-
-lbl_2() {
-    log_it "---  $1"
-}
-
 unpack_saved_fs() {
     #
     # timings on ubu
@@ -57,7 +32,7 @@ unpack_saved_fs() {
     #
     # -  39/31s /root/ish-fstools/handle_localhost.sh
     #
-    lbl_1 "unpack_saved_fs() - $fs_saved"
+    msg_1 "unpack_saved_fs() - $fs_saved"
     /opt/AOK/tools/aok_fs-replace "$fs_saved"
 }
 
@@ -71,15 +46,15 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
     miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
-    lbl_1 "create_empty_fs()"
-    lbl_2 "><> pwd:$(pwd)"
+    msg_1 "create_empty_fs()"
+    msg_2 "><> pwd:$(pwd)"
 
-    lbl_2 "Clearing File System"
+    msg_2 "Clearing File System"
     rm aok_fs/* -rf
 
     cd aok_fs || err_msg "Failed to cd into aok_fs"
 
-    lbl_2 "recreating alpine-minirootfs"
+    msg_2 "recreating alpine-minirootfs"
     tar xfz ../aok_cache/"$miniroot_fs" || {
         err_msg "Failed to untar"
     }
@@ -87,7 +62,7 @@ create_empty_fs() {
     cd .. || err_msg "Failed to cd up ftom aok_fs"
 
     f_fs_release="aok_fs/etc/aok-fs-release"
-    lbl_2 "Defining $f_fs_release"
+    msg_2 "Defining $f_fs_release"
     echo "ish-fstool-template" >"$f_fs_release"
 }
 
@@ -107,7 +82,7 @@ sync_something() {
     lbl="$1"
     cmd="$2"
     [ -z "$cmd" ] && err_msg "sync_something() - no param"
-    lbl_2 "$lbl"
+    msg_2 "$lbl"
     if $do_clear; then
         eval "$cmd" >/dev/null || {
             err_msg "Failed to sync ish-fstools - $lbl"
@@ -122,7 +97,7 @@ sync_something() {
 sync_fs_tools() {
     echo
     echo
-    lbl_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
+    msg_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
 
@@ -166,18 +141,33 @@ sync_fs_tools() {
     chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
 
     # override the softlink with actual file
-    f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
-    lbl_2 "Will replace softlink with real file: $f_overrides"
-    rm "$f_overrides"
-    cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
+
+    set_overrides_file ish-fstools/vars/overrides.yml
+    set_overrides_file ish-fstools/my-ish-fs/vars/overrides.yml
+
+    # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
+    # msg_2 "Will replace softlink with real file: $f_overrides"
+    # rm "$f_overrides"
+    # cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
+}
+
+set_overrides_file() {
+    d_base="$AOK_TMPDIR"/aok_fs/root
+    f_dest="${d_base}/$1"
+
+    [ -z "$1" ] && err_msg "set_overrides_file() - no param"
+
+    safe_remove "$f_dest" tmp_ok
+    msg_3 "Will set: $f_dest"
+    cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_dest"
 }
 
 copy_skel_files() {
-    lbl_1 "Deploying repo skel files"
+    msg_1 "Deploying repo skel files"
 
     tmp=$(mktemp) || exit 2
 
-    lbl_2 "Using tmpfile base: $tmp"
+    msg_2 "Using tmpfile base: $tmp"
 
     (
         cd "$d_repo"/roles/all_distros/files/etc/skel \
@@ -191,8 +181,8 @@ copy_skel_files() {
 
     left=$(cat "$tmp.left" 2>/dev/null)
     right=$(cat "$tmp.right" 2>/dev/null)
-    lbl_2 "left: $$tmp.left"
-    lbl_2 "right: $$tmp.right"
+    msg_2 "left: $$tmp.left"
+    msg_2 "right: $$tmp.right"
     rm -f "$tmp.left" "$tmp.right" "$tmp"
 
     if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
@@ -203,7 +193,7 @@ copy_skel_files() {
 prepare_shell_env() {
     copy_skel_files
 
-    lbl_1 "Prpare ansible job history"
+    msg_1 "Prpare ansible job history"
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
@@ -213,7 +203,7 @@ prepare_shell_env() {
         f_history="aok_fs/root/.ash_history"
     fi
 
-    lbl_2 "prepping $f_history"
+    msg_2 "prepping $f_history"
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
@@ -229,12 +219,22 @@ prepare_shell_env() {
 
 save_new_fs() {
     $do_clear && {
-        lbl_1 "Save new FS"
-        lbl_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
+        msg_1 "Save new FS"
+        msg_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
         /opt/AOK/tools/aok_fs-save
     }
 }
 
+load_utils() {
+    _lu_d_base="${1:-$d_repo}"
+    _lu_f_utils="$_lu_d_base"/tools/script_utils.sh
+
+    # shellcheck source=tools/script_utils.sh disable=SC2317
+    . "$_lu_f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+        exit 1
+    }
+}
 #===============================================================
 #
 #   Main
@@ -243,16 +243,19 @@ save_new_fs() {
 
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
+
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
+
+load_utils
 
 # shellcheck source=/dev/null
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
 [ -n "$AOK_TMPDIR" ] && {
     TMPDIR="$(dirname "$AOK_TMPDIR")"
-    lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
+    msg_1 "Assigining TMPDIR via AOK_TMPDIR"
 }
 
 if [ "$1" = "clear" ]; then
@@ -266,7 +269,7 @@ else
     do_clear=false
 fi
 
-# lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
+# msg_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
 [ -z "$AOK_TMPDIR" ] && {
 
     _d=/var/tmp/aok_tmp
@@ -274,7 +277,7 @@ fi
         AOK_TMPDIR="$_d"
     else
         AOK_TMPDIR="/tmp"
-        lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
+        msg_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
     fi
 }
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"
@@ -286,4 +289,4 @@ $do_clear && replace_fs
 sync_fs_tools
 prepare_shell_env
 
-lbl_1 "Done!"
+msg_1 "Done!"
