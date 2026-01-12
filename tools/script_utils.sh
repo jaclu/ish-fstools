@@ -62,6 +62,13 @@ err_msg() {
 
     printf '\n\n%s[%s]: %s\n' "$_em_label" "$app_name" "$_em_msg" >&2
 
+    [ -n "$f_tmp" ] && [ -s "$f_tmp" ] && {
+        printf '=====   [%s] tmp file was used, displaying content   =====\n' \
+            "$(hostname -s)" >&2
+        cat "$f_tmp" >&2
+        printf '\n-----   end of tmp file, will remove it now   -----\n' >&2
+        rm -f "$f_tmp" || printf '\nERROR: failed to remove: %s\n' "$f_tmp"
+    }
     if [ "$_em_exit_code" -gt -1 ]; then
         exit "$_em_exit_code"
     fi
@@ -268,6 +275,9 @@ TMPDIR="${TMPDIR:-/tmp}"
 
 [ -z "$app_name" ] && app_name=$(basename "$0")
 
-[ -z "$current_dbg_lvl" ] && current_dbg_lvl=0
+[ -z "$current_dbg_lvl" ] && {
+    # 0 means only msg_dbg without dbg_lvl 2nd param will be displayed
+    current_dbg_lvl=0
+}
 
 return 0 # ensures the above doesn't indicate sourcing failed
