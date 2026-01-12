@@ -16,4 +16,4 @@ Icon
 # Ignore vagrant tmp files
 .vagrant/
 
-**/.cache.olint
+.cache.olint
