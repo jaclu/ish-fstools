@@ -10,25 +10,6 @@
 #  Main variables
 #
 
-log_it() {
-    if [ -c /dev/stderr ]; then
-        echo "$1" >/dev/stderr
-    else
-        echo "GLITCH: /dev/stderr is wrong!!"
-        echo "$1"
-        exit 2
-    fi
-}
-
-err_msg() {
-    log_it "ERROR: $1"
-    exit 1
-}
-
-lbl_1() {
-    log_it "===  $1"
-}
-
 do_ansible() {
     #
     #  Run the ansible playbook to deploy FS
@@ -45,46 +26,57 @@ do_ansible() {
         err_msg "Failed to cd $d_ansible_folder"
     }
 
-    # export ANSIBLE_NO_LOG=True
-    # export ANSIBLE_FORCE_COLOR=False
-    # export ANSIBLE_FORKS=1
-    # export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # macOS/iSH/Termux workaround
-    # export PYTHONWARNINGS=ignore::UserWarning
-
-    lbl_1 "Running $playbook on remote servers"
-    ansible-playbook "$playbook" -e target_hosts=servers
+    msg_1 "Running $playbook on remote servers"
+    # running this on actual iSH takes over 10 mins, so seeing ok task done adds sanity
+    ANSIBLE_DISPLAY_OK_HOSTS=yes ansible-playbook "$playbook" -e target_hosts=servers || {
+        err_msg "running playbook failed"
+    }
 }
+
+load_utils() {
+    _lu_d_base="${1:-$d_repo}"
+    _lu_f_utils="$_lu_d_base"/tools/script_utils.sh
+
+    # shellcheck source=tools/script_utils.sh disable=SC1091,SC2317
+    . "$_lu_f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+        exit 1
+    }
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
 
 d_repo="$(dirname "$0")"
 d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 chain_my_ish_fs=0
 
+load_utils
+
 while [ -n "$1" ]; do
     case "$1" in
         "") break ;; # no param
         c) chain_my_ish_fs=1 ;;
         q) quick_mode=1 ;;
-        *)
-            log_it
-            err_msg "Optional param:  q to run quick-mode - a limited deploy"
-            ;;
+        *) err_msg "Optional param:  q to run quick-mode - a limited deploy" ;;
     esac
     shift
 done
 
-do_ansible || err_msg "do_ansible() failed"
+do_ansible
 
 [ "$quick_mode" -eq 1 ] && {
-    lbl_1 "Due to quick mode, my-ish-fs is no attempted"
+    msg_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
-    echo
-    echo "Will run my-ish-fs"
-    echo
+    msg_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_servers.sh || {
         err_msg "my-ish-fs reported error"
     }

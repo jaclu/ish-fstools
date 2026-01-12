@@ -1,0 +1,42 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Debian FS
+#  Handle overrides, needs to be done as a task instead of inside a role,
+#  in order to be able to set global variables without linting errors
+#
+
+- name: "Add dev apks when ift_pkgs_devel is true"
+  set_fact:
+    ift_debian_packages: >-
+      {{ ift_debian_packages | union(ift_debian_pkgs_devel | default([])) }}
+  when:
+    - ift_debian_pkgs_devel | default('') | length > 0
+    - ift_pkgs_devel is defined and ift_pkgs_devel
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: "Add linting apks when ift_debian_pkgs_linting is true"
+  set_fact:
+    ift_debian_packages: >-
+      {{ ift_debian_packages | union(ift_debian_pkgs_linting | default([])) }}
+  when:
+    - ift_debian_pkgs_linting | default('') | length > 0
+    - ift_pkgs_linting is defined and ift_pkgs_linting
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Add docs to ift_debian_packages if ift_pkgs_man is true
+  set_fact:
+    ift_debian_packages: "{{ ift_debian_packages + ['man-db'] }}"
+  when: ift_pkgs_man | bool
+  delegate_to: localhost
+  run_once: true
+  changed_when: false

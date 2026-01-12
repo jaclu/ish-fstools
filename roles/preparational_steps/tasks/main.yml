@@ -86,7 +86,7 @@
   when: ansible_facts.os_family == 'Alpine'
 
 - name: Non Alpine crucial apps
-  import_tasks: non_alpine_crucial_apps.yml
+  include_tasks: non_alpine_crucial_apps.yml
   when: ansible_facts.os_family != 'Alpine'
 
 - name: Checkout or update ish-fstools
@@ -98,21 +98,40 @@
         if [ -d "{{ d_repo }}/.git" ]; then
           # First ensure right ownership of repo
           chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 10
+          # First do a regular pull, to ensure potential new branches are known
           sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 11
+
+          # Ensure the right repo is used
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 12
+
+          # pull the now correct repo (filter output to not fool system into no changes)
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull > /dev/null || exit 13
         else
-          # cd "$(dirname {{ d_repo }})" || exit 20
-          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 21
-          # git -C "{{ d_repo }}" pull || exit 3
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 21
           chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 22
         fi
       else
         if [ -d "{{ d_repo }}/.git" ]; then
-          git -C "{{ d_repo }}" pull || exit 30
+          # Ensure the right repo is used
+          git -C "{{ d_repo }}" pull || exit 32
+
+          # Ensure the right repo is used
+          git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 31
+
+          # pull the now correct repo (filter output to not fool system into no changes)
+          git -C "{{ d_repo }}" pull > /dev/null || exit 32
         else
-          git clone https://github.com/jaclu/ish-fstools.git "{{ d_repo }}" || exit 40
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 41
         fi
       fi
   args:
     executable: /bin/sh
   register: preparational_steps_git_pull
-  changed_when: "'Already up to date.' not in preparational_steps_git_pull.stdout"
+  changed_when: >-
+    'Already up to date.' not in preparational_steps_git_pull.stdout and
+    'new branch' not in preparational_steps_git_pull.stderr
+
+#  Already up to date.
+#  Branch 'merge_deb_old' set up to track remote branch 'merge_deb_old' from 'origin'.

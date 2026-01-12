@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -60,7 +59,7 @@
     groups: sudo
     # shell: "{{ ift_shell }}"
     state: present
-    password: ''  # ← explicitly sets empty password, avoids '!' in /etc/shadow
+    password: "" # ← explicitly sets empty password, avoids '!' in /etc/shadow
   when:
     - ift_user_name | default('') | length > 0
     - ift_shell | default('') | length > 0

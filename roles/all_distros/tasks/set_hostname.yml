@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -30,7 +29,7 @@
     content: "iSH\n"
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   when:
     - ansible_facts.kernel | lower is not search('ish')
     - ift_hostname | default('') | length == 0

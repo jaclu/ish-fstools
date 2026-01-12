@@ -10,16 +10,11 @@
 #
 
 - name: Run verify_shell_exists.yml
-  import_tasks: verify_shell_exists.yml
+  include_tasks: verify_shell_exists.yml
   when: ift_shell | default('') | length > 0
 
-- name: Modern remote file copy
-  import_tasks: file_copy_remote_src.yml
-  when: ansible_facts.os_family != 'Debian'
-
-- name: Old style transferred file copy
-  import_tasks: file_copy_old_style.yml
-  when: ansible_facts.os_family == 'Debian'
+- name: Copy files, method depending on Alpine used
+  include_tasks: file_copy_dynamic.yml
 
 - name: Run set_hostname.yml
   import_tasks: set_hostname.yml
@@ -35,11 +30,11 @@
   import_tasks: services.yml
 
 - name: Run user_account.yml
-  import_tasks: user_account.yml
+  include_tasks: user_account.yml
   when: ift_user_name | default('') | length > 0
 
 - name: Run root_shell.yml
-  import_tasks: root_shell.yml
+  include_tasks: root_shell.yml
   when: ift_shell | default('') | length > 0
 
 - name: Copy /etc/skel files to root home (without overwrite)

@@ -27,7 +27,7 @@
   # #
   # tasks:
   #   - name: Run specific task file
-  #     include_tasks: tasks/is_ish.yml
+  #     import_tasks: tasks/is_ish.yml
 
   # #
   # # run specific task
@@ -50,9 +50,9 @@
   # run specific role(-s)
   #
   roles:
-    - role: preparational_steps
-    - role: alpine
-      when: ansible_facts.os_family == 'Alpine'
-    - role: debian
-      when: ansible_facts.os_family == 'Debian'
-    # - role: all_distros
+    # - role: preparational_steps
+    # - role: alpine
+    #   when: ansible_facts.os_family == 'Alpine'
+    # - role: debian
+    #   when: ansible_facts.os_family == 'Debian'
+    - role: all_distros

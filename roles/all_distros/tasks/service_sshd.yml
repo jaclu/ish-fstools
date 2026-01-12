@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -12,15 +11,16 @@
 
 - name: " sshd - Create symbolic link in /etc/init.d"
   file:
-    src: "{{ d_init_ift }}/{{ sshd_name }}"
-    dest: "{{ d_init_d }}/{{ sshd_name }}"
+    src: "{{ d_init_ift }}/sshd"
+    dest: "{{ d_init_d }}/sshd"
     state: link
+  notify: Restart sshd
 
 - name: " sshd - Ensure AcceptEnv is set as required"
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^AcceptEnv\s+LANG\s+TERM_\*\s+LC_\*\s+XPC_\*$'
-    line: 'AcceptEnv LANG TERM_* LC_* XPC_*'
+    line: "AcceptEnv LANG TERM_* LC_* XPC_*"
     state: present
     insertafter: EOF
     create: false
@@ -30,7 +30,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^Port\s+{{ ift_port_sshd | default(2022) }}(\s|$)'
-    line: 'Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools'
+    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
     state: present
     insertafter: EOF
     create: false
@@ -39,5 +39,6 @@
 - name: "Set runlevel for sshd"
   include_tasks: tasks/service_runlevel_set.yml
   vars:
-    srvc_name: "{{ d_init_d }}/{{ sshd_name }}"
+    srvc_name: "{{ d_init_d }}/sshd"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
+    srvc_handler: Restart sshd

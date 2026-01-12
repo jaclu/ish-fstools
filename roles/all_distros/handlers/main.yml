@@ -7,8 +7,8 @@
 #  License: MIT
 #
 
+- name: Restart runbg
+  include_tasks: ../tasks/restart_runbg.yml
+
 - name: Restart sshd
-  service:
-    name: "{{ sshd_name }}"
-    state: restarted
-  when: is_ish | bool
+  include_tasks: ../tasks/restart_sshd.yml

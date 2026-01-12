@@ -1,0 +1,127 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# Variables for Debian 10 FS
+#
+
+ift_debian_packages:
+  #
+  #  Shells
+  #
+  # - bash # Always present on Deb10
+  - bash-completion # Command-line tab-completion for bash
+  - zsh # Very advanced and programmable command interpreter (shell)
+
+  #
+  #  Core utils
+  #
+  # - coreutils # Always present on Deb10
+  # - diffutils # Always present on Deb10
+  # - file      # Always present on Deb10
+  # - findutils # Always present on Deb10
+  # - psmisc     # Always present on Deb10
+  - gawk # GNU awk pattern-matching language
+  - git # Distributed version control system
+  - fzf # A command-line fuzzy finder - rather slow on iSH - is it meaningful?
+  - jq # Lightweight and flexible command-line JSON processor
+  - mc # Filemanager/shell that emulates Norton Commander
+  - pigz # Parallel implementation of gzip
+  - ripgrep # Fast recursive searcher with regex, respects .gitignore, grep-like.
+  - rsync # A file transfer program to keep remote files in sync
+  - whiptail
+
+  #
+  #  Access
+  #
+  - sudo # Give certain users the ability to run some commands as root
+  - locales # Locales support
+  - gettext # GNU locale utilities
+  - tzdata # Timezone data
+
+  #
+  #  Editors
+  #
+  - mg # microscopic EMACS style editor
+  - nano # Enhanced clone of the Pico text editor
+  - vim # advanced text editor, with GUI
+
+  #
+  #  Remote
+  #
+  - mosh # Mobile shell surviving disconnects with local echo and line editing
+  - openssh-server # Port of OpenBSD's free SSH release
+
+  #
+  #  Web Tools
+  #
+  - curl # URL retrieval utility and library
+  - wget # Network utility to retrieve files from the Web
+  - w3m # text-based web & gopher browser, as well as pager
+  # - elinks  # Advanced and well-established feature-rich text mode web browser
+  # - lynx  # Cross-platform text-based browser
+
+  #
+  #  System info
+  #
+  # atop - doesn't work on iSH
+  # glances - doesn't work on iSH
+  - htop # Interactive process viewer
+  - ncdu # Text-based disk usage viewer
+
+  #
+  #  Scripting
+  #
+  - python-pip # Installs both Python3 and all that is needed for pip
+  - sqlite # Popular minimal sql engine
+
+  #
+  #  Terminal / session management
+  #
+  - tmux # Tool to control multiple terminals from a single terminal
+  - dvtm # Dynamic virtual terminal manager
+
+  #
+  #  Services
+  #
+  # - anacron
+  # - initscripts # think openrc covers this
+  - openrc # OpenRC manages the services, startup and shutdown of a host
+
+  #
+  #  Trust
+  #
+  - ca-certificates # Common CA certificates PEM files from Mozilla
+
+ift_debian_pkgs_devel:
+  - build-essential # Meta package: gcc, g++, make, libc-dev
+  - automake # GNU tool for automatically creating Makefiles
+  - autoconf # GNU tool for automatically configuring source code
+  - bison # GNU parser generator
+  - cmake # Cross-platform build system
+  - libtool # Generic library support script
+  - libbz2-dev # bzip2 development headers
+  - libevent-dev # Event notification library
+  - libncurses-dev # ncurses development headers
+  - libssl-dev # OpenSSL development headers
+  - libreadline-dev # GNU readline development headers
+  - libsqlite3-dev # SQLite development headers
+  - liblzma-dev # XZ / LZMA development headers
+  - zlib1g-dev # zlib development headers
+
+ift_debian_pkgs_linting:
+  - black
+  - codespell
+  - cppcheck
+  - flake8
+  - isort
+  - mypy # really slow in iSH
+  - pycodestyle # also provided by flake8
+  - pyflakes3 # also provided by flake8
+  - pylint3 # really slow in iSH
+  - shellcheck
+  - yamllint

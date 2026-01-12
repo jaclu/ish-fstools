@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -10,7 +9,6 @@
 # Various Distro neutral /etc configs
 #
 
-
 - name: Configs /etc - Check if /etc/login.defs exists
   stat:
     path: /etc/login.defs
@@ -19,6 +17,6 @@
 - name: Configs /etc - Set LOGIN_TIMEOUT in /etc/login.defs
   lineinfile:
     path: /etc/login.defs
-    line: 'LOGIN_TIMEOUT 0'
+    line: "LOGIN_TIMEOUT 0"
     insertafter: EOF
   when: all_distros_login_defs_stat.stat.exists

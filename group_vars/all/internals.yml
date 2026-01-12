@@ -1,5 +1,4 @@
 ---
-
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
@@ -7,14 +6,17 @@
 #
 #  License: MIT
 #
-#  Main variables - not intended to be changed in order to custoomize the deploy
+#  internal variables - not intended to be changed in order to custoomize the deploy
 #
 
 # debian_reboot_if_needed: false
 
-vers_ift: 0.8.19
+vers_ift: 0.8.20
 
 ansible_python_interpreter: /usr/bin/python3
+
+repo_name: https://github.com/jaclu/ish-fstools.git
+repo_branch: merge_deb_old
 
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
@@ -32,8 +34,6 @@ d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
 
-sshd_name: ssh # name in Ansible, Debian and others must override
-
 # wait_for_hosts_to_be_ready: false
 
 #
@@ -50,7 +50,7 @@ crucial_apps:
   - git
   - rsync
   - bash
-  - tar  # busybox tar is just too limited, and often fails for unarchive
+  - tar # busybox tar is just too limited, and often fails for unarchive
 
 #
 #  I have tried to put the equivalent in ansible.cfg
@@ -60,8 +60,7 @@ crucial_apps:
 #  they would normally only be accessed locally, it should
 #  most likely not be an issue.
 #
-ansible_ssh_common_args:
-  -o StrictHostKeyChecking=no
+ansible_ssh_common_args: -o StrictHostKeyChecking=no
   -o UserKnownHostsFile=/dev/null
 
 # if remote username does not match username on deploy host

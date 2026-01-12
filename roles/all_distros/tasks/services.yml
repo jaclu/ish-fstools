@@ -12,6 +12,13 @@
 - name: Run service_disabling_defaults.yml
   import_tasks: service_disabling_defaults.yml
 
+- name: " Create symbolic link for /etc/init.d/rc"
+  file:
+    src: "{{ d_init_ift }}/rc"
+    dest: "{{ d_init_d }}/rc"
+    state: link
+  when: ansible_facts.os_family == 'Debian'
+
 - name: Run service_sshd.yml
   import_tasks: service_sshd.yml
 
