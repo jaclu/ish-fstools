@@ -75,8 +75,8 @@ deploy_cleanup() {
     msg_1 "Deploy cleanup"
     items=(
         /iCloud
-        /home/jaclu/.local/bin/defgw # installed if on chroot
-        /home/jaclu/.local/bin/Mbrew # installed if on chroot
+        # /home/jaclu/.local/bin/defgw # installed if on chroot
+        # /home/jaclu/.local/bin/Mbrew # installed if on chroot
         /root/.ash_history
         /root/.bash_history
         /root/.tmux
@@ -98,7 +98,6 @@ total_cleanup() {
     deploy_cleanup
 
     msg_1 "Total cleanup cache and tmp folders"
-    msg_dbg "cache apk before"
     items=(
         /var/lib/apt
         /var/cache
@@ -107,15 +106,14 @@ total_cleanup() {
         /tmp
     )
     delete_items
-    msg_dbg "cache apk after"
 }
 
 load_utils() {
     local d_base="${1:-$d_repo}"
-    local f_utils="$d_base"/utils/script_utils.sh
+    local f_utils="$d_base"/tools/script_utils.sh
 
     # source a POSIX file
-    # shellcheck source=utils/script_utils.sh disable=SC1091,SC2317
+    # shellcheck source=tools/script_utils.sh disable=SC1091,SC2317
     source "$f_utils" || {
         printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
         exit 1
@@ -132,20 +130,12 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 
 load_utils
 
-# f_ift_common=/usr/local/lib/ift-utils.sh
-# # shellcheck source=/dev/null # not available on deploy machines
-# . "$f_ift_common" || {
-#     echo "ERROR: Failed to source: $f_ift_common"
-#     exit 1
-# }
+{ is_ish || is_chrooted_ish; } || err_msg "Can only run on iSH"
+exit 1
 
-# {
-#     echo
-#     echo "ERROR: failed to source: /usr/local/lib/ift-utils.sh"
-#     echo
-#     echo "       Should only be run inside iSH or a chrooted iSH env"
-#     exit 99
-# }
+if [ "$1" = "total" ]; then
+    total_cleanup
+else
+    deploy_cleanup
+fi
 
-# deploy_cleanup
-total_cleanup
