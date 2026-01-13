@@ -131,11 +131,9 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 load_utils
 
 { is_ish || is_chrooted_ish; } || err_msg "Can only run on iSH"
-exit 1
 
-if [ "$1" = "total" ]; then
+if [[ "$1" = "total" ]]; then
     total_cleanup
 else
     deploy_cleanup
 fi
-
