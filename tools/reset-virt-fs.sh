@@ -142,8 +142,10 @@ sync_fs_tools() {
 
     # override the softlink with actual file
 
-    set_overrides_file ish-fstools/vars/overrides.yml
-    set_overrides_file ish-fstools/my-ish-fs/vars/overrides.yml
+    replace_repo_local_conf inventory.ini
+    replace_repo_local_conf vars/overrides.yml
+    replace_repo_local_conf my-ish-fs/inventory.ini
+    replace_repo_local_conf my-ish-fs/vars/overrides.yml
 
     # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
     # msg_2 "Will replace softlink with real file: $f_overrides"
@@ -151,15 +153,17 @@ sync_fs_tools() {
     # cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
 }
 
-set_overrides_file() {
-    d_base="$AOK_TMPDIR"/aok_fs/root
+replace_repo_local_conf() {
+    d_base="$AOK_TMPDIR/aok_fs/root/$repo_name"
+    # d_name="$(dirname "$1")"
+    # f_name="$(basename "$1")"
     f_dest="${d_base}/$1"
 
     [ -z "$1" ] && err_msg "set_overrides_file() - no param"
 
-    safe_remove "$f_dest" tmp_ok
+    safe_remove "$f_dest"
     msg_3 "Will set: $f_dest"
-    cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_dest"
+    cp "$(realpath "$d_repo"/"$1")" "$f_dest"
 }
 
 copy_skel_files() {
