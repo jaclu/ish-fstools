@@ -3,7 +3,7 @@
 # Copyright (c) 2021-2024: Jacob.Lundqvist@gmail.com
 # License: MIT
 #
-# Part of https://github.com/jaclu/helpful_scripts
+# Part of https://github.com/jaclu/helpful-scripts
 #
 #  Updates apt status of a Debian based box
 #
@@ -46,7 +46,7 @@ mapt_time_start="$(date +%s)"
 
 echo "===  Mapt - apt maintenance  ==="
 
-apt --fix-broken install && apt update && apt autoremove -y \
+apt --fix-broken install && apt update && apt autoremove -y --purge \
     && apt autoclean && apt -y upgrade
 
 #

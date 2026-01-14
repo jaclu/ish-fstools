@@ -5,7 +5,7 @@
 #
 # License: MIT
 #
-# Part of https://github.com/jaclu/helpful_scripts
+# Part of https://github.com/jaclu/helpful-scripts
 #
 #  Deploys the apps in this reop
 #
