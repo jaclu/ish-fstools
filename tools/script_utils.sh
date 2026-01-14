@@ -11,30 +11,30 @@
 #
 # If caller is a POSIX script, use this, changing path to this if need-be:
 #
-#    load_utils() {
-#        _lu_d_base="${1:-$d_repo}"
-#        _lu_f_utils="$_lu_d_base"/utils/script_utils.sh
-#
-#        # shellcheck source=utils/script_utils.sh disable=SC2317
-#        . "$_lu_f_utils" || {
-#            printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
-#            exit 1
-#        }
-#    }
+# load_utils() {
+#     _lu_d_base="${1:-$d_repo}"
+#     _lu_f_utils="$_lu_d_base"/utils/script_utils.sh
+
+#     # shellcheck source=utils/script_utils.sh disable=SC2317
+#     . "$_lu_f_utils" || {
+#         printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+#         exit 1
+#     }
+# }
 #
 #  If it is a bash script, use this, changing path to this if need-be:
 #
-#    load_utils() {
-#        local d_base="${1:-$d_repo}"
-#        local f_utils="$d_base"/utils/script_utils.sh
-#
-#        # source a POSIX file
-#        # shellcheck source=utils/script_utils.sh disable=SC1091,SC2317
-#        source "$f_utils" || {
-#            printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
-#        exit 1
-#        }
-#    }
+# load_utils() {
+#     local d_base="${1:-$d_repo}"
+#     local f_utils="$d_base"/utils/script_utils.sh
+
+#     # source a POSIX file
+#     # shellcheck source=utils/script_utils.sh disable=SC1091,SC2317
+#     source "$f_utils" || {
+#         printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
+#     exit 1
+#     }
+# }
 #
 # In scripts using this, first set the following if relevant
 #   app_name - will be set to basename "$0" if unset
@@ -79,32 +79,32 @@ log_it() {
     printf -- '%s\n' "$1"
 }
 
-msg_1() {
-    [ -z "$1" ] && err_msg "msg_1() no param"
+lbl_1() {
+    [ -z "$1" ] && err_msg "lbl_1() no param"
     echo
     log_it "===  $1  ==="
     echo
 }
 
-msg_2() {
-    [ -n "$1" ] || err_msg "msg_2() no param"
+lbl_2() {
+    [ -n "$1" ] || err_msg "lbl_2() no param"
     log_it "---  $1"
 }
 
-msg_3() {
-    [ -n "$1" ] || err_msg "msg_3() no param"
+lbl_3() {
+    [ -n "$1" ] || err_msg "lbl_3() no param"
     log_it " --  $1"
 }
 
-msg_4() {
-    [ -n "$1" ] || err_msg "msg_4() no param"
+lbl_4() {
+    [ -n "$1" ] || err_msg "lbl_4() no param"
     log_it "  -  $1"
 }
 
 msg_dbg() {
     #
     # set debug lvl with param 2, if not given, will always be displayed,
-    # otherwise compared vs current_dbg_lvl
+    # otherwise displayed if debug lvl <= current_dbg_lvl
     #
     [ -n "$1" ] || err_msg "msg_dbg() no param"
     if [ -n "$2" ]; then
@@ -163,20 +163,20 @@ safe_remove() {
     if [ -d "$_sr_item" ]; then
         if $_sr_remove_dir; then
             rm -rf -- "$_sr_item" || err_msg "Failed to remove directory: $_sr_item"
-            msg_2 "Removed directory: $_sr_item"
+            lbl_2 "Removed directory: $_sr_item"
         else
             # shellcheck disable=SC2115 # _sr_item is already checked for being empty
             rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
                 err_msg "Failed to clear directory: $_sr_item"
             }
-            msg_2 "Cleared directory: $_sr_item"
+            lbl_2 "Cleared directory: $_sr_item"
         fi
         return
     fi
 
     if [ -f "$_sr_item" ]; then
         rm -f -- "$_sr_item" || err_msg "Failed to remove file: $_sr_item"
-        msg_4 "Removed file: $_sr_item"
+        lbl_4 "Removed file: $_sr_item"
 
     # Normally if _sr_item is not found it's fine, I leave the deailed notifications
     # commented out for potential later debugging purposes

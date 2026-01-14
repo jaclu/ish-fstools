@@ -23,7 +23,7 @@
 #         error_msg "set_kernel_default($_fnamem) not available when chrooted" -1
 #     }
 
-#     [ -n "$_lbl" ] && msg_3 "$_lbl"
+#     [ -n "$_lbl" ] && lbl_3 "$_lbl"
 #     echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
 #     [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
 #         _s="set_kernel_default($_fname,v$_param, $_lbl) -"
@@ -33,7 +33,7 @@
 
 #     _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
 #     if [ "$_setting" = "$_param" ]; then
-#         [ "$_silent" != "silent" ] && msg_4 "$_fname set to: $_setting"
+#         [ "$_silent" != "silent" ] && lbl_4 "$_fname set to: $_setting"
 #     else
 #         error_msg "value is <$_setting> - expected <$_param>"
 #     fi

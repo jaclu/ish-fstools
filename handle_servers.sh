@@ -26,7 +26,7 @@ do_ansible() {
         err_msg "Failed to cd $d_ansible_folder"
     }
 
-    msg_1 "Running $playbook on remote servers"
+    lbl_1 "Running $playbook on remote servers"
     # running this on actual iSH takes over 10 mins, so seeing ok task done adds sanity
     ANSIBLE_DISPLAY_OK_HOSTS=yes ansible-playbook "$playbook" -e target_hosts=servers || {
         err_msg "running playbook failed"
@@ -70,13 +70,13 @@ done
 do_ansible
 
 [ "$quick_mode" -eq 1 ] && {
-    msg_1 "Due to quick mode, my-ish-fs is no attempted"
+    lbl_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
-    msg_1 "Will run my-ish-fs"
+    lbl_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_servers.sh || {
         err_msg "my-ish-fs reported error"
     }

@@ -23,27 +23,27 @@ delete_item() {
     if [[ -d $item ]]; then
         if $remove_dir; then
             rm -rf -- "$item" || err_msg "Failed to remove directory: $item"
-            msg_2 "Removed directory: $item"
+            lbl_2 "Removed directory: $item"
         else
             # shellcheck disable=SC2115 # item is already checked for being empty
             rm -rf -- "$item"/* "$item"/.??* 2>/dev/null || {
                 err_msg "Failed to clear directory: $item"
             }
-            msg_2 "Cleared directory: $item"
+            lbl_2 "Cleared directory: $item"
         fi
         return
     fi
 
     if [[ -f "$item" ]]; then
         rm -f -- "$item" || err_msg "Failed to remove file: $item"
-        msg_4 "Removed file: $item"
+        lbl_4 "Removed file: $item"
 
     # Normally if item is not found it's fine, I leave the deailed notifications
     # commented out for potential later debugging purposes
     # elif [[ -e $item ]]; then
-    #     msg_2 "Special file not removed: $item"
+    #     lbl_2 "Special file not removed: $item"
     # else
-    #     msg_2 "File not found: $item"
+    #     lbl_2 "File not found: $item"
     fi
 }
 
@@ -51,7 +51,7 @@ delete_items() {
     local item
     for item in "${items[@]}"; do
         [[ -e $item ]] || {
-            # msg_3 "item not found: $item"
+            # lbl_3 "item not found: $item"
             continue
         }
         delete_item "$item"
@@ -72,7 +72,7 @@ deploy_cleanup() {
     fi
 
     # suitable for post all install step
-    msg_1 "Deploy cleanup"
+    lbl_1 "Deploy cleanup"
     items=(
         /iCloud
         # /home/jaclu/.local/bin/defgw # installed if on chroot
@@ -97,7 +97,7 @@ total_cleanup() {
 
     deploy_cleanup
 
-    msg_1 "Total cleanup cache and tmp folders"
+    lbl_1 "Total cleanup cache and tmp folders"
     items=(
         /var/lib/apt
         /var/cache

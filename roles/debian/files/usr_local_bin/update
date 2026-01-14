@@ -17,7 +17,7 @@ fi
 
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
-msg_1 "Making sure System is fully updated"
+lbl_1 "Making sure System is fully updated"
 
 debian_apt_update
 Mapt

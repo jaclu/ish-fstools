@@ -11,7 +11,7 @@
 #
 
 install_ansible() {
-    msg_1 "Install Ansible"
+    lbl_1 "Install Ansible"
     if ! command -v ansible >/dev/null 2>&1; then
         if fs_is_alpine; then
             apk add ansible || err_msg "Failed to: apk add ansible"
@@ -65,7 +65,7 @@ do_ansible() {
     # export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES # macOS/iSH/Termux workaround
     # export PYTHONWARNINGS=ignore::UserWarning
 
-    msg_1 "Running $playbook on localhost"
+    lbl_1 "Running $playbook on localhost"
     ansible-playbook "$playbook" -e target_hosts=local || {
         err_msg "running playbook failed"
     }
@@ -112,13 +112,13 @@ install_ansible
 do_ansible
 
 [ "$quick_mode" -eq 1 ] && {
-    msg_1 "Due to quick mode, my-ish-fs is no attempted"
+    lbl_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
-    msg_1 "Will run my-ish-fs"
+    lbl_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_localhost.sh || {
         err_msg "my-ish-fs reported error"
     }

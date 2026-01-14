@@ -32,7 +32,7 @@ unpack_saved_fs() {
     #
     # -  39/31s /root/ish-fstools/handle_localhost.sh
     #
-    msg_1 "unpack_saved_fs() - $fs_saved"
+    lbl_1 "unpack_saved_fs() - $fs_saved"
     /opt/AOK/tools/aok_fs-replace "$fs_saved"
 }
 
@@ -46,15 +46,15 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
     miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
-    msg_1 "create_empty_fs()"
-    msg_2 "><> pwd:$(pwd)"
+    lbl_1 "create_empty_fs()"
+    lbl_2 "><> pwd:$(pwd)"
 
-    msg_2 "Clearing File System"
+    lbl_2 "Clearing File System"
     rm aok_fs/* -rf
 
     cd aok_fs || err_msg "Failed to cd into aok_fs"
 
-    msg_2 "recreating alpine-minirootfs"
+    lbl_2 "recreating alpine-minirootfs"
     tar xfz ../aok_cache/"$miniroot_fs" || {
         err_msg "Failed to untar"
     }
@@ -62,7 +62,7 @@ create_empty_fs() {
     cd .. || err_msg "Failed to cd up ftom aok_fs"
 
     f_fs_release="aok_fs/etc/aok-fs-release"
-    msg_2 "Defining $f_fs_release"
+    lbl_2 "Defining $f_fs_release"
     echo "ish-fstool-template" >"$f_fs_release"
 }
 
@@ -82,7 +82,7 @@ sync_something() {
     lbl="$1"
     cmd="$2"
     [ -z "$cmd" ] && err_msg "sync_something() - no param"
-    msg_2 "$lbl"
+    lbl_2 "$lbl"
     if $do_clear; then
         eval "$cmd" >/dev/null || {
             err_msg "Failed to sync ish-fstools - $lbl"
@@ -97,7 +97,7 @@ sync_something() {
 sync_fs_tools() {
     echo
     echo
-    msg_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
+    lbl_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
 
@@ -148,7 +148,7 @@ sync_fs_tools() {
     replace_repo_local_conf my-ish-fs/vars/overrides.yml
 
     # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
-    # msg_2 "Will replace softlink with real file: $f_overrides"
+    # lbl_2 "Will replace softlink with real file: $f_overrides"
     # rm "$f_overrides"
     # cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
 }
@@ -162,16 +162,16 @@ replace_repo_local_conf() {
     [ -z "$1" ] && err_msg "set_overrides_file() - no param"
 
     safe_remove "$f_dest"
-    msg_3 "Will set: $f_dest"
+    lbl_3 "Will set: $f_dest"
     cp "$(realpath "$d_repo"/"$1")" "$f_dest"
 }
 
 copy_skel_files() {
-    msg_1 "Deploying repo skel files"
+    lbl_1 "Deploying repo skel files"
 
     tmp=$(mktemp) || exit 2
 
-    msg_2 "Using tmpfile base: $tmp"
+    lbl_2 "Using tmpfile base: $tmp"
 
     (
         cd "$d_repo"/roles/all_distros/files/etc/skel \
@@ -185,8 +185,8 @@ copy_skel_files() {
 
     left=$(cat "$tmp.left" 2>/dev/null)
     right=$(cat "$tmp.right" 2>/dev/null)
-    msg_2 "left: $$tmp.left"
-    msg_2 "right: $$tmp.right"
+    lbl_2 "left: $$tmp.left"
+    lbl_2 "right: $$tmp.right"
     rm -f "$tmp.left" "$tmp.right" "$tmp"
 
     if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
@@ -197,7 +197,7 @@ copy_skel_files() {
 prepare_shell_env() {
     copy_skel_files
 
-    msg_1 "Prpare ansible job history"
+    lbl_1 "Prpare ansible job history"
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
@@ -207,7 +207,7 @@ prepare_shell_env() {
         f_history="aok_fs/root/.ash_history"
     fi
 
-    msg_2 "prepping $f_history"
+    lbl_2 "prepping $f_history"
     {
         echo "/root/ish-fstools/tools/cleanup_build_env.sh"
         echo "time $cmd_2"
@@ -224,8 +224,8 @@ prepare_shell_env() {
 
 save_new_fs() {
     $do_clear && {
-        msg_1 "Save new FS"
-        msg_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
+        lbl_1 "Save new FS"
+        lbl_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
         /opt/AOK/tools/aok_fs-save
     }
 }
@@ -260,7 +260,7 @@ load_utils
 
 [ -n "$AOK_TMPDIR" ] && {
     TMPDIR="$(dirname "$AOK_TMPDIR")"
-    msg_1 "Assigining TMPDIR via AOK_TMPDIR"
+    lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
 }
 
 if [ "$1" = "clear" ]; then
@@ -274,7 +274,7 @@ else
     do_clear=false
 fi
 
-# msg_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
+# lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
 [ -z "$AOK_TMPDIR" ] && {
 
     _d=/var/tmp/aok_tmp
@@ -282,7 +282,7 @@ fi
         AOK_TMPDIR="$_d"
     else
         AOK_TMPDIR="/tmp"
-        msg_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
+        lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
     fi
 }
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"
@@ -294,4 +294,4 @@ $do_clear && replace_fs
 sync_fs_tools
 prepare_shell_env
 
-msg_1 "Done!"
+lbl_1 "Done!"

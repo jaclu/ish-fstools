@@ -71,7 +71,7 @@ org_uptime() {
         echo "ERROR: $cmd_org_uptime points to this replacement uptime!"
         exit 1
     }
-    $dbg && msg_2 "org_uptime() - running org_uptime"
+    $dbg && lbl_2 "org_uptime() - running org_uptime"
     $cmd_org_uptime
 }
 
@@ -158,7 +158,7 @@ calculate_uptime() {
         calculate_ios_uptime
     fi
 
-    $dbg && msg_2 "calculate_uptime() - doing the calculations"
+    $dbg && lbl_2 "calculate_uptime() - doing the calculations"
     # Calculate days, hours, minutes
     ut_days=$((uptime_seconds / 86400))
     ut_hours=$(((uptime_seconds % 86400) / 3600))
@@ -168,7 +168,7 @@ calculate_uptime() {
 display_sysload() {
     $dbg && log_it "display_sysload()"
     if [ -f /etc/alpine-release ]; then
-        $dbg && msg_2 "display_sysload() - using org_uptime"
+        $dbg && lbl_2 "display_sysload() - using org_uptime"
         org_uptime | sed 's/load average: /|/' | cut -d'|' -f 2
     else
         echo "0.00, 0.00, 0.00"
@@ -227,7 +227,7 @@ default_view() {
     user_field="$user_count user"
     [ "$user_count" -gt 1 ] && user_field="${user_field}s"
 
-    $dbg && msg_2 "default_view() - create output [$output] [$user_field]"
+    $dbg && lbl_2 "default_view() - create output [$output] [$user_field]"
     _s=" $(date +%H:%M:%S) up $output,  $user_field,  load average:"
     _s="$_s $(display_sysload)"
     echo "$_s"
@@ -302,7 +302,7 @@ while [ -n "$1" ]; do
         -s | --since) display_mode="since" ;;
         -V | --version) display_mode="version" ;;
         *)
-            msg_1 "$app_name: invalid option -- '$1'"
+            lbl_1 "$app_name: invalid option -- '$1'"
             show_help
             ;;
     esac

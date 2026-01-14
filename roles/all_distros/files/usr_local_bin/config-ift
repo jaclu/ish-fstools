@@ -228,7 +228,7 @@ set_kernel_default() {
         error_msg "set_kernel_default($_fname) not available when chrooted" -1
     }
 
-    [ -n "$_lbl" ] && msg_3 "$_lbl"
+    [ -n "$_lbl" ] && lbl_3 "$_lbl"
     echo "$_param" >"$_f" || error_msg "Failed to set $_f as $_param"
     [ -n "$_silent" ] && [ "$_silent" != "silent" ] && {
         error_msg "set_kernel_default($_fname,v$_param, $_lbl) - param 4 ($_silent) must be unset or silent"
@@ -236,7 +236,7 @@ set_kernel_default() {
 
     _setting="$(tr -d '\n' <"$_f" | sed 's/  \+/ /g' | sed 's/"]/" ]/')"
     if [ "$_setting" = "$_param" ]; then
-        [ "$_silent" != "silent" ] && msg_4 "$_fname set to: $_setting"
+        [ "$_silent" != "silent" ] && lbl_4 "$_fname set to: $_setting"
     else
         error_msg "value is <$_setting> - expected <$_param>"
     fi
@@ -514,7 +514,7 @@ while [ -n "$1" ]; do
                     boot_cmd_change "$2"
 
                 else
-                    msg_4 "Can only set Launch Cmd on iSH systems"
+                    lbl_4 "Can only set Launch Cmd on iSH systems"
                 fi
                 shift # get rid of extra option
             fi
@@ -532,7 +532,7 @@ while [ -n "$1" ]; do
         "-C" | "--console")
             if [ -n "$2" ] && [ "${2%"${2#?}"}" != "-" ]; then
                 if ! is_ish; then
-                    msg_4 "Can't set console mode on chrooted systems"
+                    lbl_4 "Can't set console mode on chrooted systems"
                 else
                     console_mode_change "$2"
                 fi
@@ -548,7 +548,7 @@ while [ -n "$1" ]; do
                 if is_ish; then
                     launch_cmd_change "$2"
                 else
-                    msg_4 "Can only set Launch Cmd on iSH systems"
+                    lbl_4 "Can only set Launch Cmd on iSH systems"
                 fi
                 shift # get rid of extra option
             fi
@@ -563,7 +563,7 @@ while [ -n "$1" ]; do
             profile_hints_display
             ;;
 
-        *) msg_2 "ERROR: Bad option: $1" ;;
+        *) lbl_2 "ERROR: Bad option: $1" ;;
 
     esac
     shift

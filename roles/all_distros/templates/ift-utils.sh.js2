@@ -61,25 +61,25 @@ log_it() {
     unset _li_msg
 }
 
-msg_1() {
-    [ -z "$1" ] && err_msg "msg_1() no param"
+lbl_1() {
+    [ -z "$1" ] && err_msg "lbl_1() no param"
     echo
     log_it "===  $1  ==="
     echo
 }
 
-msg_2() {
-    [ -n "$1" ] || err_msg "msg_2() no param"
+lbl_2() {
+    [ -n "$1" ] || err_msg "lbl_2() no param"
     log_it "---  $1"
 }
 
-msg_3() {
-    [ -n "$1" ] || err_msg "msg_3() no param"
+lbl_3() {
+    [ -n "$1" ] || err_msg "lbl_3() no param"
     log_it " --  $1"
 }
 
-msg_4() {
-    [ -n "$1" ] || err_msg "msg_4() no param"
+lbl_4() {
+    [ -n "$1" ] || err_msg "lbl_4() no param"
     log_it "  -  $1"
 }
 

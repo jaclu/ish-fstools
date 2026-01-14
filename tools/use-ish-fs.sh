@@ -30,13 +30,13 @@ Available options:
 }
 
 is_fs_used() {
-    # msg_2 "is_fs_locked()"
+    # lbl_2 "is_fs_locked()"
     [ -z "$f_fs_in_usage" ] && err_msg "is_fs_locked() - undefined: f_fs_in_usage"
     [ -f "$f_fs_in_usage" ] # Indicate presence of file
 }
 
 download_alpine_disk_image() {
-    msg_2 "download_alpine_disk_image()"
+    lbl_2 "download_alpine_disk_image()"
     mkdir -p "$d_miniroot_fs_cache"
     cd "$d_miniroot_fs_cache" || {
         err_msg "download_alpine_disk_image() - failed to cd: $d_miniroot_fs_cache"
@@ -45,14 +45,14 @@ download_alpine_disk_image() {
 }
 
 clear_ish_fs() {
-    msg_2 "clear_ish_fs()"
+    lbl_2 "clear_ish_fs()"
     [ -z "$d_ish_fs" ] && err_msg "clear_ish_fs() - undefined: d_ish_fs"
     is_fs_used && err_msg "clear_ish_fs() - iSH fs is used"
     safe_remove "$d_ish_fs" "clear_ish_fs()"
 }
 
 create_ish_fs_from_miniroot_fs() {
-    msg_2 "create_ish_fs_from_miniroot_fs() at: $d_ish_fs"
+    lbl_2 "create_ish_fs_from_miniroot_fs() at: $d_ish_fs"
     [ -z "$d_ish_fs" ] && err_msg "create_ish_fs_from_miniroot_fs() - undefined: d_ish_fs"
     is_fs_used && err_msg "create_ish_fs_from_miniroot_fs() - iSH fs is used"
 
@@ -62,7 +62,7 @@ create_ish_fs_from_miniroot_fs() {
 }
 
 save_fs() {
-    msg_2 "save_fs()"
+    lbl_2 "save_fs()"
     save_basename="$1"
     [ -z "$save_basename" ] && err_msg "save_fs() - no param 1 (basename)"
     [ -z "$d_saved_fs" ] && err_msg "save_fs() - undefined: d_saved_fs"
@@ -74,7 +74,7 @@ save_fs() {
 }
 
 restore_fs() {
-    msg_2 "restore_fs()"
+    lbl_2 "restore_fs()"
     save_basename="$1"
     [ -z "$save_basename" ] && err_msg "restore_fs() - no param 1 (basename)"
     [ -z "$d_saved_fs" ] && err_msg "restore_fs() - undefined: d_saved_fs"
@@ -88,7 +88,7 @@ restore_fs() {
 }
 
 mount_ish_fs() {
-    msg_2 "mount_ish_fs() and run: $*"
+    lbl_2 "mount_ish_fs() and run: $*"
     [ -z "$d_ish_fs" ] && err_msg "mount_ish_fs() - undefined: d_ish_fs"
     [ -z "$initial_cmd" ] && err_msg "mount_ish_fs() - undefined: initial_cmd"
     is_fs_used && err_msg "mount_ish_fs() - iSH fs is used"
@@ -101,7 +101,7 @@ sync_something() {
     #
     #  This can be done when ish_FS is mounted, so no check if FS is in use is done
     #
-    msg_2 "sync_something() $1"
+    lbl_2 "sync_something() $1"
     _ss_lbl="$1"
     _ss_src="$2"
     _ss_dst="$3"
@@ -112,7 +112,7 @@ sync_something() {
 
     $b_is_verbose && {
         echo
-        msg_2 "rsync $_ss_src $_ss_dst"
+        lbl_2 "rsync $_ss_src $_ss_dst"
     }
     _tmp_log="$(mktemp)"
 
@@ -128,10 +128,10 @@ sync_something() {
 }
 
 sync_playbook() {
-    msg_2 "sync_playbook()"
+    lbl_2 "sync_playbook()"
     echo
     echo
-    msg_1 "Syncing ish-fstools -> $d_ish_fs/root"
+    lbl_1 "Syncing ish-fstools -> $d_ish_fs/root"
     mkdir -p "$d_ish_fs/iCloud/deploy/prebuilds"
     mkdir -p "$d_ish_fs/iCloud/deploy/manual_deploys/installs"
 
@@ -163,7 +163,7 @@ sync_playbook() {
 
     # override the softlink with actual file
     f_overrides="$d_ish_fs/root/ish-fstools/vars/overrides.yml"
-    msg_3 "Will replace softlink with real file: $f_overrides"
+    lbl_3 "Will replace softlink with real file: $f_overrides"
     safe_remove "$f_overrides" "sync_playbook()"
     sudo cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides" || {
         err_msg "sync_playbook() - Failed to replace $f_overrides"
