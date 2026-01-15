@@ -65,6 +65,6 @@ else
     #
     #  Use either one, dynamic will display sysload
     #
-    use_dynamic_bash_prompt
-    # use_static_bash_prompt
+    # use_dynamic_bash_prompt
+    use_static_bash_prompt
 fi

@@ -110,10 +110,10 @@ total_cleanup() {
 
 load_utils() {
     local d_base="${1:-$d_repo}"
-    local f_utils="$d_base"/tools/script_utils.sh
+    local f_utils="$d_base"/tools/script-utils.sh
 
     # source a POSIX file
-    # shellcheck source=tools/script_utils.sh disable=SC1091,SC2317
+    # shellcheck source=tools/script-utils.sh disable=SC1091,SC2317
     source "$f_utils" || {
         printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
         exit 1
