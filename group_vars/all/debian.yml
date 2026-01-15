@@ -51,6 +51,11 @@ ift_debian_packages:
   - vim # advanced text editor, with GUI
 
   #
+  # File managers
+  #
+  - ranger # File browser
+
+  #
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing

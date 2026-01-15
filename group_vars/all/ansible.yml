@@ -68,6 +68,12 @@ ift_alpine_packages:
   - vim # advanced text editor, with GUI
 
   #
+  # File managers
+  #
+  - ranger # File browser
+  - yazi # Blazing fast terminal file manager written in Rust
+
+  #
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing
