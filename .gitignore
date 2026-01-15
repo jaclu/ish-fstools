@@ -10,7 +10,7 @@ Icon
 /.vscode
 .vagrant/
 
-/vars/
+/vars
 /my-ish-fs/
 inventory.ini
 
