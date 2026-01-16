@@ -80,6 +80,4 @@
   run_once: true
   when:
     - ansible_facts.os_family == 'Alpine'
-    - ift_show_selected_packages | default(false)
-
-
+    - ift_show_extra_status | default(false)

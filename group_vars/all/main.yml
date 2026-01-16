@@ -23,8 +23,8 @@
 #
 # ift_hostname: NameOfDevice
 
-# if true during pre-tasks a list of what will be instaled is displayed
-# ift_show_selected_packages: true
+# show some info about detected env, what will be installed etc
+# ift_show_extra_status: true
 
 #
 #  Create a user account (will be given no password sudo privs)

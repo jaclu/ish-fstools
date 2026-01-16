@@ -18,12 +18,11 @@
   debug:
     msg: "         old_ansible: {{ old_ansible }}"
   changed_when: true
-  when: old_ansible
+  when: old_ansible or (ift_show_extra_status | default(false))
 
 - name: " pre-task - Check if this is iSH"
   include_tasks: tasks/is_ish.yml
   when: is_ish is not defined
-
 
 #
 #  Handle overrides, needs to be done as a task instead of inside a role,

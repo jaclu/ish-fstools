@@ -24,4 +24,4 @@
   debug:
     msg: "         is_ish: {{ is_ish }}"
   changed_when: true
-  when: is_ish
+  when: is_ish or (ift_show_extra_status | default(false))

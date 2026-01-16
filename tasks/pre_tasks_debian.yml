@@ -16,7 +16,6 @@
     ift_shell: /bin/bash
   when: ansible_facts.os_family == 'Debian'
 
-
 - name: " pre-task Debian - Add dev apks when ift_pkgs_devel is true"
   set_fact:
     ift_debian_packages: >-
@@ -54,5 +53,4 @@
   run_once: true
   when:
     - ansible_facts.os_family == 'Debian'
-    - ift_show_selected_packages | default(false)
-
+    - ift_show_extra_status | default(false)
