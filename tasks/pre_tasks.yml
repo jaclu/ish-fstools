@@ -6,6 +6,13 @@
 #
 #  License: MIT
 #
+#  Prepare env to run playbooks
+#   - Install Python on clients if not already available
+#   - Parses vars/overrides
+#
+
+- name: Ensure Python is installed (and gather facts)
+  import_tasks: tasks/install_python.yml
 
 # Must be first task in order for everything else to use the overrides
 - name: " pre-task - Handle vars/overrides.yml"

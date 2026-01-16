@@ -23,9 +23,7 @@
   hosts: "{{ target_hosts | default('localhost') }}"
   gather_facts: false
   pre_tasks:
-    - name: Ensure Python is installed (and gather facts)
-      import_tasks: tasks/install_python.yml
-    - name: Load override variables
+    - name: Prepare env to run playbooks
       import_tasks: tasks/pre_tasks.yml
 
   roles:
