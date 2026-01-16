@@ -7,6 +7,15 @@
 #  License: MIT
 #
 
+# Must be first task in order for everything else to use the overrides
+- name: " pre-task - Handle vars/overrides.yml"
+  include_tasks: tasks/pre_tasks_overrides.yml
+
+- name: " pre-task - Check if this is iSH"
+  # Might depend on some overrides
+  include_tasks: tasks/is_ish.yml
+  when: is_ish is not defined
+
 - name: " pre-task - Set old_andsible if this is Ansible < 2.8"
   set_fact:
     old_ansible: >-
@@ -17,75 +26,8 @@
 - name: " pre-task - Check if this is old Ansible"
   debug:
     msg: "         old_ansible: {{ old_ansible }}"
-  changed_when: true
+  changed_when: ift_show_extra_status | default(false)
   when: old_ansible or (ift_show_extra_status | default(false))
-
-- name: " pre-task - Check if this is iSH"
-  include_tasks: tasks/is_ish.yml
-  when: is_ish is not defined
-
-#
-#  Handle overrides, needs to be done as a task instead of inside a role,
-#  in order to be able to set global variables without linting errors
-#
-#
-#  Process vars/overrides.yml
-#
-- name: " pre-task - Check if override file exists"
-  stat:
-    path: vars/overrides.yml
-  delegate_to: localhost
-  run_once: true
-  register: overrides_file
-
-- name: " pre-task - Read overrides file"
-  set_fact:
-    __override_raw: "{{ lookup('file', 'vars/overrides.yml') }}"
-  delegate_to: localhost
-  run_once: true
-  when: overrides_file.stat.exists
-
-- name: " pre-task - Parse override vars"
-  set_fact:
-    __override_vars: >-
-      {{
-        (__override_raw | from_yaml)
-          if (__override_raw | trim) != ''
-          else {}
-      }}
-  delegate_to: localhost
-  run_once: true
-  when: __override_raw is defined
-
-- name: " pre-task - Extend ift_alpine_packages with extra packages"
-  set_fact:
-    ift_alpine_packages: >-
-      {{ (ift_alpine_packages | default([])) +
-         (__override_vars.ift_extra_alpine_packages | default([])) }}
-  delegate_to: localhost
-  run_once: true
-  when:
-    - __override_vars is defined
-    - ansible_facts.os_family == 'Alpine'
-
-- name: " pre-task - Extend ift_debian_packages with extra packages"
-  set_fact:
-    ift_debian_packages: >-
-      {{ (ift_debian_packages | default([])) +
-         (__override_vars.ift_extra_debian_packages | default([])) }}
-  delegate_to: localhost
-  run_once: true
-  when:
-    - __override_vars is defined
-    - ansible_facts.os_family == 'Debian'
-
-- name: " pre-task - Apply overrides"
-  set_fact:
-    "{{ item.key }}": "{{ item.value }}"
-  delegate_to: localhost
-  run_once: true
-  loop: "{{ __override_vars | dict2items }}"
-  when: __override_vars is defined
 
 #
 # Repo specific configs, should happen after overrides are processed

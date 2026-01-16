@@ -76,8 +76,7 @@
 - name: " pre-task Ansible - List of what apk packages will be installed"
   debug:
     msg: "{{ ift_alpine_packages | sort }}"
-  changed_when: true
+  delegate_to: localhost
   run_once: true
-  when:
-    - ansible_facts.os_family == 'Alpine'
-    - ift_show_extra_status | default(false)
+  changed_when: ift_show_extra_status | default(false)
+  when: ansible_facts.os_family == 'Alpine' or (ift_show_extra_status | default(false))

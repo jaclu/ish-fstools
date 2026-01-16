@@ -49,8 +49,7 @@
 - name: " pre-task Debian - List of what apt packages will be installed"
   debug:
     msg: "{{ ift_debian_packages | sort }}"
-  changed_when: true
+  delegate_to: localhost
   run_once: true
-  when:
-    - ansible_facts.os_family == 'Debian'
-    - ift_show_extra_status | default(false)
+  changed_when: ift_show_extra_status | default(false)
+  when: ansible_facts.os_family == 'Debian' or (ift_show_extra_status | default(false))
