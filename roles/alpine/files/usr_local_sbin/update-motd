@@ -1,8 +1,5 @@
 #!/bin/sh
 #
-#  shellcheck disable=SC2034
-# SC 2154
-#
 #  Part of https://github.com/jaclu/ish-fstool
 #
 #  License: MIT
@@ -23,13 +20,13 @@
 
 f_motd="/etc/motd"
 f_motd_template="/etc/motd_template"
-alp_rel="$(grep VERSION_ID /etc/os-release | cut -d'=' -f2)"
+# alp_rel="$(grep VERSION_ID /etc/os-release | cut -d'=' -f2)"
 
-if [ -d /proc/ish ]; then
-    ish_rel="$(cat /proc/ish/version)"
-else
-    ish_rel="Can't be detected whilst chrooted"
-fi
+# if [ -d /proc/ish ]; then
+#     ish_rel="$(cat /proc/ish/version)"
+# else
+#     ish_rel="Can't be detected whilst chrooted"
+# fi
 
 #  create initial LF
 echo >"$f_motd"
