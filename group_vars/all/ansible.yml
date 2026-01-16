@@ -70,7 +70,7 @@ ift_alpine_packages:
   #
   # File managers
   #
-  - ranger # File browser
+  - ranger # VIM-inspired filemanager for the console
   - yazi # Blazing fast terminal file manager written in Rust
 
   #
