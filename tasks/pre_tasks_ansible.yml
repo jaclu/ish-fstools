@@ -11,7 +11,7 @@
 #  in order to be able to set global variables without linting errors
 #
 
-- name: "Add dev apks when ift_pkgs_devel is true"
+- name: " pre-task Ansible - Add dev apks when ift_pkgs_devel is true"
   set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_devel | default([])) }}
@@ -22,7 +22,7 @@
   run_once: true
   changed_when: false
 
-- name: "Add linting apks when ift_pkgs_linting is true"
+- name: " pre-task Ansible - Add linting apks when ift_pkgs_linting is true"
   set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_linting | default([])) }}
@@ -33,7 +33,7 @@
   run_once: true
   changed_when: false
 
-- name: Add docs to ift_alpine_packages if ift_pkgs_man is true
+- name: " pre-task Ansible - Add docs to ift_alpine_packages if ift_pkgs_man is true"
   set_fact:
     ift_alpine_packages: "{{ ift_alpine_packages + ['docs'] }}"
   when: ift_pkgs_man | bool
@@ -41,7 +41,7 @@
   run_once: true
   changed_when: false
 
-- name: Add pkgs for Alpine >= 3.17
+- name: " pre-task Ansible - Add pkgs for Alpine >= 3.17"
   set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
@@ -51,7 +51,7 @@
   run_once: true
   changed_when: false
 
-- name: Add pkgs for Alpine >= 3.20
+- name: " pre-task Ansible - Add pkgs for Alpine >= 3.20"
   set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_320 | default([])) }}
@@ -63,7 +63,7 @@
   run_once: true
   changed_when: false
 
-- name: Add pkgs for Alpine >= 3.23
+- name: " pre-task Ansible - Add pkgs for Alpine >= 3.23"
   set_fact:
     ift_alpine_pkgs_linting: >-
       {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_323 | default([])) }}
@@ -72,3 +72,14 @@
   delegate_to: localhost
   run_once: true
   changed_when: false
+
+- name: " pre-task Ansible - List of what apk packages will be installed"
+  debug:
+    msg: "{{ ift_alpine_packages | sort }}"
+  changed_when: true
+  run_once: true
+  when:
+    - ansible_facts.os_family == 'Alpine'
+    - ift_show_selected_packages | default(false)
+
+
