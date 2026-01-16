@@ -4,7 +4,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
 #
 #  Handle local virtual FS to prep iSH FS - in progress not yet usable
 #  NOT USABLE YET!!

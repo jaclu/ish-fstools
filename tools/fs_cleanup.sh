@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
 
 delete_item() {
     local remove_dir=false

@@ -2,7 +2,7 @@
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
-#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
 #
@@ -20,8 +20,8 @@
     is_ish: "{{ ish_proc.stat.exists }}"
   when: is_ish is not defined
 
-- name: Was iSH  detected
+- name: Was  iSH  detected
   debug:
     msg: "         is_ish: {{ is_ish }}"
-  changed_when: true
+  changed_when: ift_show_extra_status | default(false)
   when: is_ish or (ift_show_extra_status | default(false))

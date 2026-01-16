@@ -6,7 +6,7 @@
 #
 #  License: MIT
 #
-#  Copyright (c) 2025: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
 #
 #  Recreate a clean chroot FS usable for testing deploys, depends on my local env,
 #  so not reusable as-is
