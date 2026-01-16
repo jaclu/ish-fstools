@@ -1,6 +1,5 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
-#  shellcheck disable=SC2034,SC2154
 #
 #  Part of https://github.com/jaclu/ish-fstool
 #

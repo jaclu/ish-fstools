@@ -1,6 +1,5 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
-#  shellcheck disable=SC2034,SC2154
 #
 #  Part of https://github.com/jaclu/ish-fstool
 #
@@ -317,6 +316,7 @@ my_rsync="rsync -a --out-format='%n'"
 load_utils
 
 # tmp file that can be used during the un of the app, will be auto removed on exit
+# shellcheck disable=SC2154 # app_name defined in tools/script-utils.sh
 f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
     err_msg "mktemp failed"
 }
