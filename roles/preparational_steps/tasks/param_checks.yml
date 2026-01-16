@@ -7,10 +7,10 @@
 #  License: MIT
 #
 #  Role: preparational_steps - Verify that params are sane
+#   Do this before base apks are installed to trigger early abort
 #
 
 - name: Params - Conflicting mtr versions defined
-  # Do this before base apks are installed to trigger early abort
   fail:
     msg: "ERROR: mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
   when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
