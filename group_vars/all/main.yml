@@ -23,6 +23,9 @@
 #
 # ift_hostname: NameOfDevice
 
+# if true during pre-tasks a list of what will be instaled is displayed
+# ift_show_selected_packages: true
+
 #
 #  Create a user account (will be given no password sudo privs)
 #  Be aware that only Alpine supports the /bin/ash shell
