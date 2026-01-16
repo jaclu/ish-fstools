@@ -169,41 +169,42 @@ replace_repo_conf() {
 }
 
 sync_fs_tools() {
+    d_icloud_deploy_rel=iCloud/deploy
     echo
     echo
     lbl_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
-    mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
-    mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
+    mkdir -p "$AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
+    mkdir -p "$AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/manual_deploys/installs"
 
     sync_something "prebuilds/asdf env" \
         "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
+        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
 
     sync_something "prebuilds/python" \
         "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/python \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
+        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
 
     #sync_something "olint venv" \
     #    "$my_rsync \
     #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
-    #    $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
+    #    $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
 
     sync_something "jed" \
         "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs/"
+        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/manual_deploys/installs/"
 
     sync_something home_jaclu \
         "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy/saved_home_dirs/"
+        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/saved_home_dirs/"
 
     sync_something sshd_config \
         "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
-        $AOK_TMPDIR/aok_fs/iCloud/deploy"
+        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel"
 
     sync_something ish-fstools "$my_rsync \
         --exclude=.git/ \
@@ -273,7 +274,7 @@ prepare_shell_env() {
         echo "time $cmd_2"
         # echo "time $cmd_1 && time $cmd_2"
         # echo "time $cmd_1 c"
-        # echo "time $cmd_1 q"
+        echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
         # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
         # echo ./ish-fstools/tools/fs_cleanup.sh

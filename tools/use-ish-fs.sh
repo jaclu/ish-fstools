@@ -128,33 +128,35 @@ sync_something() {
 }
 
 sync_playbook() {
+    d_icloud_deploy_rel=iCloud/deploy
+
     lbl_2 "sync_playbook()"
     echo
     echo
     lbl_1 "Syncing ish-fstools -> $d_ish_fs/root"
-    mkdir -p "$d_ish_fs/iCloud/deploy/prebuilds"
-    mkdir -p "$d_ish_fs/iCloud/deploy/manual_deploys/installs"
+    mkdir -p "$d_ish_fs/$d_icloud_deploy_rel/prebuilds"
+    mkdir -p "$d_ish_fs/$d_icloud_deploy_rel/manual_deploys/installs"
 
     sync_something home_jaclu \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
-        "$d_ish_fs/iCloud/deploy/saved_home_dirs/"
+        "$d_ish_fs/$d_icloud_deploy_rel/saved_home_dirs/"
 
     sync_something sshd-jacpad-server-keys \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/sshd-jacpad-server-keys.tgz \
-        "$d_ish_fs/iCloud/deploy/sshd_config/"
+        "$d_ish_fs/$d_icloud_deploy_rel/sshd_config/"
     sync_something etc_ssh \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/etc_ssh.tgz \
-        "$d_ish_fs/iCloud/deploy/sshd_config/"
+        "$d_ish_fs/$d_icloud_deploy_rel/sshd_config/"
     sync_something ssh_conf.tgz \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config/ssh_conf.tgz \
-        "$d_ish_fs/iCloud/deploy/sshd_config/"
+        "$d_ish_fs/$d_icloud_deploy_rel/sshd_config/"
 
     sync_something "my_tmux_cond venv Alpine" \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/my_tmux_conf_venv/venv_tmux-Alpine-3.22.1-py-3.12.11.tgz \
-        "$d_ish_fs/iCloud/deploy/prebuilds/my_tmux_conf_venv/"
+        "$d_ish_fs/$d_icloud_deploy_rel/prebuilds/my_tmux_conf_venv/"
     sync_something "jed" \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
-        "$d_ish_fs/iCloud/deploy/manual_deploys/installs/"
+        "$d_ish_fs/$d_icloud_deploy_rel/manual_deploys/installs/"
     sync_something ish-fstools "$d_repo" "$d_ish_fs/root" \
         "--exclude=.git/ \
         --exclude=.cache.olint \
