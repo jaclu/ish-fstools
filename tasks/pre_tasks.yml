@@ -10,21 +10,22 @@
 #  in order to be able to set global variables without linting errors
 #
 
-- name: Set old_andsible if this is Ansible < 2.8
+- name: Pre-task - Set old_andsible if this is Ansible < 2.8
   set_fact:
     old_ansible: >-
       {{ ansible_version.major < 2
         or (ansible_version.major == 2
             and ansible_version.minor < 8) }}
 
-- name: Check if this is iSH
+- name: Pre-task - Check if this is old Ansible
+  debug:
+    msg: "         old_ansible: {{ old_ansible }}"
+  changed_when: true
+  when: old_ansible
+
+- name: Pre-task - Check if this is iSH
   include_tasks: tasks/is_ish.yml
   when: is_ish is not defined
-
-- name: Debian env - overrides for global vars
-  set_fact:
-    ift_shell: /bin/bash
-  when: ansible_facts.os_family == 'Debian'
 
 #
 #  Process vars/overrides.yml

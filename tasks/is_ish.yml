@@ -23,3 +23,5 @@
 - name: Was iSH  detected
   debug:
     msg: "         is_ish: {{ is_ish }}"
+  changed_when: true
+  when: is_ish

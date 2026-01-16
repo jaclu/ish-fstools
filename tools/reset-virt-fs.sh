@@ -79,19 +79,93 @@ replace_fs() {
 }
 
 sync_something() {
-    lbl="$1"
-    cmd="$2"
-    [ -z "$cmd" ] && err_msg "sync_something() - no param"
-    lbl_2 "$lbl"
-    if $do_clear; then
-        eval "$cmd" >/dev/null || {
-            err_msg "Failed to sync ish-fstools - $lbl"
+    _ss_lbl="$1"
+    _ss_cmd="$2"
+    _ss_cutoff_size=40
+
+    [ -z "$_ss_cmd" ] && err_msg "sync_something() - no param"
+    lbl_2 "$_ss_lbl - $do_clear"
+    # if $do_clear; then
+    eval "$_ss_cmd" >"$f_tmp" 2>&1 || {
+        err_msg "Failed to sync ish-fstools - $_ss_lbl"
+    }
+    # lbl_4 "f_tmp: $f_tmp"
+    # exit 3
+
+    # tail -n +2 "$f_tmp"
+    # sed -n '2,50p' "$f_tmp"
+    # sed -n "2,${_ss_cutoff_size}p" "$f_tmp" | grep -v -e '^sending incremental file list$' \
+    #     -e '^\r' \
+    #     -e '^[[:space:]]'
+
+    # grep -v -e '^sending incremental file list$' \
+    #     -e '^\r' \
+    #     -e '^[[:space:]]' \
+    #     -e '/\/$/' \
+    #     "$f_tmp" | head -n $_ss_cutoff_size
+
+    sed -e '/^sending incremental file list$/d' \
+        -e '/^\r/d' \
+        -e '/^[[:space:]]/d' \
+        -e '/\/$/d' \
+        "$f_tmp" | head -n "$_ss_cutoff_size"
+
+    # after...
+    [ "$(wc -l "$f_tmp" | cut -d' ' -f1)" -gt "$_ss_cutoff_size" ] && {
+        echo "... (limited to $_ss_cutoff_size lines of output)"
+    }
+
+    rm -f "$f_tmp"
+}
+
+remove_symbolic_links_in_dest() {
+    # remove softlinks in dest repo to avoid unintentionally removing source
+    d_dest_repo="$AOK_TMPDIR/aok_fs/root/$repo_name"
+
+    msg_dbg "remove_symbolic_links_in_dest()" 1
+    find "$d_dest_repo" -type l -print \
+        | while IFS= read -r f; do
+            [ "$header_shown" != 1 ] && {
+                header_shown=1
+                lbl_2 "Removing symlinks from dest"
+            }
+            lbl_3 "removing link: $f"
+            # double-check it is a symlink, before removal
+            [ -L "$f" ] || err_msg "Attempt to remove non symlink"
+            rm -- "$f"
+        done
+}
+
+f_status() {
+    _f=/opt/ish-fstools/my-ish-fs/vars/overrides.yml
+    [ -f "$_f" ] || err_msg "[$1] File missing: $_f"
+}
+
+replace_repo_conf() {
+    # dst repo is always re-created, so this does not need to be idempotent
+    _rrc_d_base="$AOK_TMPDIR/aok_fs/root/$repo_name"
+    _rrc_d_vars_src_rel=my-ish-fs/vars
+    _rrc_f_inv_src="$_rrc_d_base"/my-ish-fs/inventory.ini
+    _rrc_f_inv_dst="$_rrc_d_base"/inventory.ini
+    _rrc_d_vars_src="$_rrc_d_base/$_rrc_d_vars_src_rel"
+    _rrc_d_vars_dst="$_rrc_d_base"/vars
+    _rrc_f_overrides="$_rrc_d_base"/my-ish-fs/vars/overrides.yml
+
+    [ -L "$_rrc_f_inv_dst" ] && {
+        # was symlink replace with copy of actual file
+        cp "$(realpath "$_rrc_f_inv_src")" "$_rrc_f_inv_dst" || {
+            err_msg "Failed to copy inventory.ini to $_rrc_f_inv_dst"
         }
-    else
-        eval "$cmd" || {
-            err_msg "Failed to sync ish-fstools - $lbl"
-        }
-    fi
+        lbl_2 "Replaced with copy of actual file for: $_rrc_f_inv_dst"
+    }
+    [ -e "$_rrc_d_vars_dst" ] && err_msg "Shouldn't be there: $_rrc_d_vars_dst"
+    [ -d "$_rrc_d_vars_src" ] || err_msg "Missing folder: $_rrc_d_vars_src"
+    (
+        # make relative symlink, in order to not point outside chroot
+        cd "$_rrc_d_base" || err_msg "Failed cd $_rrc_d_base"
+        ln -sf "$_rrc_d_vars_src_rel" .
+        lbl_2 "Created $_rrc_d_vars_dst/overrides.yml"
+    )
 }
 
 sync_fs_tools() {
@@ -102,36 +176,36 @@ sync_fs_tools() {
     mkdir -p "$AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs"
 
     sync_something "prebuilds/asdf env" \
-        "rsync -ahP \
+        "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
 
     sync_something "prebuilds/python" \
-        "rsync -ahP \
+        "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/python \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds"
 
     #sync_something "olint venv" \
-    #    "rsync -ahP \
+    #    "$my_rsync \
     #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
     #    $AOK_TMPDIR/aok_fs/iCloud/deploy/prebuilds/olint-venv/"
 
     sync_something "jed" \
-        "rsync -ahP \
+        "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/manual_deploys/installs/"
 
     sync_something home_jaclu \
-        "rsync -ahP \
+        "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
         $AOK_TMPDIR/aok_fs/iCloud/deploy/saved_home_dirs/"
 
     sync_something sshd_config \
-        "rsync -ahP \
+        "$my_rsync \
         ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
         $AOK_TMPDIR/aok_fs/iCloud/deploy"
 
-    sync_something ish-fstools "rsync -ahP \
+    sync_something ish-fstools "$my_rsync \
         --exclude=.git/ \
         --exclude=.cache.olint \
         --exclude=.ansible/ \
@@ -140,30 +214,15 @@ sync_fs_tools() {
 
     chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
 
+    remove_symbolic_links_in_dest
+
     # override the softlink with actual file
 
-    replace_repo_local_conf inventory.ini
-    replace_repo_local_conf vars/overrides.yml
-    replace_repo_local_conf my-ish-fs/inventory.ini
-    replace_repo_local_conf my-ish-fs/vars/overrides.yml
-
+    replace_repo_conf
     # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
     # lbl_2 "Will replace softlink with real file: $f_overrides"
     # rm "$f_overrides"
     # cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
-}
-
-replace_repo_local_conf() {
-    d_base="$AOK_TMPDIR/aok_fs/root/$repo_name"
-    # d_name="$(dirname "$1")"
-    # f_name="$(basename "$1")"
-    f_dest="${d_base}/$1"
-
-    [ -z "$1" ] && err_msg "set_overrides_file() - no param"
-
-    safe_remove "$f_dest"
-    lbl_3 "Will set: $f_dest"
-    cp "$(realpath "$d_repo"/"$1")" "$f_dest"
 }
 
 copy_skel_files() {
@@ -213,7 +272,7 @@ prepare_shell_env() {
         echo "time $cmd_2"
         echo "time $cmd_1"
         echo "time $cmd_1 c"
-        # echo "time $cmd_1 q"
+        echo "time $cmd_1 q"
         # echo "time $cmd_1 && time $cmd_2"
         # s="[ -f /etc/alpine-release ] && apk add bash"
         # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
@@ -252,8 +311,15 @@ repo_name=$(basename "$d_repo")
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 fs_saved=aok_completed/ansible.tgz
+my_rsync="rsync -a --out-format='%n'"
 
 load_utils
+
+# tmp file that can be used during the un of the app, will be auto removed on exit
+f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+    err_msg "mktemp failed"
+}
+# trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
 
 # shellcheck source=/dev/null
 [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
