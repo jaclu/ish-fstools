@@ -15,55 +15,80 @@
 #      d_etc_ift = {{ d_etc_ift }}
 #      d_init_ift = {{ d_init_ift }}
 
+- name: Ensure iSH can run in the background
+  #
+  # This is just needed until first reboot, during install a service doing this
+  # each time iSH is started will be installed. This should be done as early as
+  # possible to ensure it's activated before it's to late :)
+  #
+  shell:
+    cmd: |
+      ex_code=0
+      gps_device=/dev/location
+
+      if [ ! -c "$gps_device" ]; then
+          echo "No such device: $gps_device"
+          exit 30
+      fi
+      if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
+          cmd_ps="ps"
+      else
+          cmd_ps="ps -ax" # handle normal ps cmds
+      fi
+      tmp_file=$(mktemp)
+      $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
+      if grep -q "cat $gps_device\$" "$tmp_file"; then
+          echo "backgrounding already active"
+      else
+          nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
+          ex_code=43
+          echo "backgrounding started"
+      fi
+      rm -f "$tmp_file"
+      exit "$ex_code"
+  register: preparational_steps_backgrounding_task
+  changed_when: preparational_steps_backgrounding_task.rc == 43
+  failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
+  when: is_ish
+
 - name: Param Checks
   import_tasks: param_checks.yml
 
-#
-#   X   ===  Set up env to be able to run regulat playbooks  ===
-#
-- name: Ensure iSH can run in the background & Some prep tasks
+- name: Ish-fs related folders that must be present
+  shell:
+    cmd: |
+      ex_code=0
+      [ -d "{{ d_etc_ift }}" ] || {
+        mkdir -p "{{ d_etc_ift }}" || exit 30
+        ex_code=43
+      }
+      [ -d "{{ d_init_ift }}" ] || {
+        mkdir -p "{{ d_init_ift }}" || exit 31
+        ex_code=43
+      }
+      exit "$ex_code"
+  register: preparational_steps_sys_dirs
+  changed_when: preparational_steps_sys_dirs.rc == 43
+  failed_when: preparational_steps_sys_dirs.rc not in [0, 43]
+
+- name: Non iSH preparational tasks
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed
   shell:
     cmd: |
-      # Create folders that must be present
-      mkdir -p "{{ d_etc_ift }}" "{{ d_init_ift }}" || exit 1
+      ex_code=0
+      [ -d /iCloud ] || {
+        mkdir -p /iCloud || exit 30
+        chown 501:501 /iCloud || exit 31
+        ex_code=43
+      }
+      exit "$ex_code"
+  register: preparational_steps_non_ish
+  changed_when: preparational_steps_non_ish.rc == 43
+  failed_when: preparational_steps_non_ish.rc not in [0, 43]
+  when: not is_ish
 
-      if [ -d /proc/ish ]; then
-          gps_device=/dev/location
-
-          if [ ! -c "$gps_device" ]; then
-              echo "No such device: $gps_device"
-              exit 2
-          fi
-          if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
-              cmd_ps="ps"
-          else
-              cmd_ps="ps -ax" # handle normal ps cmds
-          fi
-          tmp_file=$(mktemp)
-          $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
-          if grep -q "cat $gps_device\$" "$tmp_file"; then
-              echo "backgrounding already active"
-              ex_code=0
-          else
-              nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
-              ex_code=43
-              echo "backgrounding started"
-          fi
-          rm -f "$tmp_file"
-          exit "$ex_code"
-      else
-          # If not on iSH - Ensure /iCloud exist
-          mkdir -p /iCloud || exit 3
-          chown 501:501 /iCloud || exit 4
-      fi
-      exit 0
-  register: preparational_steps_backgrounding_task
-  changed_when: preparational_steps_backgrounding_task.rc == 43
-  failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
-
-- name: Remove iSH auto repository updater
+- name: Remove iSH Ansuible auto repository updater
   file:
     path: /ish
     state: absent
