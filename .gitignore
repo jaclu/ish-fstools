@@ -15,4 +15,4 @@ Icon
 inventory.ini
 
 # olint cache
-.cache.olint
+/.cache.olint
