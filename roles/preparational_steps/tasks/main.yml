@@ -9,13 +9,15 @@
 #  Role: preparational_steps - main tasks
 #
 
-# - name: Show variables
-#  debug:
-#    msg: |
-#      d_etc_ift = {{ d_etc_ift }}
-#      d_init_ift = {{ d_init_ift }}
+- name: Param Checks
+  # Make sure no params are invalid, early on, since each task run on iSH has a
+  # high over head 10-20s. So better to abort before waisting time
+  import_tasks: param_checks.yml
 
 - name: Ensure iSH can run in the background
+  #
+  #  On iSH run this as early as possible to avoid iSH suspending
+  #  before getting to this point
   #
   # This is just needed until first reboot, during install a service doing this
   # each time iSH is started will be installed. This should be done as early as
@@ -51,10 +53,13 @@
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
   when: is_ish
 
-- name: Param Checks
-  import_tasks: param_checks.yml
+- name: Remove iSH Ansible auto repository updater
+  file:
+    path: /ish
+    state: absent
+  when: ansible_facts.os_family == 'Alpine'
 
-- name: Ish-fs related folders that must be present
+- name: " ish-fstools related folders that must be present"
   shell:
     cmd: |
       ex_code=0
@@ -66,33 +71,15 @@
         mkdir -p "{{ d_init_ift }}" || exit 31
         ex_code=43
       }
+      [ -d /iCloud ] || {
+        mkdir -p /iCloud || exit 32
+        chown 501:501 /iCloud || exit 33
+        ex_code=43
+      }
       exit "$ex_code"
   register: preparational_steps_sys_dirs
   changed_when: preparational_steps_sys_dirs.rc == 43
   failed_when: preparational_steps_sys_dirs.rc not in [0, 43]
-
-- name: Non iSH preparational tasks
-  # This is just needed until first reboot, during install a service doing this
-  # each time iSH is started will be installed
-  shell:
-    cmd: |
-      ex_code=0
-      [ -d /iCloud ] || {
-        mkdir -p /iCloud || exit 30
-        chown 501:501 /iCloud || exit 31
-        ex_code=43
-      }
-      exit "$ex_code"
-  register: preparational_steps_non_ish
-  changed_when: preparational_steps_non_ish.rc == 43
-  failed_when: preparational_steps_non_ish.rc not in [0, 43]
-  when: not is_ish
-
-- name: Remove iSH Ansuible auto repository updater
-  file:
-    path: /ish
-    state: absent
-  when: ansible_facts.os_family == 'Alpine'
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   lineinfile:
@@ -103,6 +90,9 @@
     - ansible_facts.os_family == 'Alpine'
     - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
 
+#
+#  Crucial apps needed during deploy
+#
 - name: Install crucial apps needed for deploy (Alpine)
   include_tasks: tasks/handle_apk.yml
   vars:
