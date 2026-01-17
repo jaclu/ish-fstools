@@ -42,10 +42,6 @@
   args:
     creates: /root/.profile # or any file you expect from skel
 
-- name: Check if this is iSH
-  include_tasks: tasks/is_ish.yml
-  when: is_ish is not defined
-
 - name: "Enable launcher on iSH: {{ f_app_ift_launcher }}"
   shell:
     cmd: |
