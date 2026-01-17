@@ -28,8 +28,8 @@
       }
       exit "$ex_code"
   register: all_distros_sys_dirs
-  changed_when: all_distros.rc == 43
-  failed_when: all_distros.rc not in [0, 43]
+  changed_when: all_distros_sys_dirs.rc == 43
+  failed_when: all_distros_sys_dirs.rc not in [0, 43]
 
 - name: Run verify_shell_exists.yml
   include_tasks: verify_shell_exists.yml
