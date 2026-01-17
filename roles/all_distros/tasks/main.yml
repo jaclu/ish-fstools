@@ -9,6 +9,28 @@
 #  All distros task
 #
 
+- name: " ish-fstools related folders that must be present"
+  shell:
+    cmd: |
+      ex_code=0
+      [ -d "{{ d_etc_ift }}" ] || {
+        mkdir -p "{{ d_etc_ift }}" || exit 30
+        ex_code=43
+      }
+      [ -d "{{ d_init_ift }}" ] || {
+        mkdir -p "{{ d_init_ift }}" || exit 31
+        ex_code=43
+      }
+      [ -d /iCloud ] || {
+        mkdir -p /iCloud || exit 32
+        chown 501:501 /iCloud || exit 33
+        ex_code=43
+      }
+      exit "$ex_code"
+  register: all_distros_sys_dirs
+  changed_when: all_distros.rc == 43
+  failed_when: all_distros.rc not in [0, 43]
+
 - name: Run verify_shell_exists.yml
   include_tasks: verify_shell_exists.yml
   when: ift_shell | default('') | length > 0
