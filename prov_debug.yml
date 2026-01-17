@@ -40,11 +40,11 @@
   # #
   # # run specific task inside a role
   # #
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     ansible.legacy.include_role:
-  #       name: all_distros
-  #       tasks_from: user_account.yml
+  tasks:
+    - name: Use just one task file from the role
+      include_role:
+        name: all_distros
+        tasks_from: set_hostname.yml
 
   #
   # run specific role(-s)
