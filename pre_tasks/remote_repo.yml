@@ -14,14 +14,14 @@
 #  Crucial apps needed during: Checkout or update ish-fstools repo
 #
 - name: " pre-task - Install crucial apps needed for deploy (Alpine)"
-  include_tasks: tasks/handle_apk.yml
+  import_tasks: tasks/handle_apk.yml
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
   when: ansible_facts.os_family == 'Alpine'
 
 - name: " pre-task - Non Alpine crucial apps"
-  include_tasks: non_alpine_crucial_apps.yml
+  import_tasks: non_alpine_crucial_apps.yml
   when: ansible_facts.os_family != 'Alpine'
 
 #
