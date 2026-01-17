@@ -1,0 +1,23 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# If openrc was not used during this boot, services can not be started/stopped/restarted
+#
+# It would trigger this error:
+#
+# You are attempting to run an openrc service on a system which openrc did not boot.
+#
+# Add this to all such actions to avoid getting the error msg:
+#
+#   when: openrc_softlevel.stat.exists
+#
+
+- name: Detect OpenRC boot
+  stat:
+    path: /run/openrc/softlevel
+  register: openrc_softlevel

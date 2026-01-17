@@ -1,8 +1,10 @@
 ---
 #
-#  Part of https://github.com/jaclu/my-ish-fs
+#  Part of https://github.com/jaclu/ish-fstools
 #
 #  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
 #
 #  License: Private
 #
@@ -14,8 +16,10 @@
 #       service:
 #         name: sshd
 #         state: restarted
-#       when: is_ish | bool
-
+#       when:
+#         - is_ish | bool
+#         - openrc_softlevel.stat.exists
+#
 #     - name: Restart sshd message (non-iSH)
 #       debug:
 #         msg: "-->->  restarting service sshd  <-<--"
@@ -26,9 +30,13 @@
   service:
     name: sshd
     state: restarted
-  when: is_ish | bool
+  when:
+    - is_ish | bool
+    - openrc_softlevel.stat.exists
 
 - name: Restart sshd message (non-iSH)
   debug:
-    msg: "-->->  restarting service sshd  <-<--"
-  when: not (is_ish | bool)
+    msg: "Simulating service restart -->->   sshd   <-<--"
+
+  when:
+    - not (is_ish | bool)

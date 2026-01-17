@@ -26,9 +26,12 @@
   service:
     name: runbg
     state: restarted
-  when: is_ish | bool
+  when:
+    - is_ish | bool
+    - openrc_softlevel.stat.exists
 
 - name: Restart runbg message (non-iSH)
   debug:
-    msg: "-->->  restarting service runbg  <-<--"
+    msg: "Simulating service restart -->->   runbg   <-<--"
+
   when: not (is_ish | bool)
