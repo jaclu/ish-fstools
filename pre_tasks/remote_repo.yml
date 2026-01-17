@@ -1,0 +1,73 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install this repo on remote end, in order for all file copying to be able to
+#  be done using remote_src - a huge speedup on slow devices like iSH
+#
+
+#
+#  Crucial apps needed during: Checkout or update ish-fstools repo
+#
+- name: " pre-task - Install crucial apps needed for deploy (Alpine)"
+  include_tasks: tasks/handle_apk.yml
+  vars:
+    apk_upgrade: 1
+    apk_add: "{{ crucial_apps }}"
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: " pre-task - Non Alpine crucial apps"
+  include_tasks: non_alpine_crucial_apps.yml
+  when: ansible_facts.os_family != 'Alpine'
+
+#
+#  Deploy playbook to client, so that all file copying can be done as remote_src
+#  Due to the glacial slowness of iSH, this is a major time saver...
+#
+- name: " pre-task - Checkout or update ish-fstools repo"
+  shell:
+    cmd: |
+      if [ -n "{{ ift_user_name | default('') }}" ] && \
+          id -u "{{ ift_user_name }}" >/dev/null 2>&1; then
+
+        if [ -d "{{ d_repo }}/.git" ]; then
+          # First ensure right ownership of repo
+          chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 10
+          # First do a regular pull, to ensure potential new branches are known
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull || exit 11
+
+          # Ensure the right repo is used
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 12
+
+          # pull the now correct repo (filter output to not fool system into no changes)
+          sudo -u "{{ ift_user_name }}" git -C "{{ d_repo }}" pull > /dev/null || exit 13
+        else
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 21
+          chown "{{ ift_user_name }}": -R "{{ d_repo }}" || exit 22
+        fi
+      else
+        if [ -d "{{ d_repo }}/.git" ]; then
+          # Ensure the right repo is used
+          git -C "{{ d_repo }}" pull || exit 32
+
+          # Ensure the right repo is used
+          git -C "{{ d_repo }}" checkout \
+            -B "{{ repo_branch }}" origin/"{{ repo_branch }}" || exit 31
+
+          # pull the now correct repo (filter output to not fool system into no changes)
+          git -C "{{ d_repo }}" pull > /dev/null || exit 32
+        else
+          git clone -b "{{ repo_branch }}" "{{ repo_name }}" "{{ d_repo }}" || exit 41
+        fi
+      fi
+  args:
+    executable: /bin/sh
+  register: preparational_steps_git_pull
+  changed_when: >-
+    'Already up to date.' not in preparational_steps_git_pull.stdout and
+    'new branch' not in preparational_steps_git_pull.stderr

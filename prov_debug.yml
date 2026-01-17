@@ -12,11 +12,11 @@
 - name: Setting up iSH FS - limited dbg process
   hosts: "{{ target_hosts | default('localhost') }}"
   gather_facts: false
+
   pre_tasks:
-    - name: Ensure Python is installed (and gather facts)
-      import_tasks: tasks/install_python.yml
-    - name: Load override variables
-      import_tasks: tasks/pre_tasks.yml
+    - name: Prepare env to run playbooks
+      import_tasks: pre_tasks/main.yml
+      tags: always
 
   #
   # only one of the below can be used - put the active one last
@@ -27,7 +27,7 @@
   # #
   # tasks:
   #   - name: Run specific task file
-  #     import_tasks: tasks/is_ish.yml
+  #     import_tasks: tasks/restart_runbg.yml
 
   # #
   # # run specific task
@@ -49,10 +49,13 @@
   #
   # run specific role(-s)
   #
-  roles:
-    - role: preparational_steps
-    # - role: alpine
-    #   when: ansible_facts.os_family == 'Alpine'
-    # - role: debian
-    #   when: ansible_facts.os_family == 'Debian'
-    # - role: all_distros
+  # roles:
+  #   - role: alpine
+  #     when: ansible_facts.os_family == 'Alpine'
+  #   - role: debian
+  #     when: ansible_facts.os_family == 'Debian'
+  # #   - role: all_distros
+
+  # post_tasks:
+  #   - name: Run tasks/update_release.yml
+  #     import_tasks: tasks/update_release.yml

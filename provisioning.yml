@@ -22,12 +22,13 @@
 - name: Setting up iSH FS
   hosts: "{{ target_hosts | default('localhost') }}"
   gather_facts: false
+
   pre_tasks:
     - name: Prepare env to run playbooks
-      import_tasks: tasks/pre_tasks.yml
+      import_tasks: pre_tasks/main.yml
+      # tags: always
 
   roles:
-    - role: preparational_steps
     - role: alpine
       when: ansible_facts.os_family == 'Alpine'
     - role: debian

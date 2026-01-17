@@ -1,0 +1,66 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Detects if this is running on iSH
+#
+
+- name: Check for /proc/ish
+  stat:
+    path: /proc/ish
+  when: is_ish is not defined
+  register: ish_proc
+
+- name: Set is_ish fact
+  set_fact:
+    is_ish: "{{ ish_proc.stat.exists }}"
+  when: is_ish is not defined
+
+- name: Was  iSH  detected
+  debug:
+    msg: "         is_ish: {{ is_ish }}"
+  changed_when: ift_show_extra_status | default(false)
+  when: is_ish or (ift_show_extra_status | default(false))
+
+- name: Ensure iSH can run in the background
+  #
+  #  On iSH run this as early as possible to avoid iSH suspending
+  #  before getting to this point
+  #
+  # This is just needed until first reboot, during install a service doing this
+  # each time iSH is started will be installed. This should be done as early as
+  # possible to ensure it's activated before it's to late :)
+  #
+  shell:
+    cmd: |
+      ex_code=0
+      gps_device=/dev/location
+
+      if [ ! -c "$gps_device" ]; then
+          echo "No such device: $gps_device"
+          exit 30
+      fi
+      if [ "$(realpath /bin/ps)" = /bin/busybox ]; then
+          cmd_ps="ps"
+      else
+          cmd_ps="ps -ax" # handle normal ps cmds
+      fi
+      tmp_file=$(mktemp)
+      $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
+      if grep -q "cat $gps_device\$" "$tmp_file"; then
+          echo "backgrounding already active"
+      else
+          nohup cat "$gps_device" > /dev/null 2>&1 </dev/null &
+          ex_code=43
+          echo "backgrounding started"
+      fi
+      rm -f "$tmp_file"
+      exit "$ex_code"
+  register: preparational_steps_backgrounding_task
+  changed_when: preparational_steps_backgrounding_task.rc == 43
+  failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
+  when: is_ish

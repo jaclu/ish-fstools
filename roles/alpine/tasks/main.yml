@@ -9,5 +9,42 @@
 #  Role: Alpine main task
 #
 
+- name: Remove iSH Ansible auto repository updater
+  file:
+    path: /ish
+    state: absent
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: " ish-fstools related folders that must be present"
+  shell:
+    cmd: |
+      ex_code=0
+      [ -d "{{ d_etc_ift }}" ] || {
+        mkdir -p "{{ d_etc_ift }}" || exit 30
+        ex_code=43
+      }
+      [ -d "{{ d_init_ift }}" ] || {
+        mkdir -p "{{ d_init_ift }}" || exit 31
+        ex_code=43
+      }
+      [ -d /iCloud ] || {
+        mkdir -p /iCloud || exit 32
+        chown 501:501 /iCloud || exit 33
+        ex_code=43
+      }
+      exit "$ex_code"
+  register: alpine_sys_dirs
+  changed_when: alpine_sys_dirs.rc == 43
+  failed_when: alpine_sys_dirs.rc not in [0, 43]
+
+- name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
+  lineinfile:
+    path: /etc/apk/repositories
+    line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
+    insertafter: EOF
+  when:
+    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
+
 - name: Run apps_alpine
   import_tasks: apps_alpine.yml
