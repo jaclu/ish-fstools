@@ -117,55 +117,28 @@ sync_something() {
     rm -f "$f_tmp"
 }
 
-remove_symbolic_links_in_dest() {
-    # remove softlinks in dest repo to avoid unintentionally removing source
-    d_dest_repo="$AOK_TMPDIR/aok_fs/root/$repo_name"
+# remove_symbolic_links_in_dest() {
+#     # remove softlinks in dest repo to avoid unintentionally removing source
+#     d_dest_repo="$AOK_TMPDIR/aok_fs/root/$repo_name"
 
-    msg_dbg "remove_symbolic_links_in_dest()" 1
-    find "$d_dest_repo" -type l -print \
-        | while IFS= read -r f; do
-            [ "$header_shown" != 1 ] && {
-                header_shown=1
-                lbl_2 "Removing symlinks from dest"
-            }
-            lbl_3 "removing link: $f"
-            # double-check it is a symlink, before removal
-            [ -L "$f" ] || err_msg "Attempt to remove non symlink"
-            rm -- "$f"
-        done
-}
+#     msg_dbg "remove_symbolic_links_in_dest()" 1
+#     find "$d_dest_repo" -type l -print \
+#         | while IFS= read -r f; do
+#             [ "$header_shown" != 1 ] && {
+#                 header_shown=1
+#                 lbl_2 "Removing symlinks from dest"
+#             }
+#             lbl_3 "removing link: $f"
+#             # double-check it is a symlink, before removal
+#             [ -L "$f" ] || err_msg "Attempt to remove non symlink"
+#             rm -- "$f"
+#         done
+# }
 
-f_status() {
-    _f=/opt/ish-fstools/my-ish-fs/vars/overrides.yml
-    [ -f "$_f" ] || err_msg "[$1] File missing: $_f"
-}
-
-replace_repo_conf() {
-    # dst repo is always re-created, so this does not need to be idempotent
-    _rrc_d_base="$AOK_TMPDIR/aok_fs/root/$repo_name"
-    _rrc_d_vars_src_rel=my-ish-fs/vars
-    _rrc_f_inv_src="$_rrc_d_base"/my-ish-fs/inventory.ini
-    _rrc_f_inv_dst="$_rrc_d_base"/inventory.ini
-    _rrc_d_vars_src="$_rrc_d_base/$_rrc_d_vars_src_rel"
-    _rrc_d_vars_dst="$_rrc_d_base"/vars
-    _rrc_f_overrides="$_rrc_d_base"/my-ish-fs/vars/overrides.yml
-
-    [ -L "$_rrc_f_inv_dst" ] && {
-        # was symlink replace with copy of actual file
-        cp "$(realpath "$_rrc_f_inv_src")" "$_rrc_f_inv_dst" || {
-            err_msg "Failed to copy inventory.ini to $_rrc_f_inv_dst"
-        }
-        lbl_2 "Replaced with copy of actual file for: $_rrc_f_inv_dst"
-    }
-    [ -e "$_rrc_d_vars_dst" ] && err_msg "Shouldn't be there: $_rrc_d_vars_dst"
-    [ -d "$_rrc_d_vars_src" ] || err_msg "Missing folder: $_rrc_d_vars_src"
-    (
-        # make relative symlink, in order to not point outside chroot
-        cd "$_rrc_d_base" || err_msg "Failed cd $_rrc_d_base"
-        ln -sf "$_rrc_d_vars_src_rel" .
-        lbl_2 "Created $_rrc_d_vars_dst/overrides.yml"
-    )
-}
+# f_status() {
+#     _f=/opt/ish-fstools/my-ish-fs/vars/overrides.yml
+#     [ -f "$_f" ] || err_msg "[$1] File missing: $_f"
+# }
 
 sync_fs_tools() {
     d_icloud_deploy_rel=iCloud/deploy
@@ -214,11 +187,7 @@ sync_fs_tools() {
 
     chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
 
-    remove_symbolic_links_in_dest
-
-    # override the softlink with actual file
-
-    replace_repo_conf
+    # replace_repo_conf
     # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
     # lbl_2 "Will replace softlink with real file: $f_overrides"
     # rm "$f_overrides"
