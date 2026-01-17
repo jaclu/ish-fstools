@@ -10,9 +10,11 @@ Icon
 /.vscode
 .vagrant/
 
+# olint cache
+**/.cache.olint
+
 /vars
 /my-ish-fs/
 inventory.ini
+ansible.cfg
 
-# olint cache
-/.cache.olint
