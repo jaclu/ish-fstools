@@ -26,7 +26,7 @@
   pre_tasks:
     - name: Prepare env to run playbooks
       import_tasks: pre_tasks/main.yml
-      # tags: always
+      tags: always
 
   roles:
     - role: alpine
