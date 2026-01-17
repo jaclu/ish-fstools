@@ -66,7 +66,8 @@ while [ -n "$1" ]; do
         lbl_2 "Options:"
         lbl_3 "c - deploy my_ish_fs once this is done"
         lbl_3 "q - run quick-mode - a limited deploy"
-        err_msg "Invalid option: $1" ;;
+        err_msg "Invalid option: $1"
+        ;;
     esac
     shift
 done
