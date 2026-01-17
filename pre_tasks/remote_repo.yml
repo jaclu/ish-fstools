@@ -14,7 +14,7 @@
 #  Crucial apps needed during: Checkout or update ish-fstools repo
 #
 - name: " pre-task - Install crucial apps needed for deploy (Alpine)"
-  import_tasks: tasks/handle_apk.yml
+  include_tasks: tasks/handle_apk.yml
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
