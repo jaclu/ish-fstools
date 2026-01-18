@@ -16,11 +16,14 @@
 #
 
 apk_cache_sync() {
-    f_cache="$HOME/.cache/apk-installed.txt"
+    d_cache="$HOME"/.cache
+    f_cache="$d_cache"/apk-installed.txt
     f_db="/lib/apk/db/installed"
+
     # check if cache is missing or outdated
     if [ ! -f "$f_cache" ] || [ "$f_db" -nt "$f_cache" ]; then
         lbl_3 "Repopulating apk cache..."
+        mkdir -p "$d_cache" || err_msg "Failed to create: $d_cache"
         sed -n 's/^P://p' "$f_db" >"$f_cache" || {
             printf '\n\nERROR: Failed to create apk cache: %s\n' "$f_cache"
             exit 2
