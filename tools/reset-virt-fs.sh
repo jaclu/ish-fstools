@@ -150,32 +150,32 @@ sync_fs_tools() {
 
     sync_something "prebuilds/asdf env" \
         "$my_rsync \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/asdf \
+        $d_fake_icloud/deploy/prebuilds/asdf \
         $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
 
     sync_something "prebuilds/python" \
         "$my_rsync \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/python \
+        $d_fake_icloud/deploy/prebuilds/python \
         $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
 
     #sync_something "olint venv" \
     #    "$my_rsync \
-    #    ~jaclu/cloud/Uni/fake_iCloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
+    #    $d_fake_icloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
     #    $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
 
     sync_something "jed" \
         "$my_rsync \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
+        $d_fake_icloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
         $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/manual_deploys/installs/"
 
     sync_something home_jaclu \
         "$my_rsync \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/saved_home_dirs/home_jaclu.tgz \
+        $d_fake_icloud/deploy/saved_home_dirs/home_jaclu.tgz \
         $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/saved_home_dirs/"
 
     sync_something sshd_config \
         "$my_rsync \
-        ~jaclu/cloud/Uni/fake_iCloud/deploy/sshd_config \
+        $d_fake_icloud/deploy/sshd_config \
         $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel"
 
     sync_something ish-fstools "$my_rsync \
@@ -275,8 +275,10 @@ load_utils() {
 #
 #===============================================================
 
-d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 repo_name=$(basename "$d_repo")
+
+d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
+d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
 
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
