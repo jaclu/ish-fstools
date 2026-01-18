@@ -7,8 +7,56 @@
 #  License: MIT
 #
 
+# - name: Restart runbg
+#   include_tasks: ../tasks/restart_runbg.yml
+
+# - name: Restart runbg service (iSH)
 - name: Restart runbg
-  include_tasks: ../tasks/restart_runbg.yml
+  service:
+    name: runbg
+    state: restarted
+  when:
+    - openrc_softlevel.stat.exists
+    # - is_ish | bool
+
+# - name: Restart runbg message (non-iSH)
+#   debug:
+#     msg: "Simulating service restart -->->   runbg   <-<--"
+#   when: not (is_ish | bool)
+
+#
+# Workaround to work on older Ansible (Debian 10) where block is not supported
+#
+# - name: Restart sshd
+#   block:
+#     - name: Restart sshd service (iSH)
+#       service:
+#         name: sshd
+#         state: restarted
+#       when:
+#         - is_ish | bool
+#         - openrc_softlevel.stat.exists
+#
+#     - name: Restart sshd message (non-iSH)
+#       debug:
+#         msg: "-->->  restarting service sshd  <-<--"
+#       when: not (is_ish | bool)
+#
+
+# - name: Restart sshd
+#   include_tasks: ../tasks/restart_sshd.yml
+
+# - name: Restart sshd message (non-iSH)
+#   debug:
+#     msg: "Simulating service restart -->->   sshd   <-<--"
+#   when:
+#     - not (is_ish | bool)
 
 - name: Restart sshd
-  include_tasks: ../tasks/restart_sshd.yml
+  # - name: Restart sshd service (iSH)
+  service:
+    name: sshd
+    state: restarted
+  when:
+    - openrc_softlevel.stat.exists
+    # - is_ish | bool

@@ -6,21 +6,6 @@
 #
 #  License: Private
 #
-# Workaround to work on older Ansible (Debian 10) where block is not supported
-#
-# - name: Restart runbg
-#   block:
-#     - name: Restart runbg service (iSH)
-#       service:
-#         name: runbg
-#         state: restarted
-#       when: is_ish | bool
-
-#     - name: Restart runbg message (non-iSH)
-#       debug:
-#         msg: "-->->  restarting service runbg  <-<--"
-#       when: not (is_ish | bool)
-#
 
 - name: Restart runbg service (iSH)
   service:
