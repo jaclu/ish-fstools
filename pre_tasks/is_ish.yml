@@ -9,24 +9,24 @@
 #  Detects if this is running on iSH
 #
 
-- name: Check for /proc/ish
+- name: " pre-task - Check for /proc/ish"
   stat:
     path: /proc/ish
   when: is_ish is not defined
   register: ish_proc
 
-- name: Set is_ish fact
+- name: " pre-task - Set is_ish fact"
   set_fact:
     is_ish: "{{ ish_proc.stat.exists }}"
   when: is_ish is not defined
 
-- name: Was  iSH  detected
+- name: " pre-task - Was  iSH  detected"
   debug:
     msg: "         is_ish: {{ is_ish }}"
   changed_when: ift_show_extra_status | default(false)
   when: is_ish or (ift_show_extra_status | default(false))
 
-- name: Ensure iSH can run in the background
+- name: " pre-task - Ensure iSH can run in the background"
   #
   #  On iSH run this as early as possible to avoid iSH suspending
   #  before getting to this point
