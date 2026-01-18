@@ -7,52 +7,52 @@
 #  License: MIT
 #
 
-delete_item() {
-    local remove_dir=false
-    local item
+# safe_remove() {
+#     local remove_dir=false
+#     local item
 
-    # msg_dbg "delete_item($*)"
-    while [[ $1 == -* ]]; do
-        case $1 in
-            -r | --remove-dir) remove_dir=true ;;
-            # --) # was a file/folder
-            #     shift
-            #     break
-            #     ;;
-            *) err_msg "Unknown option: $1" ;;
-        esac
-        shift
-    done
+#     # msg_dbg "safe_remove($*)"
+#     while [[ $1 == -* ]]; do
+#         case $1 in
+#             -r | --remove-dir) remove_dir=true ;;
+#             # --) # was a file/folder
+#             #     shift
+#             #     break
+#             #     ;;
+#             *) err_msg "Unknown option: $1" ;;
+#         esac
+#         shift
+#     done
 
-    item=$1
-    [[ -z $item ]] && err_msg "delete_item: missing path"
+#     item=$1
+#     [[ -z $item ]] && err_msg "safe_remove: missing path"
 
-    if [[ -d $item ]]; then
-        if $remove_dir; then
-            rm -rf -- "$item" || err_msg "Failed to remove directory: $item"
-            lbl_2 "Removed directory: $item"
-        else
-            # shellcheck disable=SC2115 # item is already checked for being empty
-            rm -rf -- "$item"/* "$item"/.??* 2>/dev/null || {
-                err_msg "Failed to clear directory: $item"
-            }
-            lbl_2 "Cleared directory: $item"
-        fi
-        return
-    fi
+#     if [[ -d $item ]]; then
+#         if $remove_dir; then
+#             rm -rf -- "$item" || err_msg "Failed to remove directory: $item"
+#             lbl_2 "Removed directory: $item"
+#         else
+#             # shellcheck disable=SC2115 # item is already checked for being empty
+#             rm -rf -- "$item"/* "$item"/.??* 2>/dev/null || {
+#                 err_msg "Failed to clear directory: $item"
+#             }
+#             lbl_2 "Cleared directory: $item"
+#         fi
+#         return
+#     fi
 
-    if [[ -f "$item" ]]; then
-        rm -f -- "$item" || err_msg "Failed to remove file: $item"
-        lbl_4 "Removed file: $item"
+#     if [[ -f "$item" ]]; then
+#         rm -f -- "$item" || err_msg "Failed to remove file: $item"
+#         lbl_4 "Removed file: $item"
 
-    # Normally if item is not found it's fine, I leave the deailed notifications
-    # commented out for potential later debugging purposes
-    # elif [[ -e $item ]]; then
-    #     lbl_2 "Special file not removed: $item"
-    # else
-    #     lbl_2 "File not found: $item"
-    fi
-}
+#     # Normally if item is not found it's fine, I leave the deailed notifications
+#     # commented out for potential later debugging purposes
+#     # elif [[ -e $item ]]; then
+#     #     lbl_2 "Special file not removed: $item"
+#     # else
+#     #     lbl_2 "File not found: $item"
+#     fi
+# }
 
 delete_items() {
     local item
@@ -61,7 +61,7 @@ delete_items() {
             # lbl_3 "item not found: $item"
             continue
         }
-        delete_item "$item"
+        safe_remove "$item"
     done
 }
 
@@ -81,7 +81,9 @@ deploy_cleanup() {
     # suitable for post all install step
     lbl_1 "Deploy cleanup"
     items=(
-        /iCloud
+        # ensure its not real iCloud first
+        # /iCloud
+
         # /home/jaclu/.local/bin/defgw # installed if on chroot
         # /home/jaclu/.local/bin/Mbrew # installed if on chroot
         /root/.ash_history
@@ -92,11 +94,11 @@ deploy_cleanup() {
         /root/.wget-hsts
     )
     delete_items
-    delete_item --remove-dir /root/.ansible
-    delete_item --remove-dir /opt/AOK
-    delete_item --remove-dir /etc/opt/AOK
-    delete_item --remove-dir /root/img_build
-    delete_item --remove-dir /root/ish-fstools
+    safe_remove --remove-dir /root/.ansible
+    safe_remove --remove-dir /opt/AOK
+    safe_remove --remove-dir /etc/opt/AOK
+    safe_remove --remove-dir /root/img_build
+    safe_remove --remove-dir /root/ish-fstools
 }
 
 total_cleanup() {
