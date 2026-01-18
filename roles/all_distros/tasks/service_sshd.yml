@@ -37,7 +37,7 @@
   notify: Restart sshd
 
 - name: "Set runlevel for sshd"
-  include_tasks: tasks/service_runlevel_set.yml
+  include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "{{ d_init_d }}/sshd"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"

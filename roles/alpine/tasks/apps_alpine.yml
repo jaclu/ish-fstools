@@ -10,7 +10,7 @@
 #
 
 - name: Install selected packages
-  include_tasks: tasks/handle_apk.yml
+  include_tasks: tasks/handle_apk.yml # should be include
   vars:
     apk_add: "{{ ift_alpine_packages }}"
     apk_del: "{{ ['ansible'] if is_ish else '' }}"

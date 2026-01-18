@@ -17,7 +17,7 @@
   notify: Restart runbg
 
 - name: Set runlevel for runbg
-  include_tasks: tasks/service_runlevel_set.yml
+  include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "runbg"
     srvc_runlevel: "{{ ift_runlevel_runbg }}"
