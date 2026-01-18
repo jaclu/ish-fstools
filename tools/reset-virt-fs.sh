@@ -275,10 +275,10 @@ load_utils() {
 #
 #===============================================================
 
-repo_name=$(basename "$d_repo")
-
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
+
+repo_name=$(basename "$d_repo")
 
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
