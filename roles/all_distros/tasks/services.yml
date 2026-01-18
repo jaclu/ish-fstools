@@ -9,6 +9,9 @@
 #  Activate / deactivate services
 #
 
+- name: Check if openrc was used during boot-up
+  import_tasks: ../tasks/was_openrc_used_to_boot_system.yml
+
 - name: Run service_disabling_defaults.yml
   import_tasks: service_disabling_defaults.yml
 

@@ -6,6 +6,8 @@
 #
 #  License: MIT
 #
+
+#
 # If openrc was not used during this boot, services can not be started/stopped/restarted
 #
 # It would trigger this error:
@@ -16,7 +18,6 @@
 #
 #   when: openrc_softlevel.stat.exists
 #
-
 - name: Detect OpenRC boot
   stat:
     path: /run/openrc/softlevel
