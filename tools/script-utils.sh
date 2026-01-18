@@ -161,6 +161,9 @@ safe_remove() {
     was_sys_path "$_sr_item" || err_msg "Refusing to remove a sys-path: $_sr_item"
 
     if [ -d "$_sr_item" ]; then
+        mount | grep "$_sr_item" && {
+            err_msg "safe_remove() - this is a mount point: $_sr_item"
+        }
         if $_sr_remove_dir; then
             rm -rf -- "$_sr_item" || err_msg "Failed to remove directory: $_sr_item"
             lbl_2 "Removed directory: $_sr_item"
