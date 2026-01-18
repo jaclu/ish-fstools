@@ -1,0 +1,225 @@
+#!/bin/sh
+#
+# Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+# License: MIT
+#
+# Part of https://github.com/jaclu/helpful-scripts
+#
+#  Checks if a packet is installed in any of the common packet managers
+#  available
+#
+# iSH timings
+#           zsh     zsh -w  zsh -W
+#  Ansible  1.7s    5s      2.5s
+#   cached  0.2s    0.2s    0.2s
+#  Deb10    instant
+#
+
+apk_cache_sync() {
+    f_cache="$HOME/.cache/apk-installed.txt"
+    f_db="/lib/apk/db/installed"
+    # check if cache is missing or outdated
+    if [ ! -f "$f_cache" ] || [ "$f_db" -nt "$f_cache" ]; then
+        lbl_3 "Repopulating apk cache..."
+        sed -n 's/^P://p' "$f_db" >"$f_cache" || {
+            printf '\n\nERROR: Failed to create apk cache: %s\n' "$f_cache"
+            exit 2
+        }
+        lbl_4 "Done!"
+    fi
+}
+
+show_wildcard_matches() {
+    [ -s "$f_tmp" ] || return
+    if [ "$use_wildcards" = 1 ]; then
+        lbl_2 "$1 wildcard ending matches for: $pkg_name"
+    else
+        lbl_2 "$1 full wildcard matches for: $pkg_name"
+    fi
+    cat "$f_tmp"
+    echo
+}
+
+in_brew() {
+    command -v brew >/dev/null 2>&1 || return
+    if [ "$use_wildcards" = 0 ]; then
+        brew list | grep "^${pkg_name}$" >/dev/null 2>&1 && lbl_2 "in brew"
+    else
+        if [ "$use_wildcards" = 1 ]; then
+            pattern="^$pkg_name"
+        else
+            pattern="$pkg_name"
+        fi
+        brew list --formula | grep "$pattern" >"$f_tmp"
+        show_wildcard_matches brew
+    fi
+}
+
+in_apt() {
+    command -v dpkg >/dev/null 2>&1 || return
+    if [ "$use_wildcards" = 0 ]; then
+        dpkg -s "$pkg_name" >/dev/null 2>&1 && lbl_2 "in apt"
+    else
+        if [ "$use_wildcards" = 1 ]; then
+            pattern="^$pkg_name"
+        else
+            pattern="$pkg_name"
+        fi
+        dpkg-query -f='${Package}\n' -W | grep "$pattern" | sort 2>/dev/null >"$f_tmp"
+        show_wildcard_matches apt
+    fi
+}
+
+in_apk() {
+    command -v apk >/dev/null 2>&1 || return
+
+    [ "$use_custom_cache" = 1 ] && apk_cache_sync
+
+    if [ "$use_wildcards" = 0 ]; then
+        if [ "$use_custom_cache" = 1 ]; then
+            grep -qx "$pkg_name" "$f_cache" && lbl_2 "in apk"
+        else
+            apk info -e "$pkg_name" >/dev/null 2>&1 && lbl_2 "in apk"
+        fi
+    else
+        if [ "$use_wildcards" = 1 ]; then
+            if [ "$use_custom_cache" = 1 ]; then
+                pattern="^$pkg_name"
+            else
+                awk -v p="$pkg_name" '$0 ~ "^P:" p { print substr($0,3) }' \
+                    /lib/apk/db/installed >"$f_tmp"
+            fi
+        else
+            if [ "$use_custom_cache" = 1 ]; then
+                pattern="$pkg_name"
+            else
+                awk -v p="$pkg_name" '/^P:/ && index($0,p) { print substr($0,3) }' \
+                    /lib/apk/db/installed >"$f_tmp"
+            fi
+        fi
+        [ "$use_custom_cache" = 1 ] && grep -E "$pattern" "$f_cache" >"$f_tmp"
+        show_wildcard_matches apk
+    fi
+}
+
+is_installed() {
+    [ "$skip_apt" != "1" ] && in_apt
+    [ "$skip_apk" != "1" ] && in_apk
+    [ "$skip_brew" != "1" ] && in_brew
+}
+
+show_help() {
+    cat <<EOF
+
+Usage: $app_name [OPTIONS] <name_or_pattern>
+
+Check if a package (or package name pattern) is installed across
+multiple package managers (apk, apt/dpkg, Homebrew).
+
+Options can be supplied **before or after** the package name.
+
+Options:
+  -w          Match package names ending with the given pattern
+  -W          Full wildcard match (pattern can appear anywhere)
+  -c          Disable custom APK cache (forces live query)
+  -a          Skip checking apt/dpkg
+  -A          Skip checking apk
+  -b          Skip checking Homebrew
+  -h, --help  Show this help message and exit
+
+Notes:
+  - Wildcard options (-w and -W) are mutually exclusive.
+  - Custom APK cache (~/.cache/apk-installed.txt) is used by default
+    to speed up searches on slow systems. It is automatically updated
+    if missing or outdated.
+  - Only one package or pattern can be specified per invocation.
+  - Options and parameters can be mixed in any order for convenience.
+  - Temporary files are used internally to handle wildcard matches.
+
+Examples:
+  # Check if 'vim' is installed in any package manager
+  is_installed.sh vim
+
+  # Check if any package starting with 'vim'
+  is_installed.sh -w vim
+  is_installed.sh vim -w        # mixed order works
+
+  # Check using full wildcard match
+  is_installed.sh -W py3
+  is_installed.sh py3 -W        # mixed order works
+
+  # Skip apk checks
+  is_installed.sh -A vim -w
+
+EOF
+}
+
+load_utils() {
+    _lu_f_utils="${1:-$d_repo}"/tools/script-utils.sh
+
+    # shellcheck source=tools/script-utils.sh disable=SC1091,SC2317
+    . "$_lu_f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+        exit 1
+    }
+}
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
+
+pkg_name=""
+use_wildcards=0
+
+# Much faster on iSH and other slow systems, disable for native processing
+use_custom_cache=1
+
+# Skip options for all package managers, in case not all needs to be inspected
+skip_apt=0
+skip_apk=0
+skip_brew=0
+
+load_utils
+
+# handles options/params GNU-style - in any order
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h | --help)
+            show_help
+            exit 0
+            ;;
+        -w) # wildcard endings
+            [ "$use_wildcards" != 0 ] && err_msg "-w & -W can't be combined"
+            use_wildcards=1
+            ;;
+        -W) # full wildcard
+            [ "$use_wildcards" != 0 ] && err_msg "-w & -W can't be combined"
+            use_wildcards=2
+            ;;
+        -c) use_custom_cache=0 ;; # don't use apk cache
+        -a) skip_apt=1 ;;
+        -A) skip_apk=1 ;;
+        -b) skip_brew=1 ;;
+        -*) err_msg "Unknown option: $1" ;;
+        *)
+            if [ -z "$pkg_name" ]; then
+                pkg_name="$1"
+            else
+                err_msg "Too many arguments: $1"
+            fi
+            ;;
+    esac
+    shift
+done
+
+# shellcheck disable=SC2154 # app_name defined in script-utils.sh
+f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+    err_msg "mktemp failed"
+}
+trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
+
+is_installed
