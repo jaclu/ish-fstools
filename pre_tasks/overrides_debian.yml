@@ -11,12 +11,14 @@
 #  in order to be able to set global variables without linting errors
 #
 
-- name: " pre-task Debian - Debian env - overrides for global vars"
+- name: " overrides Debian - Debian env - overrides for global vars"
   set_fact:
     ift_shell: /bin/bash
+  delegate_to: localhost
+  run_once: true
   when: ansible_facts.os_family == 'Debian'
 
-- name: " pre-task Debian - Add dev apks when ift_pkgs_devel is true"
+- name: " overrides Debian - Add dev apks when ift_pkgs_devel is true"
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_devel | default([])) }}
@@ -27,7 +29,7 @@
   run_once: true
   changed_when: false
 
-- name: " pre-task Debian - Add linting apks when ift_debian_pkgs_linting is true"
+- name: " overrides Debian - Add linting apks when ift_debian_pkgs_linting is true"
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_linting | default([])) }}
@@ -38,7 +40,7 @@
   run_once: true
   changed_when: false
 
-- name: " pre-task Debian - Add docs to ift_debian_packages if ift_pkgs_man is true"
+- name: " overrides Debian - Add docs to ift_debian_packages if ift_pkgs_man is true"
   set_fact:
     ift_debian_packages: "{{ ift_debian_packages + ['man-db'] }}"
   when: ift_pkgs_man | bool
@@ -46,7 +48,7 @@
   run_once: true
   changed_when: false
 
-- name: " pre-task Debian - List of what apt packages will be installed"
+- name: " overrides Debian - List of what apt packages will be installed"
   debug:
     msg: "{{ ift_debian_packages | sort }}"
   delegate_to: localhost

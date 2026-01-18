@@ -10,26 +10,31 @@
 #   Do this before base apks are installed to trigger early abort
 #
 
-- name: Params - Conflicting mtr versions defined
-  fail:
-    msg: "ERROR: mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
-  when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
-
-- name: Params - User acct - Fail if ift_user_name is defined, but not ift_shell
+- name: " pre-task Params - Fail if ift_user_name is defined, but not ift_shell"
   fail:
     msg: "ift_shell must be defined when ift_user_name is set"
   when:
     - ift_user_name | default('') | length > 0
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
-- name: Params - Fail if ift_shell is set but shadow not in ift_alpine_packages
+#
+# Alpine
+#
+- name: " pre-task Params - Conflicting mtr versions defined"
+  fail:
+    msg: "ERROR: mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
+  run_once: true
+  changed_when: ift_show_extra_status | default(false)
+  when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
+
+- name: " pre-task Params - Fail if ift_shell is set but shadow not in ift_alpine_packages"
   fail:
     msg: "shadow must be in ift_alpine_packages when ift_shell is defined and non-empty"
   when:
     - ift_shell | default('') | length > 0
     - "'shadow' not in (ift_alpine_packages | default([]))"
 
-- name: Params - Fail if ift_runlevel_runbg is set but openrc not in ift_alpine_packages
+- name: " pre-task Params - ift_runlevel_runbg is set and openrc in ift_alpine_packages"
   fail:
     msg: >
       shadow must be in ift_alpine_packages when ift_runlevel_runbg is defined
@@ -38,7 +43,7 @@
     - ift_runlevel_runbg | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([]))"
 
-- name: Params - Fail if ift_runlevel_sshd is set but packages missing
+- name: " pre-task Params - Fail if ift_runlevel_sshd is set but packages missing"
   fail:
     msg: >
       openrc and (openssh-server or openssh) must be in ift_alpine_packages
@@ -49,7 +54,7 @@
       ('openssh-server' not in (ift_alpine_packages | default([])) and
       'openssh' not in (ift_alpine_packages | default([])))"
 
-- name: Params - Fail if ift_timezone is set but tzdata not in ift_alpine_packages
+- name: " pre-task Params - ift_timezone is set and tzdata in ift_alpine_packages"
   fail:
     msg: "tzdata must be in ift_alpine_packages when ift_timezone is defined and non-empty"
   when:
