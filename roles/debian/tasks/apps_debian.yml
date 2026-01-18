@@ -14,6 +14,11 @@
     msg: "{{ ift_debian_packages | sort }}"
   run_once: true
 
+- name: Remove packages to listed in ift_debian_purges
+  package:
+    state: absent
+    name: "{{ ift_debian_purges }}"
+
 - name: Install selected packages
   package:
     state: present
