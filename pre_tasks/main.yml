@@ -47,3 +47,4 @@
 - name: " pre-task - Clone this on remote end"
   # Must be first task in order for everything else to use the variable overrides
   import_tasks: remote_repo.yml
+  when: skip_cloning | default(true)
