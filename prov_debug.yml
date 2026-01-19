@@ -18,8 +18,8 @@
   pre_tasks:
     - name: Prepare env to run playbooks
       # only disable skip_cloning when you want to skip cloning the repo
-      # vars:
-      #   skip_cloning: false
+      vars:
+        skip_cloning: false
       import_tasks: pre_tasks/main.yml
       tags: always
 
@@ -45,11 +45,11 @@
   # #
   # # run specific task inside a role
   # #
-  tasks:
-    - name: Use just one task file from the role
-      include_role:
-        name: all_distros
-        tasks_from: service_sshd.yml
+  # tasks:
+  #   - name: Use just one task file from the role
+  #     include_role:
+  #       name: all_distros
+  #       tasks_from: service_sshd.yml
 
   #
   # run specific role(-s)
