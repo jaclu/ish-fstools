@@ -12,8 +12,21 @@
 - name: "Set hostname - {{ ift_hostname | default('Not specified') }}"
   shell:
     cmd: |
-      [ "$(/usr/local/bin/hostname)" == "{{ ift_hostname }}" ] && exit 0
-      /usr/local/bin/hostname "{{ ift_hostname }}" || exit 1
+      is_chrooted() {
+        # cmdline check:
+        # grep -qv " / / " /proc/self/mountinfo || echo "is chrooted"
+
+        # this quick and simple check doesn't work on ish
+        # so lets pretend for now chroot does not happen on ish
+        [ "$(uname -s)" = "Linux" ] || return 1
+        [ ! -f /proc/self/mountinfo ] && return 1
+        ! grep -q " / / " /proc/self/mountinfo
+      }
+
+      h_name_new="{{ ift_hostname }}"
+      [ "$(/usr/local/bin/hostname)" == "$h_name_new" ] && exit 0
+      is_chrooted && h_name_new="chrooted-iSH"
+      /usr/local/bin/hostname "$h_name_new" || exit 1
       exit 43
   args:
     executable: /bin/sh
