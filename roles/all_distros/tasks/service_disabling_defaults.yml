@@ -11,11 +11,11 @@
 #
 #  for f in /etc/init.d/*; do
 
-- name: "Default services - Ensure folder exists {{ d_init_not }}"
-  file:
-    path: "{{ d_init_not }}"
-    state: directory
-    mode: "0755"
+# - name: "Default services - Ensure folder exists {{ d_init_not }}"
+#   file:
+#     path: "{{ d_init_not }}"
+#     state: directory
+#     mode: "0755"
 
 - name: "Default services - Move Ansible services to {{ d_init_not }}"
   shell:
@@ -34,11 +34,11 @@
   changed_when: all_distros_services_moved.rc == 43
   failed_when: all_distros_services_moved.rc not in [0, 43]
 
-- name: "Default services - Ensure folder exists {{ d_init_ift }}"
-  file:
-    path: "{{ d_init_ift }}"
-    state: directory
-    mode: "0755"
+# - name: "Default services - Ensure folder exists {{ d_init_ift }}"
+#   file:
+#     path: "{{ d_init_ift }}"
+#     state: directory
+#     mode: "0755"
 
 - name: "Default services - Sync ish-fstools links into {{ d_init_d }}"
   shell:

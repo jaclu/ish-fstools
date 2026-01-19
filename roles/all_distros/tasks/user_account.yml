@@ -82,7 +82,6 @@
     cmd: |
       set -o pipefail
       if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ ift_user_name }}$"; then
-        mkdir -p "{{ d_etc_ift }}"
         "{{ f_app_ift_config }}" -a "{{ ift_user_name }}" || exit 30
         exit 43
       fi

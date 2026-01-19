@@ -21,9 +21,13 @@
         mkdir -p "{{ d_init_ift }}" || exit 31
         ex_code=43
       }
+      [ -d "{{ d_init_not }}" ] || {
+        mkdir -p "{{ d_init_not }}" || exit 32
+        ex_code=43
+      }
       [ -d /iCloud ] || {
-        mkdir -p /iCloud || exit 32
-        chown 501:501 /iCloud || exit 33
+        mkdir -p /iCloud || exit 35
+        chown 501:501 /iCloud || exit 36
         ex_code=43
       }
       exit "$ex_code"
