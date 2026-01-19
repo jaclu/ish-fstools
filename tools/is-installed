@@ -112,6 +112,7 @@ is_installed() {
 }
 
 show_help() {
+    # shellcheck disable=SC2154 # defined in tools/script-utils.sh
     cat <<EOF
 
 Usage: $app_name [OPTIONS] <name_or_pattern>
