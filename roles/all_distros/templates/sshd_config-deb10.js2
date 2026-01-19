@@ -1,0 +1,34 @@
+#       $OpenBSD: sshd_config,v 1.104
+# Compacted Debian 10 sshd_config, only listing variables actually set
+
+# Include configuration snippets before processing this file to allow the
+# snippets to override directives set in this file.
+Include /etc/ssh/sshd_config.d/*.conf
+
+Port {{ ift_port_sshd | default(22) }}
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+ChallengeResponseAuthentication no
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the ChallengeResponseAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+UsePAM yes
+
+X11Forwarding yes
+PrintMotd no
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+# override default of no subsystems
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+
+AcceptEnv LANG TERM_* LC_* XPC_*

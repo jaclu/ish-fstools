@@ -1,0 +1,22 @@
+#       $OpenBSD: sshd_config,v 1.104
+# Compacted Ansible sshd_config, only listing variables actually set
+
+# Include configuration snippets before processing this file to allow the
+# snippets to override directives set in this file.
+Include /etc/ssh/sshd_config.d/*.conf
+
+Port {{ ift_port_sshd | default(22) }}
+
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile	.ssh/authorized_keys
+
+# Feel free to re-enable these if your use case requires them.
+AllowTcpForwarding no
+GatewayPorts no
+X11Forwarding no
+
+# override default of no subsystems
+Subsystem	sftp	internal-sftp
+
+AcceptEnv LANG TERM_* LC_* XPC_*
