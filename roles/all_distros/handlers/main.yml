@@ -6,57 +6,41 @@
 #
 #  License: MIT
 #
+#  Handlers
+#
 
-# - name: Restart runbg
-#   include_tasks: ../tasks/restart_runbg.yml
+#
+#  Restart runbg
+#
+- name: Fake Restart runbg - debug msg when chooted
+  debug:
+    msg: "Simulating service restart -->->   runbg   <-<--"
+  when: not (is_ish | bool)
+  listen: Restart runbg
 
-# - name: Restart runbg service (iSH)
-- name: Restart runbg
+- name: Restart runbg - actual
   service:
     name: runbg
     state: restarted
   when:
     - openrc_softlevel.stat.exists
-    # - is_ish | bool
-
-# - name: Restart runbg message (non-iSH)
-#   debug:
-#     msg: "Simulating service restart -->->   runbg   <-<--"
-#   when: not (is_ish | bool)
+    - is_ish | bool
+  listen: Restart runbg
 
 #
-# Workaround to work on older Ansible (Debian 10) where block is not supported
+#  Restart sshd
 #
-# - name: Restart sshd
-#   block:
-#     - name: Restart sshd service (iSH)
-#       service:
-#         name: sshd
-#         state: restarted
-#       when:
-#         - is_ish | bool
-#         - openrc_softlevel.stat.exists
-#
-#     - name: Restart sshd message (non-iSH)
-#       debug:
-#         msg: "-->->  restarting service sshd  <-<--"
-#       when: not (is_ish | bool)
-#
+- name: Fake Restart sshd - debug msg when chooted
+  debug:
+    msg: "Simulating service restart -->->   sshd   <-<--"
+  when: not (is_ish | bool)
+  listen: Restart sshd
 
-# - name: Restart sshd
-#   include_tasks: ../tasks/restart_sshd.yml
-
-# - name: Restart sshd message (non-iSH)
-#   debug:
-#     msg: "Simulating service restart -->->   sshd   <-<--"
-#   when:
-#     - not (is_ish | bool)
-
-- name: Restart sshd
-  # - name: Restart sshd service (iSH)
+- name: Restart sshd - actual
   service:
     name: sshd
     state: restarted
   when:
+    - is_ish | bool
     - openrc_softlevel.stat.exists
-    # - is_ish | bool
+  listen: Restart sshd
