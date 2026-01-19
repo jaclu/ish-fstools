@@ -15,6 +15,7 @@
 - name: Fake Restart runbg - debug msg when chooted
   debug:
     msg: "Simulating service restart -->->   runbg   <-<--"
+  changed_when: true
   when: not (is_ish | bool)
   listen: Restart runbg
 
@@ -33,6 +34,7 @@
 - name: Fake Restart sshd - debug msg when chooted
   debug:
     msg: "Simulating service restart -->->   sshd   <-<--"
+  changed_when: true
   when: not (is_ish | bool)
   listen: Restart sshd
 
