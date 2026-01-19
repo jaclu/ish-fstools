@@ -60,13 +60,13 @@
   shell:
     cmd: |
       if [ "{{ apk_upgrade }}" = "1" ]; then
-        apk upgrade || exit 1
+        apk upgrade || exit 30
       fi
-      apk add --no-progress {{ apk_add | join(' ') }} || exit 2
       if [ -n "{{ apk_del }}" ]; then
         echo "apk_del: [{{ apk_del }}]"
-        apk del --no-progress {{ apk_del | join(' ') }} || exit 3
+        apk del --no-progress {{ apk_del | join(' ') }} || exit 31
       fi
+      apk add --no-progress {{ apk_add | join(' ') }} || exit 32
   args:
     executable: /bin/sh
   register: apk_result
