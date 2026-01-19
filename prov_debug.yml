@@ -10,6 +10,8 @@
 #
 
 - name: Setting up iSH FS - limited dbg process
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   hosts: "{{ target_hosts | default('localhost') }}"
   gather_facts: false
 
