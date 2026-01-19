@@ -81,8 +81,7 @@ deploy_cleanup() {
     # suitable for post all install step
     lbl_1 "Deploy cleanup"
     items=(
-        # ensure its not real iCloud first
-        # /iCloud
+        /iCloud
 
         # /home/jaclu/.local/bin/defgw # installed if on chroot
         # /home/jaclu/.local/bin/Mbrew # installed if on chroot

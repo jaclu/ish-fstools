@@ -15,8 +15,9 @@
 
   pre_tasks:
     - name: Prepare env to run playbooks
-      vars:
-        skip_cloning: false
+      # only disable skip_cloning when you want to skip cloning the repo
+      # vars:
+      #   skip_cloning: false
       import_tasks: pre_tasks/main.yml
       tags: always
 
@@ -42,18 +43,18 @@
   # #
   # # run specific task inside a role
   # #
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     include_role:
-  #       name: all_distros
-  #       tasks_from: set_hostname.yml
+  tasks:
+    - name: Use just one task file from the role
+      include_role:
+        name: all_distros
+        tasks_from: service_sshd.yml
 
   #
   # run specific role(-s)
   #
   # roles:
-  #   - role: alpine
-  #     when: ansible_facts.os_family == 'Alpine'
+  #   #   - role: alpine
+  #   #     when: ansible_facts.os_family == 'Alpine'
   #   - role: debian
   #     when: ansible_facts.os_family == 'Debian'
   # #   - role: all_distros
