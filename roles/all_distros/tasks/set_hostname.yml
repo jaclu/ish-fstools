@@ -24,9 +24,9 @@
       }
 
       h_name_new="{{ ift_hostname }}"
-      [ "$(/usr/local/bin/hostname)" == "$h_name_new" ] && exit 0
       is_chrooted && h_name_new="chrooted-iSH"
-      /usr/local/bin/hostname "$h_name_new" || exit 1
+      [ "$(/usr/local/bin/hostname)" = "$h_name_new" ] && exit 0
+      /usr/local/bin/hostname "$h_name_new" || exit 30
       exit 43
   args:
     executable: /bin/sh
