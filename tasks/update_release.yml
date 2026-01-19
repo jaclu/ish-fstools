@@ -17,7 +17,6 @@
   shell:
     cmd: |
       f_rel_vers=/etc/ish-fstools-release
-      ex_code=0
 
       input=$(cat "$f_rel_vers")
       old_vers_ift=${input%% - *}
@@ -29,11 +28,10 @@
           if [ -n "$rest" ]; then
               s="$s - $rest"
           fi
-          echo "$s" >"$f_rel_vers" || exit 1
+          echo "$s" >"$f_rel_vers" || exit 30
           /usr/local/sbin/update-motd
-          ex_code=43
+          exit 43
       fi
-      exit "$ex_code"
   args:
     executable: /bin/bash
   register: all_distros_rel_vers

@@ -23,11 +23,11 @@
       ex_code=0
       for f in "{{ d_init_d }}"/*; do
         [ -f "$f" ] && [ ! -L "$f" ] && {
-          mv "$f" "{{ d_init_not }}"/ || exit 1
+          mv "$f" "{{ d_init_not }}"/ || exit 30
           ex_code=43 # indicate that at least one service was moved
         }
       done
-      return "$ex_code"
+      exit "$ex_code"
   args:
     executable: /bin/sh
   register: all_distros_services_moved
@@ -49,7 +49,7 @@
         [ -f "$src" ] || continue
         dest="{{ d_init_d }}/$(basename "$src")"
         if [ ! -e "$dest" ]; then
-          ln -s "$src" "$dest" || exit 1
+          ln -s "$src" "$dest" || exit 30
           echo "LINKED $dest"
           changed=43
         fi

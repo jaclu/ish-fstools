@@ -70,9 +70,9 @@
       set -o pipefail
       ex_code=0
       tmp_file=$(mktemp)
-      config-ift -l > "$tmp_file" | exit 1
+      config-ift -l > "$tmp_file" | exit 30
       if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
-          {{ f_app_ift_config }} -l ift | exit 2
+          {{ f_app_ift_config }} -l ift | exit 31
           ex_code=43
       fi
       rm -f "$tmp_file"
@@ -113,7 +113,7 @@
             continue # already linked to ours
           }
           if [[ -f "$hide_bin" ]]; then
-              mv "$hide_bin" "${hide_bin}.ORG" || exit 1
+              mv "$hide_bin" "${hide_bin}.ORG" || exit 30
               d_location="$(dirname "$hide_bin")"
               b_name="$(basename "$hide_bin")"
               case "$d_location" in
@@ -121,15 +121,15 @@
                   /sbin | /usr/sbin) d_our_location=/usr/local/sbin ;;
                   *)
                       echo "Unknown path: $d_location"
-                      exit 1
+                      exit 31
                       ;;
               esac
               f_our_bin="$d_our_location/$b_name"
               if [[ -f "$f_our_bin" ]]; then
-                  ln -sf "$f_our_bin" "$hide_bin" || exit 2
+                  ln -sf "$f_our_bin" "$hide_bin" || exit 32
               else
                   echo "Unknown alt bin: $f_our_bin"
-                  exit 1
+                  exit 33
               fi
               ex_code=43
           fi

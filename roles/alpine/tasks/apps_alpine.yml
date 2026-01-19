@@ -29,18 +29,18 @@
               exit 0 # correct "old" version installed
           }
           # Remove incorrect version
-          apk del mtr || exit 1
+          apk del mtr || exit 30
       fi
       #
       #  Download and install specific older mtr
       #
-      d_tmp="$(mktemp -d)" || exit 2
-      cd "$d_tmp" || exit 3
+      d_tmp="$(mktemp -d)" || exit 31
+      cd "$d_tmp" || exit 32
       url_prefix="https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86"
-      wget "$url_prefix"/mtr-0.92-r0.apk || exit 4
-      wget "$url_prefix"/mtr-doc-0.92-r0.apk || exit 5
-      apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 6
-      rm -rf "$d_tmp" || exit 7
+      wget "$url_prefix"/mtr-0.92-r0.apk || exit 33
+      wget "$url_prefix"/mtr-doc-0.92-r0.apk || exit 34
+      apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 35
+      rm -rf "$d_tmp" || exit 36
       exit 43
   args:
     executable: /bin/sh
@@ -56,17 +56,15 @@
   # but the package is generally useful, providing a better ps
   shell:
     cmd: |
-      ex_code=0
       if [ ! -L /usr/bin/uptime ] || \
         [ "$(readlink -f /usr/bin/uptime)" != "/bin/busybox" ]; then
           if [ -e /usr/bin/uptime ]; then
               rm -f /usr/bin/uptime.ORG # only remove .ORG if it will be replaced
-              mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 1
+              mv -f /usr/bin/uptime /usr/bin/uptime.ORG || exit 30
           fi
-          ln -sf /bin/busybox /usr/bin/uptime || exit 2
-          ex_code=43
+          ln -sf /bin/busybox /usr/bin/uptime || exit 31
+          exit 43
       fi
-      exit "$ex_code"
   args:
     executable: /bin/sh
   register: alpine_rename_uptime
