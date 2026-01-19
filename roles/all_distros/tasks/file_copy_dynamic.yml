@@ -20,7 +20,7 @@
   set_fact:
     all_distros_copy_style: "{{ 'slow old-style' if old_ansible else 'remote_src' }}"
 
-- name: Install some common config files
+- name: "Install some common config files --  remote_src"
   copy:
     remote_src: true
     mode: preserve
@@ -39,7 +39,7 @@
     group: root
     mode: "0644"
 
-- name: Installing no-pw sudoers group
+- name: "Installing no-pw sudoers group --  remote_src"
   copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
@@ -83,7 +83,7 @@
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
 
-- name: Install service - runbg
+- name: "Install service - runbg --  remote_src"
   copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
@@ -98,7 +98,7 @@
 # old style file copying more than once
 #
 
-- name: Alpine - sshd - custom service script, supporting iSH logging
+- name: "Alpine - sshd - custom service script, supporting iSH logging --  remote_src"
   copy:
     remote_src: true
     src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
@@ -109,7 +109,7 @@
   when: ansible_facts.os_family == 'Alpine'
   notify: Restart sshd
 
-- name: Alpine - Deploy /etc/inittab
+- name: "Alpine - Deploy /etc/inittab --  remote_src"
   copy:
     remote_src: true
     mode: preserve
@@ -117,7 +117,7 @@
     dest: /etc/
   when: ansible_facts.os_family == 'Alpine'
 
-- name: Alpine - Install extras to /usr/local/bin
+- name: "Alpine - Install extras to /usr/local/bin --  remote_src"
   copy:
     remote_src: true
     mode: preserve
@@ -125,7 +125,7 @@
     dest: /usr/local/bin/
   when: ansible_facts.os_family == 'Alpine'
 
-- name: Alpine - Install extras to /usr/local/sbin
+- name: "Alpine - Install extras to /usr/local/sbin --  remote_src"
   copy:
     remote_src: true
     mode: preserve
@@ -137,7 +137,7 @@
 #  Debian specific file copying
 #
 
-- name: Debian - ssh - custom service script, supporting iSH logging
+- name: "Debian - ssh - custom service script, supporting iSH logging --  remote_src"
   copy:
     remote_src: true
     src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
@@ -148,7 +148,7 @@
   when: ansible_facts.os_family == 'Debian'
   notify: Restart sshd
 
-- name: Debian - /etc/init.d/rc
+- name: "Debian - /etc/init.d/rc --  remote_src"
   copy:
     remote_src: true
     src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
