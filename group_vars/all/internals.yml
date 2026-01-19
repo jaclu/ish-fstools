@@ -68,3 +68,5 @@ ansible_user: root
 
 # Default, will be overridden on cmd-line
 target_hosts: servers
+
+ift_debian_purges: []

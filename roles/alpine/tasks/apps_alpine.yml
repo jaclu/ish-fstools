@@ -10,11 +10,15 @@
 #
 
 - name: Install selected packages
-  include_tasks: tasks/handle_apk.yml # should be include
+  include_tasks: tasks/handle_apk.yml
   vars:
     apk_add: "{{ ift_alpine_packages }}"
-    apk_del: "{{ ['ansible'] if is_ish else '' }}"
-  when: ift_alpine_packages | default('') | length > 0
+    apk_del: >-
+      {{
+        (['ansible'] if is_ish else [])
+        + (['docs'] if not (ift_pkgs_man | default(false)) else [])
+      }}
+  when: ift_alpine_packages | default([]) | length > 0
 
 - name: "Install old IP# able mtr 0.92-a"
   shell:

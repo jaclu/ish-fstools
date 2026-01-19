@@ -50,8 +50,8 @@
 
 - name: " overrides Debian - Remove man-db if ift_pkgs_man is not true"
   set_fact:
-    ift_debian_packages: "{{ ift_debian_purges + ['man-db'] }}"
-  when: not (ift_pkgs_man | default(true))
+    ift_debian_purges: "{{ ift_debian_purges + ['man-db'] }}"
+  when: not (ift_pkgs_man | bool)
   delegate_to: localhost
   run_once: true
   changed_when: false
@@ -63,3 +63,14 @@
   run_once: true
   changed_when: ift_show_extra_status | default(false)
   when: ansible_facts.os_family == 'Debian' or (ift_show_extra_status | default(false))
+
+- name: " overrides Debian - List of what apt packages will be removed"
+  debug:
+    msg: "{{ ift_debian_purges | sort }}"
+  delegate_to: localhost
+  run_once: true
+  changed_when: ift_show_extra_status | default(false)
+  when:
+    - ansible_facts.os_family == 'Debian'
+    - ift_debian_purges
+    - ift_show_extra_status | default(false)

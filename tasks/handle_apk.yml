@@ -35,7 +35,7 @@
 
 - name: Handle apk - Default delete list to be empty
   set_fact:
-    apk_del: ""
+    apk_del: []
   when: apk_del is not defined
 
 - name: Handle apk - Default upgrade to not take place
@@ -46,13 +46,15 @@
 - name: Handle apk - List what will be installed
   debug:
     msg: "{{ apk_add | sort }}"
+  delegate_to: localhost
   run_once: true
 
 - name: Handle apk - List what will be removed
   debug:
     msg: "{{ apk_del }}"
-  when: apk_del != ""
+  delegate_to: localhost
   run_once: true
+  when: apk_del | default([]) | length > 0
 
 - name: Handle apk - Install selected packages using apk directly (much faster)
   shell:
