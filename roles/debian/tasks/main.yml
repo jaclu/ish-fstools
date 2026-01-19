@@ -16,4 +16,3 @@
   locale_gen:
     name: en_GB.UTF-8
     state: present
-  when: ansible_facts.os_family == "Debian"
