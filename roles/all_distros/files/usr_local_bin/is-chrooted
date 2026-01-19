@@ -12,4 +12,12 @@
 # shellcheck source=/dev/null # not available on deploy machines
 . /usr/local/lib/ift-utils.sh
 
+if [ "$1" = "-v" ]; then
+    if is_fs_chrooted; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+fi
+
 is_fs_chrooted
