@@ -26,3 +26,8 @@
 
 - name: Run apps_alpine
   import_tasks: apps_alpine.yml
+
+- name: Generate sshd host keys
+  command: ssh-keygen -A
+  changed_when: false
+  when: ift_alpine_generate_sshd_host_keys | default(false) | bool

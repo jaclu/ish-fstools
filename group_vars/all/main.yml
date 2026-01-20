@@ -42,15 +42,23 @@ ift_timezone: ""
 #  If a shell is defined root will also use this shell
 ift_shell: /bin/ash # set to "" to disable
 
-#  Runlevel for runbg - service that ensures iSH continues to run in the background
+ift_port_sshd: 2022 # set to "" if port should not be set
+
+#  Runlevels for services
 ift_runlevel_runbg: default # set to "" if this service is not wanted
 ift_runlevel_sshd: default # set to "" if this service is not wanted
 
-ift_port_sshd: 2022 # set to "" if port should not be set
+#
+#  Alpine only settings!
+#
 
-#  Alpine only setting!
+# When the sshd service is first started, host keys will be generated if absent
+# on iSH this takes a while... By enabling this option they can be pre-generated
+# during deploy. Debian always generates them when openssh-server is installed.
+ift_alpine_generate_sshd_host_keys: true
+
 #  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last
 #  version that supports both DNS and IP# (and thus hosts defined in /etc/hosts)
 #  If set to true, and mtr was included in ift_alpine_packages it will trigger
 #  an error due to incompatible package selection
-ift_use_old_mtr: true # set to false if not desired
+ift_alpine_use_old_mtr: true # set to false if not desired
