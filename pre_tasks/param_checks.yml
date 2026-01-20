@@ -22,10 +22,12 @@
 #
 - name: " pre-task Params - Conflicting mtr versions defined"
   fail:
-    msg: "ERROR: mtr is defined in ift_alpine_packages when ift_use_old_mtr is also defined"
+    msg: >
+      ERROR: mtr is defined in ift_alpine_packages when ift_alpine_use_old_mtr
+      is also defined
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when: ift_use_old_mtr and ('mtr' in ift_alpine_packages)
+  when: ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
 
 - name: " pre-task Params - Fail if ift_shell is set but shadow not in ift_alpine_packages"
   fail:

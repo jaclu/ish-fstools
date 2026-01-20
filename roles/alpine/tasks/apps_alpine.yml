@@ -46,7 +46,7 @@
     executable: /bin/sh
   when:
     # - ansible_distribution_version is version('3.20', '>=')
-    - ift_use_old_mtr
+    - ift_alpine_use_old_mtr
   register: alpine_old_mtr
   changed_when: alpine_old_mtr.rc == 43
   failed_when: alpine_old_mtr.rc not in [0, 43]
