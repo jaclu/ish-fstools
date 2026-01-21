@@ -9,7 +9,7 @@
 #  Role: Alpine main task
 #
 
-- name: Remove iSH Ansible auto repository updater
+- name: Remove iSH Alpine auto repository updater
   file:
     path: /ish
     state: absent

@@ -30,7 +30,7 @@ d_repo_debian_role: "{{ d_repo }}/roles/debian"
 
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
-d_init_not: "{{ d_init_d }}/Ansible_services-not_used"
+d_init_not: "{{ d_init_d }}/services-excluded-on-purpose"
 
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift

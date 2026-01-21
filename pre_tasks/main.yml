@@ -31,14 +31,14 @@
   # Might depend on some overrides, so run after process_overrides
   import_tasks: is_ish.yml
 
-- name: " pre-task - Set old_andsible if this is Ansible < 2.8"
+- name: " pre-task - Set old_andsible if this is ansible < 2.8"
   set_fact:
     old_ansible: >-
       {{ ansible_version.major < 2
         or (ansible_version.major == 2
             and ansible_version.minor < 8) }}
 
-- name: " pre-task - Check if this is old Ansible"
+- name: " pre-task - Check if this is old ansible < 2.8"
   debug:
     msg: "         old_ansible: {{ old_ansible }}"
   changed_when: ift_show_extra_status | default(false)
