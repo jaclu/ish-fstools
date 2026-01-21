@@ -31,7 +31,7 @@
   # Might depend on some overrides, so run after process_overrides
   import_tasks: is_ish.yml
 
-- name: " pre-task - Set old_andsible if this is ansible < 2.8"
+- name: " pre-task - Set old_ansible if this is ansible < 2.8"
   set_fact:
     old_ansible: >-
       {{ ansible_version.major < 2
