@@ -21,8 +21,9 @@
 
 - name: Setting up iSH FS
   hosts: "{{ target_hosts | default('localhost') }}"
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
+  # seems to collide with gather facts false
+  # vars:
+  #   ansible_python_interpreter: /usr/bin/python3
   gather_facts: false
 
   pre_tasks:
