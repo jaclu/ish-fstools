@@ -81,7 +81,7 @@ ift_debian_packages:
   #
   #  Scripting
   #
-  - python-pip # Installs both Python3 and all that is needed for pip
+  - python3
   - sqlite # Popular minimal sql engine
 
   #

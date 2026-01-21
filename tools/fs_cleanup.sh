@@ -100,6 +100,7 @@ deploy_cleanup() {
         # /root/img_build # what is this?
     )
     delete_items --remove-dir
+
     items=(
         /opt/AOK
         /etc/opt/AOK
