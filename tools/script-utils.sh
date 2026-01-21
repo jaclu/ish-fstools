@@ -123,7 +123,7 @@ msg_dbg() {
 
 was_sys_path() {
     case "$1" in
-        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1;; # tmpf files can be removed
+        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1 ;; # tmpf files can be removed
         /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
             "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
             /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
@@ -138,7 +138,7 @@ safe_remove() {
     #
     # if item is a folder it is just cleared, unless it is prefixed with --remove-dir
     # then the entie folder is removed
-    # Anyhing containing a sys path is rejected, unless --ignore-sys-path is supplied
+    # Anything containing a sys path is rejected, unless --ignore-sys-path is supplied
     #
 
     # Param parsing
