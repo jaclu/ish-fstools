@@ -102,47 +102,66 @@ syslog() {
 
 was_sys_path() {
     case "$1" in
-        /tmp | /var/tmp | "${TMPDIR%/}")
-            if [ "$2" = "tmp_ok" ]; then
-                return 0
-            else
-                return 1
-            fi
-            ;;
-        /etc | /etc/* | /usr | /usr/* | /var | /var/* | "$HOME" | /home | \
-            /Users | /bin | /bin/* | /sbin | /sbin/* | /lib | /lib/* | \
-            /lib64 | /lib64/* | /boot | /boot/* | /mnt | /mnt/* | /media | /media/* | \
-            /run | /run/* | /opt | /opt/* | /root | /root/* | /dev | /dev/* | \
-            /proc | /proc/* | /sys | /sys/* | /lost+found | /lost+found/*)
-
-            return 1
-            ;;
+        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1;; # tmpf files can be removed
+        /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
+            "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
+            /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
+            /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
+            /usr | /usr/* | /var | /var/* | /Users) return 0 ;;
         *) ;;
     esac
-    return 0
+    return 1
 }
 
 safe_remove() {
     #
-    # Ensures what is to be removed is not a "dangerous" path that would
-    # cause a mess of the file system
-    # If param 2 is empty, an extra check will be made that the pattern is prefixed
-    # by the location of this plugin, only use param 2 if something outside
-    # the plugin location needs to be removed
+    # if item is a folder it is just cleared, unless it is prefixed with --remove-dir
+    # then the entie folder is removed
+    # Anyhing containing a sys path is rejected, unless --ignore-sys-path is supplied
     #
-    _sr_pattern="$1"
-    _sr_reason="$2"
 
-    # log_it "safe_remove($_sr_pattern) - $_sr_reason"
-    [ -z "$_sr_pattern" ] && err_msg "safe_remove() - no path supplied!"
-    [ -z "$_sr_reason" ] && err_msg "safe_remove() - no _sr_reason given!"
+    # Param parsing
+    _sr_remove_dir=false
+    _sr_check_sys_path=true
 
-    was_sys_path "$_sr_pattern" || {
-        err_msg "safe_remove() - refusing to delete protected directory: $_sr_pattern"
+    while [ -n "$1" ]; do
+        case "$1" in
+            -r | --remove-dir) _sr_remove_dir=true ;;
+            --ignore-sys-path) _sr_check_sys_path=false ;;
+            -*) err_msg "Unknown option: $1" ;;
+            *) break ;;
+        esac
+        shift
+    done
+
+    _sr_item=$1
+    [ -z "$_sr_item" ] && err_msg "delete_item: missing path"
+
+    $_sr_check_sys_path && was_sys_path "$_sr_item" && {
+        err_msg "Refusing to remove a sys-path: $_sr_item"
     }
 
-    sudo rm -rf "$_sr_pattern" || err_msg "$_sr_reason - safe_remove() - Failed to delete: $_sr_pattern"
-    return 0
+    if [ -d "$_sr_item" ]; then
+        mount | grep "$_sr_item" && {
+            err_msg "safe_remove() - this is a mount point: $_sr_item"
+        }
+        if $_sr_remove_dir; then
+            rm -rf -- "$_sr_item" || err_msg "Failed to remove directory: $_sr_item"
+            lbl_2 "Removed directory: $_sr_item"
+        else
+            # shellcheck disable=SC2115 # _sr_item is already checked for being empty
+            rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
+                err_msg "Failed to clear directory: $_sr_item"
+            }
+            lbl_2 "Cleared directory: $_sr_item"
+        fi
+        return
+    fi
+
+    if [ -f "$_sr_item" ]; then
+        rm -f -- "$_sr_item" || err_msg "Failed to remove file: $_sr_item"
+        lbl_4 "Removed file: $_sr_item"
+    fi
 }
 
 #---------------------------------------------------------------

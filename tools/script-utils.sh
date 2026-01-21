@@ -123,32 +123,32 @@ msg_dbg() {
 
 was_sys_path() {
     case "$1" in
-        /tmp/* | /var/tmp/*) ;;
+        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1;; # tmpf files can be removed
         /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
             "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
             /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
-            /root | /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
-            /usr | /usr/* | /var | /var/* | /Users)
-
-            return 1
-            ;;
+            /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
+            /usr | /usr/* | /var | /var/* | /Users) return 0 ;;
         *) ;;
     esac
-    return 0
+    return 1
 }
 
 safe_remove() {
     #
-    # if $1 is a folder it is just cleared, unless it is prefixed with --remove-dir
+    # if item is a folder it is just cleared, unless it is prefixed with --remove-dir
     # then the entie folder is removed
+    # Anyhing containing a sys path is rejected, unless --ignore-sys-path is supplied
     #
 
     # Param parsing
     _sr_remove_dir=false
+    _sr_check_sys_path=true
 
     while [ -n "$1" ]; do
         case "$1" in
             -r | --remove-dir) _sr_remove_dir=true ;;
+            --ignore-sys-path) _sr_check_sys_path=false ;;
             -*) err_msg "Unknown option: $1" ;;
             *) break ;;
         esac
@@ -158,7 +158,9 @@ safe_remove() {
     _sr_item=$1
     [ -z "$_sr_item" ] && err_msg "delete_item: missing path"
 
-    was_sys_path "$_sr_item" || err_msg "Refusing to remove a sys-path: $_sr_item"
+    $_sr_check_sys_path && was_sys_path "$_sr_item" && {
+        err_msg "Refusing to remove a sys-path: $_sr_item"
+    }
 
     if [ -d "$_sr_item" ]; then
         mount | grep "$_sr_item" && {
@@ -166,13 +168,13 @@ safe_remove() {
         }
         if $_sr_remove_dir; then
             rm -rf -- "$_sr_item" || err_msg "Failed to remove directory: $_sr_item"
-            lbl_2 "Removed directory: $_sr_item"
+            lbl_3 "Removed directory: $_sr_item"
         else
             # shellcheck disable=SC2115 # _sr_item is already checked for being empty
             rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
                 err_msg "Failed to clear directory: $_sr_item"
             }
-            lbl_2 "Cleared directory: $_sr_item"
+            lbl_4 "Cleared directory: $_sr_item"
         fi
         return
     fi
@@ -180,13 +182,6 @@ safe_remove() {
     if [ -f "$_sr_item" ]; then
         rm -f -- "$_sr_item" || err_msg "Failed to remove file: $_sr_item"
         lbl_4 "Removed file: $_sr_item"
-
-    # Normally if _sr_item is not found it's fine, I leave the deailed notifications
-    # commented out for potential later debugging purposes
-    # elif [ -e $_sr_item ]; then
-    #     log_it "Special file not removed: $_sr_item"
-    # else
-    #     log_it "File not found: $_sr_item"
     fi
 }
 
