@@ -91,7 +91,7 @@ ift_debian_packages:
   - dvtm # Dynamic virtual terminal manager
 
   #
-  #  Services
+  #  Service handling
   #
   # - anacron
   # - initscripts # think openrc covers this
