@@ -61,7 +61,7 @@ delete_items() {
             # lbl_3 "item not found: $item"
             continue
         }
-        safe_remove "$item"
+        safe_remove "$@" "$item"
     done
 }
 
@@ -85,19 +85,26 @@ deploy_cleanup() {
 
         # /home/jaclu/.local/bin/defgw # installed if on chroot
         # /home/jaclu/.local/bin/Mbrew # installed if on chroot
+        /root/.ansible
         /root/.ash_history
         /root/.bash_history
+        /root/.config
+        /root/.ssh
         /root/.tmux
+        /root/.tmux.conf
         /root/.viminfo
         /root/.vimrc
         /root/.wget-hsts
+        /root/ish-fstools
+        /root/tmp
+        # /root/img_build # what is this?
     )
-    delete_items
-    safe_remove --remove-dir /root/.ansible
-    safe_remove --remove-dir /opt/AOK
-    safe_remove --remove-dir /etc/opt/AOK
-    safe_remove --remove-dir /root/img_build
-    safe_remove --remove-dir /root/ish-fstools
+    delete_items --remove-dir
+    items=(
+        /opt/AOK
+        /etc/opt/AOK
+    )
+    delete_items --remove-dir --ignore-sys-path
 }
 
 total_cleanup() {
@@ -107,13 +114,13 @@ total_cleanup() {
 
     lbl_1 "Total cleanup cache and tmp folders"
     items=(
-        /var/lib/apt
         /var/cache
+        /var/lib/apt
         /var/log
         /var/tmp
         /tmp
     )
-    delete_items
+    delete_items --ignore-sys-path
 }
 
 load_utils() {
