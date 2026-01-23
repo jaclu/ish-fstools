@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC2292
 #
 # Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #
@@ -44,67 +43,101 @@
 #   then do: load_utils
 #
 
-err_msg() {
-    #  Display an error message, second optional param is exit code,
-    #  defaulting to 1. If exit code is -1 this will not exit, just display
-    #  the error message and continue.
-    _em_msg="$1"
-    _em_exit_code="${2:-1}"
-    _em_label="${3:-ERROR}"
-    [ -z "$app_name" ] && app_name=$(basename "$0")
+#---------------------------------------------------------------
+#
+#   Display msgs and errors
+#
+#---------------------------------------------------------------
 
-    if [ -z "$_em_msg" ]; then
-        # Don't use log_it here, to avoid risk of infinite recursion...
-        echo
-        printf '\nerr_msg() no param\n' >&2
-        exit 9
-    fi
+script_utils_cleanup() {
+    _sc_ex_code="$1"
 
-    printf '\n\n%s[%s]: %s\n' "$_em_label" "$app_name" "$_em_msg" >&2
-
-    [ -n "$f_tmp" ] && [ -s "$f_tmp" ] && {
-        printf '=====   [%s] tmp file was used, displaying content   =====\n' \
-            "$(hostname -s)" >&2
-        cat "$f_tmp" >&2
-        printf '\n-----   end of tmp file, will remove it now   -----\n' >&2
-        rm -f "$f_tmp" || printf '\nERROR: failed to remove: %s\n' "$f_tmp"
+    [ -n "$f_tmp" ] && {
+        [ -s "$f_tmp" ] && {
+            # Only display if file has content
+            printf '=====   [%s]-%s f_tmp file was used, displaying content   =====\n' \
+                "$(show_timestamp)" "$(hostname -s)" >&2
+            cat "$f_tmp" >&2
+            printf '\n-----   end of tmp file, will remove it now   -----\n' >&2
+        }
+        [ -f "$f_tmp" ] && {
+            # Remove even if tmp file is empty
+            rm -f "$f_tmp" || printf '\nERROR: failed to remove: %s\n' "$f_tmp"
+        }
     }
-    if [ "$_em_exit_code" -gt -1 ]; then
-        exit "$_em_exit_code"
-    fi
+    [ -n "$_sc_ex_code" ] && exit "$_sc_ex_code"
+}
+
+show_timestamp() {
+    printf "%s" "$(date +'%y-%m-%d %T')"
 }
 
 log_it() {
-    [ -z "$1" ] && err_msg "log_it() no param"
-    printf -- '%s\n' "$1"
+    #
+    # param 1: msg to display
+    # param 2: if -t then prefix with timestamp. If always_use_time_stamp() has been
+    #          called, timestamps will always be used, no need for -t
+    # if f_script_utils_log_file is defined, msg will also be appended there
+    #
+    [ -z "$1" ] && err_msg "log_it() - no param"
+    _s="$1"
+    _t=""
+    if [ "$2" = "-t" ] || [ "$script_utils_always_use_time_stamps" = "1" ]; then
+        _t="[$(show_timestamp)] $_s"
+        _s="$_t"
+    fi
+    printf -- '%s\n' "$_s" >&2
+    [ -z "$f_script_utils_log_file" ] && return 0
+
+    # Always use timestamp if printing to logfile
+    [ -z "$_t" ] && _t="[$(show_timestamp)] $_s"
+    printf -- '%s\n' "$_t" >>"$f_script_utils_log_file"
 }
 
-lbl_1() {
-    [ -z "$1" ] && err_msg "lbl_1() no param"
-    echo
-    log_it "===  $1  ==="
-    echo
-}
+err_msg() {
+    #
+    #  Display an error message, second optional param is exit code,
+    #  defaulting to 1. If exit code is -1 this will not exit, just display
+    #  the error message and continue.
+    #  This will always display timestamp
+    #
+    _em_msg="$1"
+    _em_exit_code="${2:-1}"
+    _em_label="${3:-ERROR}"
 
-lbl_2() {
-    [ -n "$1" ] || err_msg "lbl_2() no param"
-    log_it "---  $1"
-}
+    case "$_em_in_progress" in
+        1)
+            # recursion during err_msg, display msg and abort
+            _em_in_progress=2
+            printf '\nRECURSION-ERROR in err_msg(): %s\n' "$1" >&2
+            script_utils_cleanup 30
+            ;;
+        2)
+            # script_utils_cleanup is recursing back again, just abort
+            printf '\nDOUBLE RECURSION-ERROR in err_msg(): %s\n' "$1" >&2
+            exit 39
+            ;;
+        *) ;;
+    esac
+    _em_in_progress=1
 
-lbl_3() {
-    [ -n "$1" ] || err_msg "lbl_3() no param"
-    log_it " --  $1"
-}
+    if [ -z "$_em_msg" ]; then
+        _em_msg="err_msg() - no param"
+        _em_exit_code=31 # Ensure this is exited
+    fi
 
-lbl_4() {
-    [ -n "$1" ] || err_msg "lbl_4() no param"
-    log_it "  -  $1"
+    [ -z "$app_name" ] && app_name=$(basename "$0")
+    log_it "${app_name}-${_em_label}: $_em_msg" -t # should always have timestamps
+    [ "$_em_exit_code" -gt -1 ] && script_utils_cleanup "$_em_exit_code"
+    unset _em_in_progress # in case exit code was < 0
 }
 
 msg_dbg() {
     #
     # set debug lvl with param 2, if not given, will always be displayed,
     # otherwise displayed if debug lvl <= current_dbg_lvl
+    # timestamp will be printed if param 3 is -t or always_use_time_stamp() has
+    # been called
     #
     [ -n "$1" ] || err_msg "msg_dbg() no param"
     if [ -n "$2" ]; then
@@ -112,7 +145,97 @@ msg_dbg() {
     else
         _md_this_dbg_lvl=0
     fi
-    [ "$_md_this_dbg_lvl" -le "$current_dbg_lvl" ] && log_it "><>  $1"
+    [ "$_md_this_dbg_lvl" -le "$current_dbg_lvl" ] && log_it "><>  $1" "$3"
+}
+
+lbl_1() {
+    [ -z "$1" ] && err_msg "lbl_1() no param"
+    echo >&2
+    log_it "===  $1  ===" "$2"
+    echo >&2
+}
+
+lbl_2() {
+    [ -n "$1" ] || err_msg "lbl_2() no param"
+    log_it "---  $1" "$2"
+}
+
+lbl_3() {
+    [ -n "$1" ] || err_msg "lbl_3() no param"
+    log_it " --  $1" "$2"
+}
+
+lbl_4() {
+    [ -n "$1" ] || err_msg "lbl_4() no param"
+    log_it "  -  $1" "$2"
+}
+
+#---------------------------------------------------------------
+#
+#   boolean checks
+#
+#---------------------------------------------------------------
+
+is_linux() { # returns true if kernel is Linux, very broad check
+    [ "$(uname -s)" = "Linux" ]
+}
+
+is_macos() {
+    [ "$(uname -s)" = "Darwin" ]
+}
+
+is_android() {
+    #  Only used to verify this_is_linux_native
+    is_termux && return 1
+    [ "$(uname -o)" = "Android" ]
+}
+
+is_termux() {
+    [ -n "$TERMUX_VERSION" ]
+}
+
+is_ish() {
+    [ -d /proc/ish ]
+}
+
+is_chrooted_ish() {
+    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
+    # file inside the chrooted env when entering/leaving the chroot
+    [ -f /etc/opt/chrooted_ish ]
+}
+
+is_chrooted() {
+    # this quick and simple check doesn't work on ish
+    # so lets pretend for now chroot does not happen on ish
+    is_linux || return 1
+    [ ! -f /proc/self/mountinfo ] && return 1
+    ! grep -q " / / " /proc/self/mountinfo
+}
+
+is_linux_native() { # Filters out chrooted and various Linux based derivates
+    is_linux || return 1
+    if is_ish || is_termux || is_android || is_chrooted; then
+        return 1
+    fi
+    return 0
+}
+
+fs_is_alpine() {
+    [ -f /etc/alpine-release ]
+}
+
+fs_is_debian() {
+    [ -f /etc/debian_version ]
+}
+
+fs_is_ubuntu() {
+    grep -qs '^ID=ubuntu$' /etc/os-release
+}
+
+# ---  not currently used
+
+fs_is_gentoo() {
+    [ -f /etc/gentoo-release ]
 }
 
 #---------------------------------------------------------------
@@ -123,11 +246,12 @@ msg_dbg() {
 
 was_sys_path() {
     case "$1" in
-        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1 ;; # tmpf files can be removed
+        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1 ;; # tmp files can always be removed
+
         /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
             "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
             /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
-            /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
+            /root | /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
             /usr | /usr/* | /var | /var/* | /Users) return 0 ;;
         *) ;;
     esac
@@ -187,71 +311,35 @@ safe_remove() {
 
 #---------------------------------------------------------------
 #
-#   boolean checks
+#   Startup preferencess - Handling tmp / log files
 #
 #---------------------------------------------------------------
 
-is_linux() { # returns true if kernel is Linux, very broad check
-    [ "$(uname -s)" = "Linux" ]
+always_use_time_stamp() {
+    script_utils_always_use_time_stamps=1
 }
 
-is_macos() {
-    [ "$(uname -s)" = "Darwin" ]
+create_f_tmp() {
+    #
+    # Generic tmp file that can be used by scripts.
+    #
+    # Any calls to err_msg() will display current content of and then remove it.
+    # It will also be autoremoved once script exits, unless some of the signals
+    # monitored are overridden
+    #
+    f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+        err_msg "mktemp failed"
+    }
+    trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
 }
 
-is_ish() {
-    [ -d /proc/ish ]
-}
-
-is_chrooted_ish() {
-    [ -f /etc/opt/chrooted_ish ]
-}
-
-is_android() {
-    #  Only used to verify this_is_linux_native
-    is_termux && return 1
-    [ "$(uname -o)" = "Android" ]
-}
-
-is_termux() {
-    [ -n "$TERMUX_VERSION" ]
-}
-
-is_chrooted() {
-    # cmdline check:
-    # grep -qv " / / " /proc/self/mountinfo || echo "is chrooted"
-
-    # this quick and simple check doesn't work on ish
-    # so lets pretend for now chroot does not happen on ish
-    is_linux || return 1
-    [ ! -f /proc/self/mountinfo ] && return 1
-    ! grep -q " / / " /proc/self/mountinfo
-}
-
-is_linux_native() { # Filters out chrooted and various Linux based derivates
-    is_linux || return 1
-    if is_ish || is_termux || is_android || is_chrooted; then
-        return 1
-    fi
-    return 0
-}
-
-fs_is_alpine() {
-    [ -f /etc/alpine-release ]
-}
-
-fs_is_debian() {
-    [ -f /etc/debian_version ]
-}
-
-fs_is_ubuntu() {
-    grep -qs '^ID=ubuntu$' /etc/os-release
-}
-
-# ---  not currently used
-
-fs_is_gentoo() {
-    [ -f /etc/gentoo-release ]
+use_log_file() {
+    #
+    # provide a log_file and if defined all msgs and errors will be appended there
+    # after being printed to stdwerr
+    #
+    [ -z "$1" ] && err_msg "Call to use_log_file() - no param given"
+    f_script_utils_log_file="$1"
 }
 
 #===============================================================
