@@ -237,7 +237,7 @@ prepare_shell_env() {
 
     lbl_2 "prepping $f_history"
     {
-        echo "/root/ish-fstools/tools/cleanup_build_env.sh"
+        echo "/root/ish-fstools/tools/fs_cleanup.sh total"
         echo "time $cmd_2"
         echo "time $cmd_1"
         echo "time $cmd_1 c"
