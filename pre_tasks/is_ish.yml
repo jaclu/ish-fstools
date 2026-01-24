@@ -18,11 +18,13 @@
 - name: " pre-task - Set is_ish fact"
   set_fact:
     is_ish: "{{ ish_proc.stat.exists }}"
+  delegate_to: localhost
   when: is_ish is not defined
 
 - name: " pre-task - Was  iSH  detected"
   debug:
     msg: "         is_ish: {{ is_ish }}"
+  delegate_to: localhost
   changed_when: ift_show_extra_status | default(false)
   when: is_ish or (ift_show_extra_status | default(false))
 
@@ -63,4 +65,6 @@
   register: preparational_steps_backgrounding_task
   changed_when: preparational_steps_backgrounding_task.rc == 43
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
-  when: is_ish
+  when:
+    - is_ish
+    - not (ift_quick_deploy | default(false))
