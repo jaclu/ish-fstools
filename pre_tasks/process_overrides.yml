@@ -71,9 +71,9 @@
 # Repo specific configs, should happen after overrides are processed
 #
 - name: " pre-task overrides - Handle Alpine specific configs"
-  import_tasks: overrides_alpine.yml
+  include_tasks: overrides_alpine.yml
   when: ansible_facts.os_family == 'Alpine'
 
 - name: " pre-task overrides - Handle Debian specific configs"
-  import_tasks: overrides_debian.yml
+  include_tasks: overrides_debian.yml
   when: ansible_facts.os_family == 'Debian'

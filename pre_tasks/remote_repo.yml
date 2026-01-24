@@ -18,11 +18,15 @@
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
-  when: ansible_facts.os_family == 'Alpine'
+  when:
+    - ansible_facts.os_family == 'Alpine'
+    - not (ift_quick_deploy | default(false))
 
 - name: " pre-task - Non Alpine crucial apps"
   import_tasks: non_alpine_crucial_apps.yml
-  when: ansible_facts.os_family != 'Alpine'
+  when:
+    - ansible_facts.os_family != 'Alpine'
+    - not (ift_quick_deploy | default(false))
 
 #
 #  Deploy playbook to client, so that all file copying can be done as remote_src

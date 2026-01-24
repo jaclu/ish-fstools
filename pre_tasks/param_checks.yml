@@ -10,55 +10,111 @@
 #   Do this before base apks are installed to trigger early abort
 #
 
-- name: " pre-task Params - Fail if ift_user_name is defined, but not ift_shell"
+#
+#  All Distros
+#
+
+- name: Param checks - Fail if ift_user_name is defined, but not ift_shell
   fail:
     msg: "ift_shell must be defined when ift_user_name is set"
+  delegate_to: localhost
+  run_once: true
   when:
     - ift_user_name | default('') | length > 0
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
 #
-# Alpine
+#  Alpine
 #
-- name: " pre-task Params - Conflicting mtr versions defined"
+- name: Param checks Alpine - Conflicting mtr versions defined
   fail:
     msg: >
       ERROR: mtr is defined in ift_alpine_packages when ift_alpine_use_old_mtr
       is also defined
+  delegate_to: localhost
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when: ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
+  when:
+    - ansible_facts.os_family == 'Alpine'
+    - ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
 
-- name: " pre-task Params - Fail if ift_shell is set but shadow not in ift_alpine_packages"
+- name: Param checks Alpine - Fail if ift_shell is set but shadow is not listed
   fail:
     msg: "shadow must be in ift_alpine_packages when ift_shell is defined and non-empty"
+  delegate_to: localhost
+  run_once: true
   when:
+    - ansible_facts.os_family == 'Alpine'
     - ift_shell | default('') | length > 0
     - "'shadow' not in (ift_alpine_packages | default([]))"
 
-- name: " pre-task Params - ift_runlevel_runbg is set and openrc in ift_alpine_packages"
+- name: Params checks Alpine - Fail if ift_runlevel_runbg is set but no openrc
   fail:
-    msg: >
-      shadow must be in ift_alpine_packages when ift_runlevel_runbg is defined
-      and non-empty
+    msg: "openrc must be in ift_alpine_packages when ift_runlevel_runbg is defined"
+  delegate_to: localhost
+  run_once: true
   when:
+    - ansible_facts.os_family == 'Alpine'
     - ift_runlevel_runbg | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([]))"
 
-- name: " pre-task Params - Fail if ift_runlevel_sshd is set but packages missing"
+- name: Param checks Alpine - Fail if ift_runlevel_sshd is set but packages missing
   fail:
     msg: >
       openrc and (openssh-server or openssh) must be in ift_alpine_packages
       when ift_runlevel_sshd is defined and non-empty
+  delegate_to: localhost
+  run_once: true
   when:
+    - ansible_facts.os_family == 'Alpine'
     - ift_runlevel_sshd | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([])) or
       ('openssh-server' not in (ift_alpine_packages | default([])) and
       'openssh' not in (ift_alpine_packages | default([])))"
 
-- name: " pre-task Params - ift_timezone is set and tzdata in ift_alpine_packages"
+- name: Param checks Alpine - ift_timezone is set but no tzdata in ift_alpine_packages
   fail:
     msg: "tzdata must be in ift_alpine_packages when ift_timezone is defined and non-empty"
+  delegate_to: localhost
+  run_once: true
   when:
+    - ansible_facts.os_family == 'Alpine'
     - ift_timezone | default('') | length > 0
     - "'tzdata' not in (ift_alpine_packages | default([]))"
+
+#
+#  Debian
+#
+
+- name: Params checks Debian - Fail if ift_runlevel_runbg is set but no openrc
+  fail:
+    msg: "openrc must be in ift_debian_packages when ift_runlevel_runbg is defined"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - ansible_facts.os_family == 'Debian'
+    - ift_runlevel_runbg | default('') | length > 0
+    - "'openrc' not in (ift_debian_packages | default([]))"
+
+- name: Param checks Debian - Fail if ift_runlevel_sshd is set but packages missing
+  fail:
+    msg: >
+      openrc and openssh-server must be in ift_debian_packages
+      when ift_runlevel_sshd is defined and non-empty
+  delegate_to: localhost
+  run_once: true
+  when:
+    - ansible_facts.os_family == 'Debian'
+    - ift_runlevel_sshd | default('') | length > 0
+    - "'openrc' not in (ift_debian_packages | default([])) or
+      'openssh-server' not in (ift_debian_packages | default([]))"
+
+- name: Param checks Debian - Fail if ift_timezone is set but tzdata missing
+  fail:
+    msg: "tzdata must be in ift_debian_packages when ift_timezone is defined and non-empty"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - ansible_facts.os_family == 'Debian'
+    - ift_timezone | default('') | length > 0
+    - "'tzdata' not in (ift_debian_packages | default([]))"

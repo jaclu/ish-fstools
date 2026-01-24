@@ -18,8 +18,10 @@
   pre_tasks:
     - name: Prepare env to run playbooks
       # only disable skip_cloning when you want to skip cloning the repo
-      # vars:
-      #   skip_cloning: true
+      vars:
+        ift_quick_deploy: true
+        # skip_cloning: true
+
       import_tasks: pre_tasks/main.yml
       tags: always
 

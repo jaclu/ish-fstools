@@ -11,14 +11,14 @@
 #  in order to be able to set global variables without linting errors
 #
 
-- name: " overrides Debian - Debian env - overrides for global vars"
+- name: Overrides Debian - Debian env - overrides for global vars
   set_fact:
     ift_shell: /bin/bash
   delegate_to: localhost
   run_once: true
   when: ansible_facts.os_family == 'Debian'
 
-- name: " overrides Debian - Add dev apks when ift_pkgs_devel is true"
+- name: Overrides Debian - Add dev apks when ift_pkgs_devel is true
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_devel | default([])) }}
@@ -29,7 +29,7 @@
   run_once: true
   changed_when: false
 
-- name: " overrides Debian - Add linting apks when ift_debian_pkgs_linting is true"
+- name: Overrides Debian - Add linting apks when ift_debian_pkgs_linting is true
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_linting | default([])) }}
@@ -40,7 +40,7 @@
   run_once: true
   changed_when: false
 
-- name: " overrides Debian - Add man-db if ift_pkgs_man is true"
+- name: Overrides Debian - Add man-db if ift_pkgs_man is true
   set_fact:
     ift_debian_packages: "{{ ift_debian_packages + ['man-db'] }}"
   when: ift_pkgs_man | default(false)
@@ -48,7 +48,7 @@
   run_once: true
   changed_when: false
 
-- name: " overrides Debian - Remove man-db if ift_pkgs_man is not true"
+- name: Overrides Debian - Remove man-db if ift_pkgs_man is not true
   set_fact:
     ift_debian_purges: "{{ ift_debian_purges + ['man-db'] }}"
   when: not (ift_pkgs_man | bool)
@@ -56,7 +56,7 @@
   run_once: true
   changed_when: false
 
-- name: " overrides Debian - List of what apt packages will be installed"
+- name: Overrides Debian - List of what apt packages will be installed
   debug:
     msg: "{{ ift_debian_packages | sort }}"
   delegate_to: localhost
@@ -64,7 +64,7 @@
   changed_when: ift_show_extra_status | default(false)
   when: ansible_facts.os_family == 'Debian' or (ift_show_extra_status | default(false))
 
-- name: " overrides Debian - List of what apt packages will be removed"
+- name: Overrides Debian - List of what apt packages will be removed
   debug:
     msg: "{{ ift_debian_purges | sort }}"
   delegate_to: localhost
