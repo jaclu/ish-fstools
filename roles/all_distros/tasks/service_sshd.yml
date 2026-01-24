@@ -9,21 +9,56 @@
 #  Installs basic sshd service
 #
 
+#
+# Handling /etc/ssh/sshd_config
+#
+
+- name: "sshd - Remove all unintended Port lines"
+  replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
+    replace: ""
+  notify: Restart sshd
+
+- name: "sshd - Deduplicate intended Port lines"
+  shell: |
+    tmp=$(mktemp)
+    awk '
+      /^Port {{ ift_port_sshd | default(2022) }}/ {
+        if (!seen++) { print; next }
+        next
+      }
+      { print }
+    ' /etc/ssh/sshd_config > "$tmp" || exit 30
+    if ! cmp -s /etc/ssh/sshd_config "$tmp"; then
+      mv "$tmp" /etc/ssh/sshd_config || exit 31
+      exit 43
+    else
+      rm "$tmp" || exit 32
+    fi
+  args:
+    executable: /bin/bash
+  register: all_distros_sshd_port_dupes
+  changed_when: all_distros_sshd_port_dupes.rc == 43
+  failed_when: all_distros_sshd_port_dupes.rc not in [0, 43]
+  notify: Restart sshd
+
+- name: "sshd - Ensure intended Port line is present once"
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
+    regexp: "^Port {{ ift_port_sshd | default(2022) }}"
+    state: present
+  notify: Restart sshd
+
+#
+# Service tasks
+#
 - name: " sshd - Create symbolic link in /etc/init.d"
   file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/sshd"
     state: link
-  notify: Restart sshd
-
-- name: " sshd - Ensure SSH port is set to {{ ift_port_sshd | default(2022) }}"
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^Port\s+{{ ift_port_sshd | default(2022) }}(\s|$)'
-    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
-    state: present
-    insertafter: EOF
-    create: false
   notify: Restart sshd
 
 - name: "Set runlevel for sshd"
