@@ -48,6 +48,9 @@
   # # run specific task inside a role
   # #
   tasks:
+    - name: Check if openrc was used during boot-up
+      import_tasks: tasks/was_openrc_used_to_boot_system.yml
+
     - name: Use just one task file from the role
       include_role:
         name: all_distros
