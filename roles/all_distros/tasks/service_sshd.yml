@@ -13,14 +13,14 @@
 # Handling /etc/ssh/sshd_config
 #
 
-- name: "sshd - Remove all unintended Port lines"
+- name: " sshd - Remove all unintended Port lines"
   replace:
     path: /etc/ssh/sshd_config
     regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
     replace: ""
   notify: Restart sshd
 
-- name: "sshd - Deduplicate intended Port lines"
+- name: " sshd - Deduplicate intended Port lines"
   shell: |
     tmp=$(mktemp)
     awk '
@@ -43,7 +43,7 @@
   failed_when: all_distros_sshd_port_dupes.rc not in [0, 43]
   notify: Restart sshd
 
-- name: "sshd - Ensure intended Port line is present once"
+- name: " sshd - Ensure intended Port line is present once"
   lineinfile:
     path: /etc/ssh/sshd_config
     line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
