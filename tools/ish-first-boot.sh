@@ -45,8 +45,10 @@ printf '%s\n' "$build_files" \
     done
 
 printf "Enter hostname: "
-read -r h_name
-
+IFS= read -r h_name
+echo
+echo "h_name recieved [$h_name]"
+echo
 if [ -n "$h_name" ]; then
     lbl_4 "Setting hostname: $h_name"
     /usr/local/bin/hostname "$h_name"
