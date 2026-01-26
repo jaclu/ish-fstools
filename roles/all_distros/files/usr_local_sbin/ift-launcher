@@ -288,7 +288,7 @@ display_header() {
         fi
         echo "$header_msg"
     }
-    if $this_is_pts0 || is_fs_chrooted; then
+    if $this_is_pts0 || is_ish; then
         echo "Press 'r' during boot up for recovery-mode"
         echo
     fi
@@ -299,7 +299,19 @@ display_header() {
 
 boot_up() {
     # at boot up also log it
-    # log_display "boot_up()"
+    log_display "><> boot_up()"
+
+    if [ -x "$f_ish_first_boot" ]; then
+        log_display "><> found first boot"
+        is_fs_chrooted || {
+            log_display "><> not chooted, running first boot"
+            $f_ish_first_boot
+            rm -f "$f_ish_first_boot"
+            log_display "><> not chooted, first boot done and removed"
+        }
+    else
+        log_display "><> first boot not found"
+    fi
 
     if [ -f "$f_pts_0_as_console" ]; then
         # also done in profile for interactive vterms
@@ -731,8 +743,8 @@ is_ish() {
 is_fs_chrooted() {
     # this quick and simple check doesn't work on ish
     # so lets pretend for now chroot does not happen on ish
-    is_ish && return 1                       # would never happen here :)
-    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
+    is_ish && return 1 # would never happen here :)
+    [ -f /proc/self/mountinfo ] || return 1
     ! grep -q " / / " /proc/self/mountinfo
 }
 
@@ -827,11 +839,6 @@ recovery_mode_probe main2
 if is_fs_chrooted || $this_is_pts0; then
     boot_up # if /dev/console is used, pts/0 will not exit this
 else
-    [ -x "$f_ish_first_boot" ] && {
-        $f_ish_first_boot
-        rm -f "$f_ish_first_boot"
-    }
-
     # it works directly as user session starts, but not here, on iSH.
     # It does work when chrooted
     /usr/local/bin/network-check

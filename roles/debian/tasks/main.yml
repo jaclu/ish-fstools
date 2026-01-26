@@ -17,3 +17,9 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ ift_locales }}"
+
+- name: Link the fake init to /sbin/init
+  file:
+    src: /usr/local/sbin/fake-init
+    dest: /sbin/init
+    state: link

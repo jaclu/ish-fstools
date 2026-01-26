@@ -49,3 +49,10 @@ check_recovery_mode /usr/local/sbin/update-motd
 #  set default runlevel
 #
 check_recovery_mode /sbin/openrc default
+
+#
+#  Loop forever...
+#
+while true; do
+    sleep 3601
+done
