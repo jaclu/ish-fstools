@@ -118,6 +118,7 @@ is_chrooted && {
         lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
         echo "$f_ift_launcher" >"$f_chroot_default_cmd"
     }
+    touch /etc/opt/first_ish_boot_not_done
 }
 
 [ "$quick_mode" -eq 1 ] && {

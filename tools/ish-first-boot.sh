@@ -29,17 +29,21 @@ load_utils() {
 
 load_utils
 
-# Various state files used during build that can now be removed
-build_files='
-    /.chroot_default_cmd
-    /.chroot_hostname
-    /etc/opt/chrooted_ish
-'
+f_first_ish_boot_should_be_done=/etc/opt/first_ish_boot_not_done
 
-is_chrooted && err_msg "This can't run whilst chrooted"
+[ -f "$f_first_ish_boot_should_be_done" ] || exit 0
+
+# Various state files used during build that can now be removed
+build_files="
+/.chroot_default_cmd
+/.chroot_hostname
+/etc/opt/chrooted_ish
+$f_first_ish_boot_should_be_done
+"
 
 printf '%s\n' "$build_files" \
     | while IFS= read -r f; do
+        msg_dbg "will do: $f"
         [ -n "$f" ] || continue
-        safe_remove "$f"
+        safe_remove --ignore-sys-path "$f"
     done
