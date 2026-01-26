@@ -9,9 +9,6 @@
 # Replaces a proper /sbin/init, suitable for iSH
 #
 
-f_recovery_mode=/etc/opt/ift/recovery-mode
-f_recovery_log_file=/var/log/recovery-mode.log
-
 log_it() {
     echo "$(date +"%Y-%m-%d %H:%M:%S") $1" >>"$f_recovery_log_file"
 }
@@ -22,6 +19,15 @@ check_recovery_mode() {
     }
     "${@}"
 }
+
+#===============================================================
+#
+#   Main
+#
+#===============================================================
+
+f_recovery_mode=/etc/opt/ift/recovery-mode
+f_recovery_log_file=/var/log/recovery-mode.log
 
 # Indicate boot up time in syslog
 check_recovery_mode /usr/local/bin/logger fake_init "===  System startup  ==="
@@ -46,7 +52,8 @@ check_recovery_mode /usr/local/sbin/rotate-logs.sh
 check_recovery_mode /usr/local/sbin/update-motd
 
 #
-#  set default runlevel
+#  set openrc default runlevel - since /run was cleared we don't need to toggle between
+#  runlevels
 #
 check_recovery_mode /sbin/openrc default
 
