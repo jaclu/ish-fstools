@@ -111,6 +111,15 @@ done
 install_ansible
 do_ansible
 
+is_chrooted && {
+    f_ift_launcher=/usr/local/sbin/ift-launcher
+    f_chroot_default_cmd=/.chroot_default_cmd
+    [ -f "$f_ift_launcher" ] && {
+        lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
+        echo "$f_ift_launcher" > "$f_chroot_default_cmd"
+    }
+}
+
 [ "$quick_mode" -eq 1 ] && {
     lbl_1 "Due to quick mode, my-ish-fs is no attempted"
     exit 0
