@@ -71,7 +71,7 @@
       fi
   args:
     executable: /bin/sh
-  register: preparational_steps_git_pull
+  register: initial_prep_git_pull
   changed_when: >-
-    'Already up to date.' not in preparational_steps_git_pull.stdout and
-    'new branch' not in preparational_steps_git_pull.stderr
+    'Already up to date.' not in initial_prep_git_pull.stdout and
+    'new branch' not in initial_prep_git_pull.stderr

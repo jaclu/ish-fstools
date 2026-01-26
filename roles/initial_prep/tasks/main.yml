@@ -1,0 +1,63 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+
+- name: Set initial_prep_old_ansible if this is ansible < 2.8
+  # old_ansible -> initial_prep_old_ansible
+  set_fact:
+    initial_prep_old_ansible: >-
+      {{ ansible_version.major < 2
+        or (ansible_version.major == 2
+            and ansible_version.minor < 8) }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Check if this is old ansible < 2.8
+  debug:
+    msg: "         initial_prep_old_ansible: {{ initial_prep_old_ansible }}"
+  changed_when: ift_show_extra_status | default(false)
+  when: initial_prep_old_ansible or (ift_show_extra_status | default(false))
+  delegate_to: localhost
+  run_once: true
+
+- name: Define initial_prep_remote_src_lbl
+  set_fact:
+    # all_distros_copy_style -> remote_src_copy_style -> initial_prep_remote_src_lbl
+    initial_prep_remote_src_lbl:
+      - "{{ 'slow old-style' if initial_prep_old_ansible else 'remote_src' }}"
+
+- name: Clone this on remote end
+  # Must be first task in order for everything else to use the variable overrides
+  include_tasks: remote_repo.yml
+  when: not (skip_cloning | default(false))
+
+- name: Create ish-fstools related folders that must be present
+  shell:
+    cmd: |
+      ex_code=0
+      [ -d "{{ d_etc_ift }}" ] || {
+        mkdir -p "{{ d_etc_ift }}" || exit 30
+        ex_code=43
+      }
+      [ -d "{{ d_init_ift }}" ] || {
+        mkdir -p "{{ d_init_ift }}" || exit 31
+        ex_code=43
+      }
+      [ -d "{{ d_init_not }}" ] || {
+        mkdir -p "{{ d_init_not }}" || exit 32
+        ex_code=43
+      }
+      [ -d /iCloud ] || {
+        mkdir -p /iCloud || exit 35
+        chown 501:501 /iCloud || exit 36
+        ex_code=43
+      }
+      exit "$ex_code"
+  register: initial_prep_ifs_dirs
+  changed_when: initial_prep_ifs_dirs.rc == 43
+  failed_when: initial_prep_ifs_dirs.rc not in [0, 43]
