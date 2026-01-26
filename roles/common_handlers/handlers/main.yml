@@ -38,16 +38,6 @@
   when: not (is_ish | bool)
   listen: Restart sshd
 
-# - name: Restart sshd via OpenRC
-#   command: rc-service sshd restart
-#   async: 1
-#   poll: 0
-#   changed_when: true
-#   when:
-#     - is_ish | bool
-#     - openrc_softlevel.stat.exists
-#   listen: Restart sshd
-
 - name: Restart via OpenRC - sshd
   service:
     name: sshd

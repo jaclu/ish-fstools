@@ -56,16 +56,18 @@
         name: all_distros
         tasks_from: service_sshd.yml
 
-  #
-  # run specific role(-s)
-  #
+  # #
+  # # run specific role(-s)
+  # #
   # roles:
-  #   #   - role: alpine
-  #   #     when: ansible_facts.os_family == 'Alpine'
+  #   - role: common_handlers
+  #   - role: initial_prep
+  #   - role: alpine
+  #     when: ansible_facts.os_family == 'Alpine'
   #   - role: debian
   #     when: ansible_facts.os_family == 'Debian'
-  # - role: all_distros
-
+  #   - role: all_distros
+  #
   # post_tasks:
   #   - name: Run tasks/update_release.yml
   #     import_tasks: tasks/update_release.yml

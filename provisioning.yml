@@ -34,6 +34,8 @@
       tags: always
 
   roles:
+    - role: common_handlers
+    - role: initial_prep
     - role: alpine
       when: ansible_facts.os_family == 'Alpine'
     - role: debian
