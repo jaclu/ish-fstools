@@ -1,97 +1,243 @@
 #!/bin/sh
 # This is sourced. Fake bang-path to help editors and linters
-#  shellcheck disable=SC2034 # this defines a lot of things for other scripts
+# shellcheck disable=SC2034 # this defines a lot of things for other scripts
 #
-#  Part of https://github.com/jaclu/ish-fstool
+# Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #
-#  License: MIT
+# License: MIT
 #
-#  Copyright (c) 2023-2025: Jacob.Lundqvist@gmail.com
+# Part of https://github.com/jaclu/helpful-scripts
 #
-#  Environment variables used when building ish-fstools
+#  Deploys the apps in this reop
+#
+# If caller is a POSIX script, use this, changing path to this if need-be:
+#
+# load_utils() {
+#     _lu_d_base="${1:-$d_repo}"
+#     _lu_f_utils="$_lu_d_base"/utils/script-utils.sh
+
+#     # shellcheck source=utils/script-utils.sh disable=SC2317
+#     . "$_lu_f_utils" || {
+#         printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+#         exit 1
+#     }
+# }
+#
+#  If it is a bash script, use this, changing path to this if need-be:
+#
+# load_utils() {
+#     local d_base="${1:-$d_repo}"
+#     local f_utils="$d_base"/utils/script-utils.sh
+
+#     # source a POSIX file
+#     # shellcheck source=utils/script-utils.sh disable=SC1091,SC2317
+#     source "$f_utils" || {
+#         printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
+#     exit 1
+#     }
+# }
+#
+# In scripts using this, first set the following if relevant
+#   app_name - will be set to basename "$0" if unset
+#   current_dbg_lvl - will be set to 0 if unset
+#   d_repo - no default, helper where the base path of the current proj is
+#
+#   then do: load_utils
 #
 
 #---------------------------------------------------------------
 #
-#   Notifications
-#
-#  The msg_ functions are ordered, lower number infers more important updates
-#  so they should stand out more
+#   Display msgs and errors
 #
 #---------------------------------------------------------------
 
-err_msg() {
-    #  Display an error message, second optional param is exit code,
-    #  defaulting to 1. If exit code is -1 this will not exit, just display
-    #  the error message and continue.
-    _em_msg="$1"
-    _em_exit_code="${2:-1}"
-    if [ -z "$_em_msg" ]; then
-        # Don't use log_it here, to avoid risk of infinite recursion...
-        echo
-        echo "err_msg() no param"
-        exit 9
-    fi
+script_utils_cleanup() {
+    _sc_ex_code="$1"
 
-    _em_msg="ERROR[$0]: $_em_msg"
-    echo
-    echo "$_em_msg"
-    echo
+    [ -n "$f_tmp" ] && {
+        [ -s "$f_tmp" ] && {
+            # Only display if file has content
+            printf '=====   [%s]-%s f_tmp file was used, displaying content   =====\n' \
+                "$(show_timestamp)" "$(hostname -s)" >&2
+            cat "$f_tmp" >&2
+            printf '\n-----   end of tmp file, will remove it now   -----\n' >&2
+        }
+        [ -f "$f_tmp" ] && {
+            # Remove even if tmp file is empty
+            rm -f "$f_tmp" || printf '\nERROR: failed to remove: %s\n' "$f_tmp"
+        }
+    }
+    [ -n "$_sc_ex_code" ] && exit "$_sc_ex_code"
+}
 
-    if [ "$_em_exit_code" -gt -1 ]; then
-        exit "$_em_exit_code"
-    fi
-    unset _em_msg
-    unset _em_exit_code
+show_timestamp() {
+    printf "%s" "$(date +'%y-%m-%d %T')"
 }
 
 log_it() {
-    _li_msg="$1"
+    #
+    # param 1: msg to display
+    # param 2: if -t then prefix with timestamp. If always_use_time_stamp() has been
+    #          called, timestamps will always be used, no need for -t
+    # if f_script_utils_log_file is defined, msg will also be appended there
+    #
+    [ -z "$1" ] && err_msg "log_it() - no param"
+    _s="$1"
+    _t=""
+    if [ "$2" = "-t" ] || [ "$script_utils_always_use_time_stamps" = "1" ]; then
+        _t="[$(show_timestamp)] $_s"
+        _s="$_t"
+    fi
+    printf -- '%s\n' "$_s" >&2
+    [ -z "$f_script_utils_log_file" ] && return 0
 
-    [ -z "$_li_msg" ] && err_msg "log_it() no param"
+    # Always use timestamp if printing to logfile
+    [ -z "$_t" ] && _t="[$(show_timestamp)] $_s"
+    printf -- '%s\n' "$_t" >>"$f_script_utils_log_file"
+}
 
-    if [ -c /dev/stderr ]; then
-        echo "$_li_msg" >/dev/stderr
-    else
-        echo "GLITCH: /dev/stderr is failing!!"
-        echo "$_li_msg"
-        exit 12
+err_msg() {
+    #
+    #  Display an error message, second optional param is exit code,
+    #  defaulting to 1. If exit code is -1 this will not exit, just display
+    #  the error message and continue.
+    #  This will always display timestamp
+    #
+    _em_msg="$1"
+    _em_exit_code="${2:-1}"
+    _em_label="${3:-ERROR}"
+
+    case "$_em_in_progress" in
+        1)
+            # recursion during err_msg, display msg and abort
+            _em_in_progress=2
+            printf '\nRECURSION-ERROR in err_msg(): %s\n' "$1" >&2
+            script_utils_cleanup 30
+            ;;
+        2)
+            # script_utils_cleanup is recursing back again, just abort
+            printf '\nDOUBLE RECURSION-ERROR in err_msg(): %s\n' "$1" >&2
+            exit 39
+            ;;
+        *) ;;
+    esac
+    _em_in_progress=1
+
+    if [ -z "$_em_msg" ]; then
+        _em_msg="err_msg() - no param"
+        _em_exit_code=31 # Ensure this is exited
     fi
 
-    unset _li_msg
+    [ -z "$app_name" ] && app_name=$(basename "$0")
+    log_it "${app_name}-${_em_label}: $_em_msg" -t # should always have timestamps
+    [ "$_em_exit_code" -gt -1 ] && script_utils_cleanup "$_em_exit_code"
+    unset _em_in_progress # in case exit code was < 0
+}
+
+msg_dbg() {
+    #
+    # set debug lvl with param 2, if not given, will always be displayed,
+    # otherwise displayed if debug lvl <= current_dbg_lvl
+    # timestamp will be printed if param 3 is -t or always_use_time_stamp() has
+    # been called
+    #
+    [ -n "$1" ] || err_msg "msg_dbg() no param"
+    if [ -n "$2" ]; then
+        _md_this_dbg_lvl="$2"
+    else
+        _md_this_dbg_lvl=0
+    fi
+    [ "$_md_this_dbg_lvl" -le "$current_dbg_lvl" ] && log_it "><>  $1" "$3"
 }
 
 lbl_1() {
     [ -z "$1" ] && err_msg "lbl_1() no param"
-    echo
-    log_it "===  $1  ==="
-    echo
+    echo >&2
+    log_it "===  $1  ===" "$2"
+    echo >&2
 }
 
 lbl_2() {
     [ -n "$1" ] || err_msg "lbl_2() no param"
-    log_it "---  $1"
+    log_it "---  $1" "$2"
 }
 
 lbl_3() {
     [ -n "$1" ] || err_msg "lbl_3() no param"
-    log_it " --  $1"
+    log_it " --  $1" "$2"
 }
 
 lbl_4() {
     [ -n "$1" ] || err_msg "lbl_4() no param"
-    log_it "  -  $1"
+    log_it "  -  $1" "$2"
 }
 
-msg_dbg() {
-    [ -n "$1" ] || err_msg "msg_dbg() no param"
-    log_it "><>  $1"
+#---------------------------------------------------------------
+#
+#   boolean checks
+#
+#---------------------------------------------------------------
+
+is_linux() { # returns true if kernel is Linux, very broad check
+    [ "$(uname -s)" = "Linux" ]
 }
 
-syslog() {
-    [ -z "$1" ] && error_msg "syslog() - called without param"
+is_macos() {
+    [ "$(uname -s)" = "Darwin" ]
+}
 
-    /usr/local/bin/logger "$(basename "$0")" "$1"
+is_android() {
+    #  Only used to verify this_is_linux_native
+    is_termux && return 1
+    [ "$(uname -o)" = "Android" ]
+}
+
+is_termux() {
+    [ -n "$TERMUX_VERSION" ]
+}
+
+is_ish() {
+    [ -d /proc/ish ]
+}
+
+is_chrooted_ish() {
+    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
+    # file inside the chrooted env when entering/leaving the chroot
+    [ -f /etc/opt/chrooted_ish ]
+}
+
+is_chrooted() {
+    # this quick and simple check doesn't work on ish
+    # so lets pretend for now chroot does not happen on ish
+    is_linux || return 1
+    [ ! -f /proc/self/mountinfo ] && return 1
+    ! grep -q " / / " /proc/self/mountinfo
+}
+
+is_linux_native() { # Filters out chrooted and various Linux based derivates
+    is_linux || return 1
+    if is_ish || is_termux || is_android || is_chrooted; then
+        return 1
+    fi
+    return 0
+}
+
+fs_is_alpine() {
+    [ -f /etc/alpine-release ]
+}
+
+fs_is_debian() {
+    [ -f /etc/debian_version ]
+}
+
+fs_is_ubuntu() {
+    grep -qs '^ID=ubuntu$' /etc/os-release
+}
+
+# ---  not currently used
+
+fs_is_gentoo() {
+    [ -f /etc/gentoo-release ]
 }
 
 #---------------------------------------------------------------
@@ -102,11 +248,12 @@ syslog() {
 
 was_sys_path() {
     case "$1" in
-        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1 ;; # tmpf files can be removed
+        /tmp/* | /var/tmp/* | "$TMPDIR"/*) return 1 ;; # tmp files can always be removed
+
         /bin | /bin/* | /boot | /boot/* | /dev | /dev/* | /etc | /etc/* | /home | \
             "$HOME" | /lib | /lib/* | /lib64 | /lib64/* | /lost+found | /lost+found/* | \
             /media | /media/* | /mnt | /mnt/* | /opt | /opt/* | /proc | /proc/* | \
-            /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
+            /root | /run | /run/* | /sbin | /sbin/* | /sys | /sys/* | /tmp | \
             /usr | /usr/* | /var | /var/* | /Users) return 0 ;;
         *) ;;
     esac
@@ -147,13 +294,13 @@ safe_remove() {
         }
         if $_sr_remove_dir; then
             rm -rf -- "$_sr_item" || err_msg "Failed to remove directory: $_sr_item"
-            lbl_2 "Removed directory: $_sr_item"
+            lbl_3 "Removed directory: $_sr_item"
         else
             # shellcheck disable=SC2115 # _sr_item is already checked for being empty
             rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
                 err_msg "Failed to clear directory: $_sr_item"
             }
-            lbl_2 "Cleared directory: $_sr_item"
+            lbl_4 "Cleared directory: $_sr_item"
         fi
         return
     fi
@@ -166,39 +313,35 @@ safe_remove() {
 
 #---------------------------------------------------------------
 #
-#   boolean checks
+#   Startup preferencess - Handling tmp / log files
 #
 #---------------------------------------------------------------
 
-is_ish() {
-    [ -d /proc/ish ]
+always_use_time_stamp() {
+    script_utils_always_use_time_stamps=1
 }
 
-fs_is_alpine() {
-    test -f /etc/alpine-release
+create_f_tmp() {
+    #
+    # Generic tmp file that can be used by scripts.
+    #
+    # Any calls to err_msg() will display current content of and then remove it.
+    # It will also be autoremoved once script exits, unless some of the signals
+    # monitored are overridden
+    #
+    f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+        err_msg "mktemp failed"
+    }
+    trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
 }
 
-fs_is_debian() {
-    test -f /etc/debian_version && ! fs_is_devuan
-}
-
-fs_is_devuan() {
-    test -f /etc/devuan_version
-}
-
-fs_is_gentoo() {
-    test -f /etc/gentoo-release
-}
-
-is_fs_chrooted() {
-    # cmdline check:
-    # grep -qv " / / " /proc/self/mountinfo || echo "is chrooted"
-
-    # this quick and simple check doesn't work on ish
-    # so lets pretend for now chroot does not happen on ish
-    is_ish && return 1                       # would never happen here :)
-    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
-    ! grep -q " / / " /proc/self/mountinfo
+use_log_file() {
+    #
+    # provide a log_file and if defined all msgs and errors will be appended there
+    # after being printed to stdwerr
+    #
+    [ -z "$1" ] && err_msg "Call to use_log_file() - no param given"
+    f_script_utils_log_file="$1"
 }
 
 #===============================================================
@@ -218,19 +361,25 @@ is_fs_chrooted() {
 
 TMPDIR="${TMPDIR:-/tmp}"
 
+[ -z "$app_name" ] && app_name=$(basename "$0")
+
+[ -z "$current_dbg_lvl" ] && {
+    # 0 means only msg_dbg without dbg_lvl 2nd param will be displayed
+    current_dbg_lvl=0
+}
+
+#
+#  ish-fstools specific env variables
+#
+
 # Set base repo directory
 d_repo="{{ d_repo | default('/opt/ish-fstools') }}"
 
+#
+#  Some hint files for /usr/local/sbin/ift-launcher
+#
 d_ift_etc_opt=/etc/opt/ift
-
-#  file alt hostname reads to find hostname
-#  the variable has been renamed to
-
-#
-#  For automated logins used by ift anf ift-launcher
-#
 f_login_default_user="$d_ift_etc_opt"/login-default-username
-f_logins_continuous="$d_ift_etc_opt"/login-continuous
-
-f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console
-f_profile_hints="$d_ift_etc_opt"/show_profile_hints
+f_logins_continuous="$d_ift_etc_opt"/login-continuous # login user again or shutdown
+f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console # first pts should be console
+f_profile_hints="$d_ift_etc_opt"/show_profile_hints # not sure if this is used
