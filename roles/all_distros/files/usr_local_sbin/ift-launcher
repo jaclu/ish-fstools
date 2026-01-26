@@ -778,6 +778,7 @@ f_login_default_user="$state_prefix"/login-default-username
 f_profile_hints="$state_prefix"/show_profile_hints
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
+f_ish_first_boot=/usr/local/sbin/ish-first-boot.sh
 f_ift_release=/etc/ish-fstools-release
 f_rel_alpine=/etc/alpine-release
 f_rel_devuan=/etc/devuan_version
@@ -826,6 +827,11 @@ recovery_mode_probe main2
 if is_fs_chrooted || $this_is_pts0; then
     boot_up # if /dev/console is used, pts/0 will not exit this
 else
+    [ -x "$f_ish_first_boot" ] && {
+        $f_ish_first_boot
+        rm -f "$f_ish_first_boot"
+    }
+
     # it works directly as user session starts, but not here, on iSH.
     # It does work when chrooted
     /usr/local/bin/network-check

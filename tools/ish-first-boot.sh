@@ -29,21 +29,26 @@ load_utils() {
 
 load_utils
 
-f_first_ish_boot_should_be_done=/etc/opt/first_ish_boot_not_done
-
-[ -f "$f_first_ish_boot_should_be_done" ] || exit 0
-
 # Various state files used during build that can now be removed
 build_files="
 /.chroot_default_cmd
 /.chroot_hostname
 /etc/opt/chrooted_ish
-$f_first_ish_boot_should_be_done
 "
+msg_1 "Doing some first boot on iSH cleanup"
 
 printf '%s\n' "$build_files" \
     | while IFS= read -r f; do
-        msg_dbg "will do: $f"
         [ -n "$f" ] || continue
         safe_remove --ignore-sys-path "$f"
     done
+
+printf "Enter hostname: "
+read -r h_name
+
+if [ -n "$h_name" ]; then
+    lbl_4 "Setting hostname: $h_name"
+    /usr/local/bin/hostname "$h_name"
+else
+    lbl_4 "Default hostname iSH will be used"
+fi

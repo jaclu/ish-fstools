@@ -114,11 +114,16 @@ do_ansible
 is_chrooted && {
     f_ift_launcher=/usr/local/sbin/ift-launcher
     f_chroot_default_cmd=/.chroot_default_cmd
+    f_first_ish_boot_cmd="$d_repo"/tools/ish-first-boot.sh
+
     [ -f "$f_ift_launcher" ] && {
         lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
         echo "$f_ift_launcher" >"$f_chroot_default_cmd"
     }
-    touch /etc/opt/first_ish_boot_not_done
+    lbl_4 "Deploying: $f_first_ish_boot_cmd"
+    cp "$f_first_ish_boot_cmd" /usr/local/sbin || {
+        err_msg "Failed to deploy: $f_first_ish_boot_cmd"
+    }
 }
 
 [ "$quick_mode" -eq 1 ] && {
