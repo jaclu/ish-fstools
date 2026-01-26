@@ -12,26 +12,6 @@
 - name: Run apps_debian
   import_tasks: apps_debian.yml
 
-# - name: Ensure en_GB.UTF-8 locale is generated (Debian/Ubuntu)
-#   locale_gen:
-#     name: en_GB.UTF-8
-#     state: present
-
-# - name: Set locale(-s)
-#   locale_gen:
-#     name: "{{ ift_locale }}"
-#     state: present
-#   when:
-#     - ift_locale | default('') | length > 0
-
-# - name: Generate required locales
-#   locale_gen:
-#     name: "{{ item }}"
-#     state: present
-#   with_items:
-#     - en_US.UTF-8
-#     - en_GB.UTF-8
-
 - name: Generate required locales
   locale_gen:
     name: "{{ item }}"
