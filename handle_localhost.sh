@@ -116,7 +116,7 @@ is_chrooted && {
     f_chroot_default_cmd=/.chroot_default_cmd
     [ -f "$f_ift_launcher" ] && {
         lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
-        echo "$f_ift_launcher" > "$f_chroot_default_cmd"
+        echo "$f_ift_launcher" >"$f_chroot_default_cmd"
     }
 }
 

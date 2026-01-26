@@ -381,5 +381,5 @@ d_repo="{{ d_repo | default('/opt/ish-fstools') }}"
 d_ift_etc_opt=/etc/opt/ift
 f_login_default_user="$d_ift_etc_opt"/login-default-username
 f_logins_continuous="$d_ift_etc_opt"/login-continuous # login user again or shutdown
-f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console # first pts should be console
-f_profile_hints="$d_ift_etc_opt"/show_profile_hints # not sure if this is used
+f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console  # first pts should be console
+f_profile_hints="$d_ift_etc_opt"/show_profile_hints   # not sure if this is used

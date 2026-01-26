@@ -10,7 +10,6 @@
 #  a chrooted buildenv, like a previously set hostname
 #
 
-
 load_utils() {
     _lu_d_base="${1:-$d_repo}"
     _lu_f_utils="$_lu_d_base"/utils/script-utils.sh
@@ -39,8 +38,8 @@ build_files='
 
 is_chrooted && err_msg "This can't run whilst chrooted"
 
-printf '%s\n' "$build_files" |
-while IFS= read -r f; do
-    [ -n "$f" ] || continue
-    safe_remove "$f"
-done
+printf '%s\n' "$build_files" \
+    | while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        safe_remove "$f"
+    done
