@@ -81,10 +81,6 @@ deploy_cleanup() {
     # suitable for post all install step
     lbl_1 "Deploy cleanup"
     items=(
-        /iCloud
-
-        # /home/jaclu/.local/bin/defgw # installed if on chroot
-        # /home/jaclu/.local/bin/Mbrew # installed if on chroot
         /root/.ansible
         /root/.ash_history
         /root/.bash_history
@@ -97,9 +93,9 @@ deploy_cleanup() {
         /root/.wget-hsts
         /root/ish-fstools
         /root/tmp
-        # /root/img_build # what is this?
     )
     delete_items --remove-dir
+    delete_items /iCloud # Keep folder just clear it
 
     items=(
         /opt/AOK
@@ -146,7 +142,7 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 
 load_utils
 
-{ is_ish || is_chrooted_ish; } || err_msg "Can only run on iSH"
+{ is_ish || is_chrooted_ish; } || err_msg "Can only run on iSH or chrooted iSH"
 
 if [[ "$1" = "total" ]]; then
     total_cleanup
