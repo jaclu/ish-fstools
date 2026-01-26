@@ -29,6 +29,7 @@ ift_debian_packages:
   # - file      # Always present on Deb10
   # - findutils # Always present on Deb10
   # - psmisc     # Always present on Deb10
+  - sysvinit-core # offers /sbin/init for handling /etc/inittab
   - gawk # GNU awk pattern-matching language
   - git # Distributed version control system
   - fzf # A command-line fuzzy finder - rather slow on iSH - is it meaningful?
@@ -98,7 +99,6 @@ ift_debian_packages:
   #  Service handling
   #
   # - anacron
-  # - initscripts # think openrc covers this
   - openrc # OpenRC manages the services, startup and shutdown of a host
 
   #
