@@ -9,6 +9,10 @@
 # Variables for Debian 10 FS
 #
 
+ift_locales:
+  - en_US.UTF-8
+  - en_GB.UTF-8 # for those of us using 24h time :)
+
 ift_debian_packages:
   #
   #  Shells
