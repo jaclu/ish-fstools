@@ -88,15 +88,6 @@
   changed_when: all_distros_launcher.rc == 43
   failed_when: all_distros_launcher.rc not in [0, 43]
 
-- name: "Set chroot default command: {{ f_app_ift_launcher }}"
-  copy:
-    dest: /.chroot_default_cmd
-    content: "{{ f_app_ift_launcher }}\n"
-    owner: root
-    group: root
-    mode: "0644"
-  when: not is_ish | default(false)
-
 - name: "Rename Distro bins -> name.ORG if found, and softlink iSH replacement"
   #
   #  Minimizes risk of orig bin being run, whilst still making it available
