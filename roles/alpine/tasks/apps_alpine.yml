@@ -70,3 +70,43 @@
   register: alpine_rename_uptime
   changed_when: alpine_rename_uptime.rc == 43
   failed_when: alpine_rename_uptime.rc not in [0, 43]
+
+#
+# The following are Alpine specific, located here to avoid having to split new and
+# old style file copying more than once
+#
+
+- name: Install custom /etc/init.d/sshd, supporting iSH logging
+  copy:
+    remote_src: true
+    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
+  when: ansible_facts.os_family == 'Alpine'
+  notify: Restart sshd
+
+- name: Deploy /etc/inittab
+  copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_repo_alpine_role }}/files/etc/inittab"
+    dest: /etc/
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: Install extras to /usr/local/bin
+  copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_repo_alpine_role }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+  when: ansible_facts.os_family == 'Alpine'
+
+- name: Install extras to /usr/local/sbin
+  copy:
+    remote_src: true
+    mode: preserve
+    src: "{{ d_repo_alpine_role }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/
+  when: ansible_facts.os_family == 'Alpine'

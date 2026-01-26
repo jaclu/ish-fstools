@@ -16,10 +16,6 @@
 #    Remote copy does not support recursive copy of directory
 #
 
-- name: Define all_distros_copy_style
-  set_fact:
-    all_distros_copy_style: "{{ 'slow old-style' if old_ansible else 'remote_src' }}"
-
 - name: "Install some common config files --  remote_src"
   copy:
     remote_src: true
@@ -30,9 +26,9 @@
     - environment
     - profile-hints
 
-- name: "Copy /etc/skel  --  {{ all_distros_copy_style }}"
+- name: "Copy /etc/skel  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not old_ansible }}"
+    remote_src: "{{ not initial_prep_old_ansible }}"
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
     dest: /etc
     owner: root
@@ -52,9 +48,9 @@
 # Originated from common_apps.yml
 #
 
-- name: "Common apps - Install extras to /usr/local/lib  --  {{ all_distros_copy_style }}"
+- name: "Common apps - /usr/local/lib  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not old_ansible }}"
+    remote_src: "{{ not initial_prep_old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
@@ -69,16 +65,16 @@
     group: root
     mode: "0755"
 
-- name: "Common apps - Install extras to  /usr/local/bin  -- {{ all_distros_copy_style }}"
+- name: "Common apps - /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not old_ansible }}"
+    remote_src: "{{ not initial_prep_old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
-- name: "Common apps - Install extras to  /usr/local/sbin  --  {{ all_distros_copy_style }}"
+- name: "Common apps - /usr/local/sbin  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not old_ansible }}"
+    remote_src: "{{ not initial_prep_old_ansible }}"
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
@@ -92,84 +88,3 @@
     group: root
     mode: "0755"
   notify: Restart runbg
-
-#
-# The following are Alpine specific, located here to avoid having to split new and
-# old style file copying more than once
-#
-
-- name: "Alpine - sshd - custom service script, supporting iSH logging --  remote_src"
-  copy:
-    remote_src: true
-    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Alpine'
-  notify: Restart sshd
-
-- name: "Alpine - Deploy /etc/inittab --  remote_src"
-  copy:
-    remote_src: true
-    mode: preserve
-    src: "{{ d_repo_alpine_role }}/files/etc/inittab"
-    dest: /etc/
-  when: ansible_facts.os_family == 'Alpine'
-
-- name: "Alpine - Install extras to /usr/local/bin --  remote_src"
-  copy:
-    remote_src: true
-    mode: preserve
-    src: "{{ d_repo_alpine_role }}/files/usr_local_bin/"
-    dest: /usr/local/bin/
-  when: ansible_facts.os_family == 'Alpine'
-
-- name: "Alpine - Install extras to /usr/local/sbin --  remote_src"
-  copy:
-    remote_src: true
-    mode: preserve
-    src: "{{ d_repo_alpine_role }}/files/usr_local_sbin/"
-    dest: /usr/local/sbin/
-  when: ansible_facts.os_family == 'Alpine'
-
-#
-#  Debian specific file copying
-#
-
-- name: "Debian - ssh - custom service script, supporting iSH logging --  remote_src"
-  copy:
-    remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Debian'
-  notify: Restart sshd
-
-- name: "Debian - /etc/init.d/rc --  remote_src"
-  copy:
-    remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
-    dest: "{{ d_init_ift }}/rc"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Debian'
-
-- name: "Debian - Install extras to /usr/local/bin  -- {{ all_distros_copy_style }}"
-  copy:
-    remote_src: "{{ not old_ansible }}"
-    mode: preserve
-    src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
-    dest: /usr/local/bin/
-  when: ansible_facts.os_family == 'Debian'
-
-- name: "Debian - Install extras to /usr/local/sbin  -- {{ all_distros_copy_style }}"
-  copy:
-    remote_src: "{{ not old_ansible }}"
-    mode: preserve
-    src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
-    dest: /usr/local/sbin/
-  when: ansible_facts.os_family == 'Debian'
