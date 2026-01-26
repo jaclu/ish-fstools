@@ -35,7 +35,8 @@ build_files="
 /.chroot_hostname
 /etc/opt/chrooted_ish
 "
-msg_1 "Doing some first boot on iSH cleanup"
+
+lbl_1 "Doing some first boot on iSH cleanup"
 
 printf '%s\n' "$build_files" \
     | while IFS= read -r f; do
@@ -51,4 +52,5 @@ if [ -n "$h_name" ]; then
     /usr/local/bin/hostname "$h_name"
 else
     lbl_4 "Default hostname iSH will be used"
+    /usr/local/bin/hostname iSH
 fi
