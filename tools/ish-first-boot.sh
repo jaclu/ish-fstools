@@ -44,15 +44,17 @@ printf '%s\n' "$build_files" \
         safe_remove --ignore-sys-path "$f"
     done
 
-printf "Enter hostname: "
-IFS= read -r h_name
-echo
-echo "h_name recieved [$h_name]"
-echo
-if [ -n "$h_name" ]; then
-    lbl_4 "Setting hostname: $h_name"
-    /usr/local/bin/hostname "$h_name"
-else
-    lbl_4 "Default hostname iSH will be used"
-    /usr/local/bin/hostname iSH
-fi
+#
+# Doesn't seem to work pre login, read instantly returns, so actual hostname
+# needs to be set once fully booted
+#
+# printf "Enter hostname: "
+# IFS= read -r h_name
+# if [ -n "$h_name" ]; then
+#     lbl_1 "Setting hostname: $h_name"
+#     /usr/local/bin/hostname "$h_name"
+# else
+
+lbl_1 "Default hostname iSH will be used"
+/usr/local/bin/hostname iSH
+# fi

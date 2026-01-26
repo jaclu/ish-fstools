@@ -299,18 +299,15 @@ display_header() {
 
 boot_up() {
     # at boot up also log it
-    log_display "><> boot_up()"
+    # log_display "><> boot_up()"
 
+    # This clears out some build stuff a chrooted pre-built might have left
+    # and resets the hostname to iSH
     if [ -x "$f_ish_first_boot" ]; then
-        log_display "><> found first boot"
         is_fs_chrooted || {
-            log_display "><> not chooted, running first boot"
             $f_ish_first_boot
             rm -f "$f_ish_first_boot"
-            log_display "><> not chooted, first boot done and removed"
         }
-    else
-        log_display "><> first boot not found"
     fi
 
     if [ -f "$f_pts_0_as_console" ]; then
