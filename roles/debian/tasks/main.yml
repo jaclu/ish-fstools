@@ -12,6 +12,34 @@
 - name: Run apps_debian
   import_tasks: apps_debian.yml
 
+- name: " sshd - Install Debian sshd_config"
+  template:
+    src: sshd_config.js2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart sshd
+
+- name: Install custom /etc/init.d/sshd, supporting iSH logging --  remote_src
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart sshd
+
+- name: Install custom /etc/init.d/rc --  remote_src
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
+    dest: "{{ d_init_ift }}/rc"
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Generate required locales
   locale_gen:
     name: "{{ item }}"

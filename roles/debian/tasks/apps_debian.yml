@@ -24,30 +24,17 @@
     state: present
     name: "{{ ift_debian_packages }}"
 
-#
-#  Debian specific file copying
-#
-
-- name: Install custom /etc/init.d/sshd, supporting iSH logging --  remote_src
-  copy:
+- name: Install openssh tarball in /opt
+  unarchive:
+    src: "{{ ift_openssh_tgz }}"
+    dest: /
     remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Debian'
-  notify: Restart sshd
 
-- name: Install custom /etc/init.d/rc --  remote_src
-  copy:
+- name: Install abduco tarball in /usr/local
+  unarchive:
+    src: "{{ ift_abduco_tgz }}"
+    dest: /
     remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
-    dest: "{{ d_init_ift }}/rc"
-    owner: root
-    group: root
-    mode: "0755"
-  when: ansible_facts.os_family == 'Debian'
 
 - name: "Install extras to /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
@@ -55,7 +42,6 @@
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
-  when: ansible_facts.os_family == 'Debian'
 
 - name: "Install extras to /usr/local/sbin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
@@ -63,4 +49,3 @@
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
-  when: ansible_facts.os_family == 'Debian'

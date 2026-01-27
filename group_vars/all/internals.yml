@@ -19,6 +19,7 @@ vers_ift: 0.8.28
 repo_name: https://github.com/jaclu/ish-fstools.git
 repo_branch: main
 
+d_icloud_deploy: /iCloud/deploy # in order to just have to set it once
 d_repo: /opt/ish-fstools
 d_etc_ift: /etc/opt/ift
 

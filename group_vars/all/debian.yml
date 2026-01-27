@@ -63,7 +63,7 @@ ift_debian_packages:
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing
-  - openssh-server # Port of OpenBSD's free SSH release
+  # - openssh-server # will install pre-compiled openssh 10 - do not install via apt!
 
   #
   #  Web Tools
@@ -133,3 +133,7 @@ ift_debian_pkgs_linting:
   - pylint3 # really slow in iSH
   - shellcheck
   - yamllint
+
+ift_prebuilds_deb: "{{ d_icloud_deploy }}/prebuilds/Debian10"
+ift_openssh_tgz: "{{ ift_prebuilds_deb }}/openssh/openssh-10.2p1-ish-deb10.tgz"
+ift_abduco_tgz: "{{ ift_prebuilds_deb }}/abduco-0.6-deb.tgz"

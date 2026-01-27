@@ -86,6 +86,17 @@
 #  Debian
 #
 
+- name: Params checks Debian - No openssh via apt
+  fail:
+    msg: "OpenSSH 10 is pre-compiled, do NOT install via ift_debian_packages"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - ansible_facts.os_family == 'Debian'
+    - (ift_debian_packages | default([]))
+      | intersect(['openssh', 'openssh-server'])
+      | length > 0
+
 - name: Params checks Debian - Fail if ift_runlevel_runbg is set but no openrc
   fail:
     msg: "openrc must be in ift_debian_packages when ift_runlevel_runbg is defined"
@@ -95,19 +106,6 @@
     - ansible_facts.os_family == 'Debian'
     - ift_runlevel_runbg | default('') | length > 0
     - "'openrc' not in (ift_debian_packages | default([]))"
-
-- name: Param checks Debian - Fail if ift_runlevel_sshd is set but packages missing
-  fail:
-    msg: >
-      openrc and openssh-server must be in ift_debian_packages
-      when ift_runlevel_sshd is defined and non-empty
-  delegate_to: localhost
-  run_once: true
-  when:
-    - ansible_facts.os_family == 'Debian'
-    - ift_runlevel_sshd | default('') | length > 0
-    - "'openrc' not in (ift_debian_packages | default([])) or
-      'openssh-server' not in (ift_debian_packages | default([]))"
 
 - name: Param checks Debian - Fail if ift_timezone is set but tzdata missing
   fail:

@@ -83,7 +83,7 @@ sync_something() {
     _ss_cutoff_size=40
 
     [ -z "$_ss_cmd" ] && err_msg "sync_something() - no param"
-    lbl_2 "$_ss_lbl - $do_clear"
+    lbl_2 "sync_something() - $_ss_lbl - $do_clear"
     # if $do_clear; then
     eval "$_ss_cmd" >"$f_tmp" 2>&1 || {
         err_msg "Failed to sync ish-fstools - $_ss_lbl"
@@ -146,27 +146,28 @@ sync_fs_tools() {
     echo
     lbl_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
     mkdir -p "$AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
-    mkdir -p "$AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/manual_deploys/installs"
 
-    sync_something "prebuilds/asdf env" \
-        "$my_rsync \
-        $d_fake_icloud/deploy/prebuilds/asdf \
-        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
-
-    sync_something "prebuilds/python" \
-        "$my_rsync \
-        $d_fake_icloud/deploy/prebuilds/python \
-        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
+    if [ -f "$AOK_TMPDIR"/aok_fs/etc/alpine-release ]; then
+        platform_dest=prebuilds/Alpine
+    elif [ -f "$AOK_TMPDIR"/aok_fs/etc/debian_version ]; then
+        # only relevant for Deb10
+        platform_dest=prebuilds/Debian10
+    else
+        platform_dest=""
+    fi
+    [ -n "$platform_dest" ] && {
+        # mkdir -p "$d_fake_icloud/deploy/$platform_dest"
+        lbl_1 "Using platform dest: $platform_dest"
+        sync_something "$platform_dest" \
+            "$my_rsync \
+            $d_fake_icloud/deploy/$platform_dest \
+            $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
+    }
 
     #sync_something "olint venv" \
     #    "$my_rsync \
     #    $d_fake_icloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
     #    $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
-
-    sync_something "jed" \
-        "$my_rsync \
-        $d_fake_icloud/deploy/manual_deploys/installs/jed-0.99-19-b.tgz \
-        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/manual_deploys/installs/"
 
     sync_something home_jaclu \
         "$my_rsync \
