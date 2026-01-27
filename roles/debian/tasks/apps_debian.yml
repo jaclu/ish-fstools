@@ -24,7 +24,7 @@
     state: present
     name: "{{ ift_debian_packages }}"
 
-- name: Install openssh tarball in /opt
+- name: " opt/openssh - Install openssh tarball in /opt"
   unarchive:
     src: "{{ ift_openssh_tgz }}"
     dest: /

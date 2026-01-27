@@ -12,25 +12,6 @@
 - name: Run apps_debian
   import_tasks: apps_debian.yml
 
-- name: " sshd - Install Debian sshd_config"
-  template:
-    src: sshd_config.js2
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: "0755"
-  notify: Restart sshd
-
-- name: Install custom /etc/init.d/sshd, supporting iSH logging --  remote_src
-  copy:
-    remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
-  notify: Restart sshd
-
 - name: Install custom /etc/init.d/rc --  remote_src
   copy:
     remote_src: true
@@ -51,3 +32,43 @@
     src: /usr/local/sbin/fake-init
     dest: /sbin/init
     state: link
+
+#
+# /opt/openssh config
+#
+- name: " opt/openssh - Ensure /var/lib/sshd exists"
+  file:
+    path: /var/lib/sshd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " opt/openssh - Ensure sshd user exists"
+  user:
+    name: sshd
+    comment: "OpenSSH Daemon User"
+    group: nogroup
+    home: /run/sshd
+    shell: /usr/sbin/nologin
+    system: true
+    create_home: true
+
+- name: " opt/openssh - Install Debian sshd_config"
+  template:
+    src: sshd_config.js2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart sshd
+
+- name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart sshd

@@ -134,16 +134,16 @@ checkconfig() {
 }
 
 start_pre() {
-        log_it start_pre
+    log_it start_pre
 	checkconfig
 }
 
 start_post() {
-    	log_it started
+    log_it started
 }
 
 stop_pre() {
-        log_it stop_pre
+    log_it stop_pre
 	update_command
 	if [ "${RC_CMD}" = "restart" ] ; then
 		checkconfig || return 1
@@ -151,7 +151,7 @@ stop_pre() {
 }
 
 stop_post() {
-        log_it stop_post
+    log_it stop_post
 	if [ "$RC_RUNLEVEL" = "shutdown" ]; then
 		_sshd_pids=$(pgrep "${command##*/}:")
 		if [ -n "$_sshd_pids" ]; then
