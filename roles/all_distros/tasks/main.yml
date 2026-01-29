@@ -110,3 +110,11 @@
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
   failed_when: all_distros_bin_replacement.rc not in [0, 43]
+
+- name: Ensure iPad hostname is mapped to localhost
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1\tiPad"
+    regexp: '^127\.0\.0\.1\s+iPad$'
+    state: present
+    create: false

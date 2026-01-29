@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/ish-fstool
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Display motd for interactice shells
+#
+if [ -n "$SSH_ORIGINAL_COMMAND" ]; then
+    exec sh -c "$SSH_ORIGINAL_COMMAND"
+else
+    /usr/local/sbin/update-motd || true
+    exec "$SHELL" -l
+fi

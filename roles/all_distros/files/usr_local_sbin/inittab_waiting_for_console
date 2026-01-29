@@ -12,7 +12,6 @@
 #
 
 state_prefix=/etc/opt/ift
-f_ish_first_boot=/usr/local/sbin/ish-first-boot.sh
 f_inittab_can_start="$state_prefix"/inittab_can_start
 f_pts_0_as_console="$state_prefix"/pts_0_as_console
 f_recovery_mode="$state_prefix"/recovery-mode
@@ -22,11 +21,6 @@ this_app="$(basename "$0")"
 
 #  If Launcher is not ift-launcher, exit right away
 pgrep -f ift-launcher >/dev/null || return
-
-while [ -f "$f_ish_first_boot" ]; do
-    echo "inittab waiting for $f_ish_first_boot to complete"
-    sleep 5
-done
 
 #  If not using console mode, exit (almost) right away
 [ ! -f "$f_pts_0_as_console" ] && {

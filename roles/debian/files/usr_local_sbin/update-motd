@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+#  Part of https://github.com/jaclu/ish-fstool
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Since PAM is disabled, this processes motd at ssh login
+#
+
+for f in /etc/update-motd.d/*; do
+    [ -x "$f" ] || continue
+    "$f" # >>"$TMP" 2>/dev/null
+done

@@ -36,6 +36,7 @@ unpack_saved_fs() {
 }
 
 create_empty_fs() {
+
     # miniroot_fs="alpine-minirootfs-3.16.9-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.17.10-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.18.12-x86.tar.gz"
@@ -66,9 +67,13 @@ create_empty_fs() {
 }
 
 replace_fs() {
-    [ "$(find aok_fs/dev 2>/dev/null | wc -l)" -gt 1 ] && err_msg "chooted - found items in /dev"
-    [ "$(find aok_fs/proc 2>/dev/null | wc -l)" -gt 1 ] && err_msg "chooted - found items in /proc"
-
+    msg_dbg "replace_fs()"
+    [ "$(find aok_fs/dev 2>/dev/null | wc -l)" -gt 1 ] && {
+        err_msg "chooted - found items in /dev"
+    }
+    [ "$(find aok_fs/proc 2>/dev/null | wc -l)" -gt 1 ] && {
+        err_msg "chooted - found items in /proc"
+    }
     if [ -f "$fs_saved" ]; then
         unpack_saved_fs
     else
@@ -227,13 +232,16 @@ prepare_shell_env() {
     copy_skel_files
 
     lbl_1 "Prpare ansible job history"
+    lbl_2 "PWD: $(pwd)"
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
     if [ -f aok_fs/etc/debian_version ]; then
-        f_history="aok_fs/root/.bash_history"
+        lbl_3 "Detected Debian FS"
+        f_history=aok_fs/root/.bash_history
     else
-        f_history="aok_fs/root/.ash_history"
+        lbl_3 "Detected Alpine FS"
+        f_history=aok_fs/root/.ash_history
     fi
 
     lbl_2 "prepping $f_history"
@@ -283,7 +291,6 @@ repo_name=$(basename "$d_repo")
 
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
-fs_saved=aok_completed/ansible.tgz
 my_rsync="rsync -a --out-format='%n'"
 
 load_utils

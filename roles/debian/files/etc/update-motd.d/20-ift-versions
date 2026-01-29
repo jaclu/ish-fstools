@@ -6,8 +6,9 @@
 #
 #  Copyright (c) 2024: Jacob.Lundqvist@gmail.com
 #
-#  Clear color for aok version info
+#  Displays iSH version
 #
 
-# printf "\e[0m"
-echo
+printf "\e[35m"
+/usr/local/bin/ift-versions
+printf "\e[0m"

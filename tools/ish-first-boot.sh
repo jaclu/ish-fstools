@@ -56,5 +56,5 @@ printf '%s\n' "$build_files" \
 # else
 
 lbl_1 "Default hostname iSH will be used"
-/usr/local/bin/hostname iSH
+/usr/local/bin/hostname iSH >/dev/null
 # fi
