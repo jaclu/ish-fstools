@@ -6,7 +6,7 @@
 #
 #  License: MIT
 #
-#  Display motd for interactice shells
+#  Display motd for interactive shells
 #
 if [ -n "$SSH_ORIGINAL_COMMAND" ]; then
     exec sh -c "$SSH_ORIGINAL_COMMAND"
