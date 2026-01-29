@@ -9,6 +9,7 @@
 #  Displays iSH version
 #
 
+echo
 printf "\e[35m"
 /usr/local/bin/ift-versions
 printf "\e[0m"
