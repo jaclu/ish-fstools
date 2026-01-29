@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 
-description="compiled OpenBSD Secure Shell server"
+description="v10 OpenBSD Secure Shell server - compiled for Debian 10"
 command="/opt/openssh/sbin/sshd"
 command_background="YES"
 pidfile="/run/sshd.pid"
@@ -19,21 +19,19 @@ check_privsep_dir() {
     # Create the PrivSep empty dir if necessary
     _d=/var/lib/sshd
     if [ ! -d "$_d" ]; then
-        mkdir -p "$_d"
+        mkdir -p "$_d"|| eerror "Failed mkdir: $_d"
         chmod 0755 "$_d"
         log_it "Created PrivSep dir: $_d"
     fi
 }
 
 check_config() {
-    /opt/openssh/sbin/sshd  -t || {
-        msg="sshd config error"
-        eerror "$msg"
-    }
+    /opt/openssh/sbin/sshd  -t || eerror "sshd config error"
 }
 
 start_pre() {
     check_privsep_dir
+    ssh-keygen -A || eerror "Failed to generate hostkeys"
     check_config
 }
 
