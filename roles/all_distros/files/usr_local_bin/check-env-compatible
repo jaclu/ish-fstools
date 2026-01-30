@@ -17,18 +17,6 @@ notification() {
     fi
 }
 
-is_ish() {
-    [ -d /proc/ish ]
-}
-
-is_fs_chrooted() {
-    # this quick and simple check doesn't work on ish
-    # so lets pretend for now chroot does not happen on ish
-    is_ish && return 1                       # would never happen here :)
-    [ "$(uname -s)" != "Linux" ] && return 1 # can only chroot this on Linux
-    ! grep -q " / / " /proc/self/mountinfo
-}
-
 uptime_check() {
     #
     #  On Alpine >= 3.19  /usr/bin/uptime segfaults if procps is installed
@@ -36,7 +24,7 @@ uptime_check() {
     #
 
     # Only relevant for Alpine
-    [ -f /etc/alpine-release ] || return
+    fs_is_alpine || return
 
     # if version check is not available, no check can be done
     [ -f /usr/local/lib/ift-vers-check.sh ] || {
@@ -53,10 +41,11 @@ uptime_check() {
     ! min_release 3.19 && return
 
     cmd_uptime=/usr/bin/uptime
-    [ "$(realpath "$cmd_uptime")" = /bin/busybox ] && return
+    alt_uptime=/usr/local/bin/uptime
+    [ "$(realpath "$cmd_uptime")" = "$alt_uptime" ] && return
 
     rm -f "$cmd_uptime"
-    ln -sf /bin/busybox "$cmd_uptime"
+    ln -sf "$alt_uptime" "$cmd_uptime"
 
     #region warning
     notification "

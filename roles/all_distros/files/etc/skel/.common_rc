@@ -216,7 +216,7 @@ unset -f basic_aliases
 #  use ${_hn} in your prompt!
 #
 if [ -x /usr/local/bin/hostname ]; then
-    _hn="$(/usr/local/bin/hostname)"
+    _hn="$(/usr/local/bin/hostname -s)"
 else
     _hn="$(/bin/hostname -s)"
 fi
