@@ -88,7 +88,7 @@ else
     use_wall=false
 fi
 
-[ ! -d /proc/ish ] && ! is_fs_chrooted && {
+[ ! -d /proc/ish ] && ! is_chrooted && {
     notification "---  WARNING: $(basename "$0") - should only run on iSH"
     exit 0
 }
