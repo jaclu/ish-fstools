@@ -9,4 +9,4 @@
 #  Since PAM is disabled, this processes motd at ssh login
 #
 
-/usr/local/bin/ift-versions > /etc/motd
+/usr/local/bin/ift-versions >/etc/motd
