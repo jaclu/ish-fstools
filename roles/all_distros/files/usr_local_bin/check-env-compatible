@@ -35,17 +35,16 @@ uptime_check() {
     }
 
     # shellcheck source=/dev/null # not available on deploy machines
-    . /usr/local/lib/ift-vers-check.sh
+    . /usr/local/lib/ift-vers-check.sh || err_msg "Failed to source: ift-vers-check.sh"
 
     # if older Alpine - all is good
     ! min_release 3.19 && return
 
     cmd_uptime=/usr/bin/uptime
-    alt_uptime=/usr/local/bin/uptime
-    [ "$(realpath "$cmd_uptime")" = "$alt_uptime" ] && return
+    [ "$(realpath "$cmd_uptime")" = /bin/busybox ] && return
 
     rm -f "$cmd_uptime"
-    ln -sf "$alt_uptime" "$cmd_uptime"
+    ln -sf /bin/busybox "$cmd_uptime"
 
     #region warning
     notification "
@@ -60,11 +59,24 @@ At that point this issue will be self corrected again.
     #endregion
 }
 
+load_utils() {
+    _lu_d_base="${1:-$d_repo}"
+    _lu_f_utils="$_lu_d_base"/utils/script-utils.sh
+
+    # shellcheck source=utils/script-utils.sh disable=SC1091,SC2317
+    . "$_lu_f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+        exit 1
+    }
+}
+
 #===============================================================
 #
 #   Main
 #
 #===============================================================
+
+load_utils /usr/local/lib/ift-utils.sh
 
 #
 # If called from somewhere that isn't connected to stdio, make announcements
