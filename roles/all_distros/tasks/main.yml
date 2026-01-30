@@ -73,7 +73,7 @@
       hide_bins=(
           /usr/bin/hostname
           /usr/bin/logger
-          /usr/bin/uptime
+          # /usr/bin/uptime
           /usr/sbin/halt
           /usr/sbin/shutdown
       )
