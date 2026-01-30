@@ -72,10 +72,10 @@
       ex_code=0
       hide_bins=(
           /usr/bin/hostname
-          /usr/sbin/halt
-          /usr/sbin/shutdown
           /usr/bin/logger
           # /usr/bin/uptime - needed for replacement uptime!
+          /usr/sbin/halt
+          /usr/sbin/shutdown
       )
       for hide_bin in "${hide_bins[@]}"; do
           [[ -L "$hide_bin" ]] && [[ $(realpath "$hide_bin") != /bin/busybox  ]] && {
@@ -106,7 +106,6 @@
       exit "$ex_code"
   args:
     executable: /bin/bash
-  when: ansible_facts.os_family == 'Alpine'
   register: all_distros_bin_replacement
   changed_when: all_distros_bin_replacement.rc == 43
   failed_when: all_distros_bin_replacement.rc not in [0, 43]
