@@ -16,7 +16,7 @@
 #    Remote copy does not support recursive copy of directory
 #
 
-- name: "Install some common config files --  remote_src"
+- name: "Install some common config files"
   copy:
     remote_src: true
     mode: preserve
@@ -35,7 +35,7 @@
     group: root
     mode: "0644"
 
-- name: "Installing no-pw sudoers group --  remote_src"
+- name: "Installing no-pw sudoers group"
   copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files/etc/sudoers.d/sudo_no_passwd"
@@ -79,7 +79,7 @@
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
 
-- name: "Install service - runbg --  remote_src"
+- name: Install service - runbg
   copy:
     remote_src: true
     src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
