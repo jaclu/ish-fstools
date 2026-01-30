@@ -12,7 +12,7 @@
 - name: Run apps_debian
   import_tasks: apps_debian.yml
 
-- name: Install custom /etc/init.d/rc --  remote_src
+- name: Install custom /etc/init.d/rc
   copy:
     remote_src: true
     src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
@@ -41,6 +41,11 @@
     owner: root
     group: root
     mode: "0755"
+
+- name: Remove default /etc/motd
+  file:
+    path: /etc/motd
+    state: absent
 
 #
 # /opt/openssh config
