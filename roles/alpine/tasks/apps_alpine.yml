@@ -84,7 +84,6 @@
     owner: root
     group: root
     mode: "0755"
-  when: ansible_facts.os_family == 'Alpine'
   notify: Restart sshd
 
 - name: Deploy /etc/inittab
@@ -93,7 +92,6 @@
     mode: preserve
     src: "{{ d_repo_alpine_role }}/files/etc/inittab"
     dest: /etc/
-  when: ansible_facts.os_family == 'Alpine'
 
 - name: Install extras to /usr/local/bin
   copy:
@@ -101,12 +99,3 @@
     mode: preserve
     src: "{{ d_repo_alpine_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
-  when: ansible_facts.os_family == 'Alpine'
-
-- name: Install extras to /usr/local/sbin
-  copy:
-    remote_src: true
-    mode: preserve
-    src: "{{ d_repo_alpine_role }}/files/usr_local_sbin/"
-    dest: /usr/local/sbin/
-  when: ansible_facts.os_family == 'Alpine'
