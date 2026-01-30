@@ -125,6 +125,6 @@ Subsystem	sftp	/opt/openssh/libexec/sftp-server
 
 Compression no # net is fast, this host is underperformant...
 
-# Since PAM is disabled in this custom built openssh, update motd manually
-ForceCommand /usr/local/sbin/ssh-motd-wrapper
+# # Since PAM is disabled in this custom built openssh, update motd manually
+# ForceCommand /usr/local/sbin/ssh-motd-wrapper
 

@@ -9,7 +9,4 @@
 #  Since PAM is disabled, this processes motd at ssh login
 #
 
-for f in /etc/update-motd.d/*; do
-    [ -x "$f" ] || continue
-    "$f" # >>"$TMP" 2>/dev/null
-done
+/usr/local/bin/ift-versions > /etc/motd

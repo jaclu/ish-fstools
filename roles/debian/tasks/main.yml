@@ -33,20 +33,6 @@
     dest: /sbin/init
     state: link
 
-- name: Add ift-versions to motd
-  copy:
-    remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/update-motd.d/20-ift-versions"
-    dest: /etc/update-motd.d
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: Remove default /etc/motd
-  file:
-    path: /etc/motd
-    state: absent
-
 #
 # /opt/openssh config
 #

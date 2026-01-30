@@ -823,7 +823,7 @@ is_fs_chrooted && {
     /usr/local/bin/logger "$prog_name" "===  System startup  ==="
     /usr/local/sbin/reset-run-dir
     /usr/local/sbin/rotate-logs.sh
-    fs_is_alpine && /usr/local/sbin/update-motd
+    # fs_is_alpine && /usr/local/sbin/update-motd
 }
 
 fs_is_debian && update_deb_log_kill_cmd
