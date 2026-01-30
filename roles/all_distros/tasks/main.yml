@@ -71,7 +71,7 @@
       set -o pipefail
       ex_code=0
       hide_bins=(
-          /usr/bin/hostname
+          /bin/hostname # Debian: /bin linked to /usr/bin
           /usr/bin/logger
           # /usr/bin/uptime
           /usr/sbin/halt
