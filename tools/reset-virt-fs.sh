@@ -49,6 +49,7 @@ create_empty_fs() {
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
+    mkdir -p "$d_aok_fs"
     lbl_2 "Clearing File System"
     rm "${d_aok_fs:-/tmp3}"/* -rf
 
@@ -340,7 +341,6 @@ fi
 
 cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
 d_aok_fs="$AOK_TMPDIR"/aok_fs
-[ -d "$d_aok_fs" ] || err_msg "Missing directory: $d_aok_fs"
 
 $do_clear && replace_fs
 
