@@ -50,28 +50,28 @@ create_empty_fs() {
     lbl_2 "><> pwd:$(pwd)"
 
     lbl_2 "Clearing File System"
-    rm aok_fs/* -rf
+    rm "$d_aok_fs"/* -rf
 
-    cd aok_fs || err_msg "Failed to cd into aok_fs"
+    cd "$d_aok_fs" || err_msg "Failed to cd into: $d_aok_fs"
 
     lbl_2 "recreating alpine-minirootfs"
     tar xfz ../aok_cache/"$miniroot_fs" || {
         err_msg "Failed to untar"
     }
 
-    cd .. || err_msg "Failed to cd up ftom aok_fs"
+    cd .. || err_msg "Failed to cd up from: $d_aok_fs"
 
-    f_fs_release="aok_fs/etc/aok-fs-release"
+    f_fs_release="$d_aok_fs"/etc/aok-fs-release
     lbl_2 "Defining $f_fs_release"
     echo "ish-fstool-template" >"$f_fs_release"
 }
 
 replace_fs() {
     msg_dbg "replace_fs()"
-    [ "$(find aok_fs/dev 2>/dev/null | wc -l)" -gt 1 ] && {
+    [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
         err_msg "chooted - found items in /dev"
     }
-    [ "$(find aok_fs/proc 2>/dev/null | wc -l)" -gt 1 ] && {
+    [ "$(find "$d_aok_fs"/proc 2>/dev/null | wc -l)" -gt 1 ] && {
         err_msg "chooted - found items in /proc"
     }
     if [ -f "$fs_saved" ]; then
@@ -124,7 +124,7 @@ sync_something() {
 
 # remove_symbolic_links_in_dest() {
 #     # remove softlinks in dest repo to avoid unintentionally removing source
-#     d_dest_repo="$AOK_TMPDIR/aok_fs/root/$repo_name"
+#     d_dest_repo="$d_aok_fs/root/$repo_name"
 
 #     msg_dbg "remove_symbolic_links_in_dest()" 1
 #     find "$d_dest_repo" -type l -print \
@@ -149,12 +149,12 @@ sync_fs_tools() {
     d_icloud_deploy_rel=iCloud/deploy
     echo
     echo
-    lbl_1 "Syncing ish-fstools -> $AOK_TMPDIR/aok_fs/root"
-    mkdir -p "$AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
+    lbl_1 "Syncing ish-fstools -> $d_aok_fs/root"
+    mkdir -p "$d_aok_fs/$d_icloud_deploy_rel/prebuilds"
 
-    if [ -f "$AOK_TMPDIR"/aok_fs/etc/alpine-release ]; then
+    if [ -f "$d_aok_fs"/etc/alpine-release ]; then
         platform_dest=prebuilds/Alpine
-    elif [ -f "$AOK_TMPDIR"/aok_fs/etc/debian_version ]; then
+    elif [ -f "$d_aok_fs"/etc/debian_version ]; then
         # only relevant for Deb10
         platform_dest=prebuilds/Debian10
     else
@@ -166,38 +166,44 @@ sync_fs_tools() {
         sync_something "$platform_dest" \
             "$my_rsync \
             $d_fake_icloud/deploy/$platform_dest \
-            $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds"
+            $d_aok_fs/$d_icloud_deploy_rel/prebuilds"
     }
 
     #sync_something "olint venv" \
     #    "$my_rsync \
     #    $d_fake_icloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
-    #    $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
+    #    $d_aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
 
     sync_something home_jaclu \
         "$my_rsync \
         $d_fake_icloud/deploy/saved_home_dirs/home_jaclu.tgz \
-        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel/saved_home_dirs/"
+        $d_aok_fs/$d_icloud_deploy_rel/saved_home_dirs/"
 
     sync_something sshd_config \
         "$my_rsync \
         $d_fake_icloud/deploy/sshd_config \
-        $AOK_TMPDIR/aok_fs/$d_icloud_deploy_rel"
+        $d_aok_fs/$d_icloud_deploy_rel"
 
     sync_something ish-fstools "$my_rsync \
         --exclude=.git/ \
         --exclude=.cache.olint \
         --exclude=.ansible/ \
         --delete-delay \
-        $d_repo $AOK_TMPDIR/aok_fs/root"
+        $d_repo $d_aok_fs/root"
 
-    chown -R 501:501 "$AOK_TMPDIR/aok_fs/iCloud"
+    chown -R 501:501 "$d_aok_fs"/iCloud
 
     # replace_repo_conf
-    # f_overrides="$AOK_TMPDIR/aok_fs/root/$repo_name/vars/overrides.yml"
+    # f_overrides="$d_aok_fs"/root/$repo_name/vars/overrides.yml
     # lbl_2 "Will replace softlink with real file: $f_overrides"
     # rm "$f_overrides"
     # cp "$(realpath "$d_repo"/vars/overrides.yml)" "$f_overrides"
+}
+
+reset_root_home_privs() {
+    _d="$d_aok_fs"/root
+    lbl_2 "Resetting privs for: $_d"
+    chown root: -R "$_d"
 }
 
 copy_skel_files() {
@@ -212,7 +218,7 @@ copy_skel_files() {
             && tar cf - .
         echo $? >"$tmp.left"
     ) | (
-        cd aok_fs/root \
+        cd "$d_aok_fs"/root \
             && tar xpf -
         echo $? >"$tmp.right"
     )
@@ -226,22 +232,22 @@ copy_skel_files() {
     if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
         err_msg "copying /etc/skel to \$HOME failed (tar create=$left, extract=$right)" >&2
     fi
+    reset_root_home_privs
 }
 
 prepare_shell_env() {
     copy_skel_files
-
     lbl_1 "Prpare ansible job history"
     lbl_2 "PWD: $(pwd)"
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
-    if [ -f aok_fs/etc/debian_version ]; then
+    if [ -f "$d_aok_fs"/etc/debian_version ]; then
         lbl_3 "Detected Debian FS"
-        f_history=aok_fs/root/.bash_history
+        f_history="$d_aok_fs"/root/.bash_history
     else
         lbl_3 "Detected Alpine FS"
-        f_history=aok_fs/root/.ash_history
+        f_history="$d_aok_fs"/root/.ash_history
     fi
 
     lbl_2 "prepping $f_history"
@@ -264,7 +270,7 @@ save_new_fs() {
     $do_clear && {
         lbl_1 "Save new FS"
         lbl_2 "TMPDIR: $TMPDIR  -  AOK_TMPDIR: $AOK_TMPDIR"
-        /opt/AOK/tools/aok_fs-save
+        /opt/AOK/tools/"$d_aok_fs"-save
     }
 }
 
@@ -335,6 +341,8 @@ fi
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"
 
 cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
+d_aok_fs="$AOK_TMPDIR"/aok_fs
+[ -d "$d_aok_fs" ] || err_msg "Missing directory: $d_aok_fs"
 
 $do_clear && replace_fs
 
