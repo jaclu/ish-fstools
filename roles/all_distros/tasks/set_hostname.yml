@@ -9,7 +9,7 @@
 #  Set hostname
 #
 
-- name: "Set hostname - {{ ift_hostname | default('Not specified') }}"
+- name: Set hostname
   shell:
     cmd: |
       is_chrooted() {
