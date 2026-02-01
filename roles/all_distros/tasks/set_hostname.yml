@@ -6,7 +6,7 @@
 #
 #  License: MIT
 #
-#  Set hostname, if ift_hostname is defined
+#  Set hostname
 #
 
 - name: "Set hostname - {{ ift_hostname | default('Not specified') }}"
@@ -19,29 +19,30 @@
         # this quick and simple check doesn't work on ish
         # so lets pretend for now chroot does not happen on ish
         [ "$(uname -s)" = "Linux" ] || return 1
+        # don't do for chrooted nodes
         [ ! -f /proc/self/mountinfo ] && return 1
         ! grep -q " / / " /proc/self/mountinfo
       }
 
-      h_name_new="{{ ift_hostname }}"
+      h_name_new="{{ inventory_hostname }}"
       is_chrooted && h_name_new="chrooted-iSH"
+
       [ "$(/usr/local/bin/hostname)" = "$h_name_new" ] && exit 0
       /usr/local/bin/hostname "$h_name_new" || exit 30
       exit 43
   args:
     executable: /bin/sh
-  when: ift_hostname | default('') | length > 0
   register: all_distros_set_hostname
   changed_when: all_distros_set_hostname.rc == 43
   failed_when: all_distros_set_hostname.rc not in [0, 43]
 
-- name: Set non iSH node default hostname to - iSH
-  copy:
-    dest: /etc/hostname
-    content: "iSH\n"
-    owner: root
-    group: root
-    mode: "0644"
-  when:
-    - ansible_facts.kernel | lower is not search('ish')
-    - ift_hostname | default('') | length == 0
+# - name: Set non iSH node default hostname to - iSH
+#   copy:
+#     dest: /etc/hostname
+#     content: "iSH\n"
+#     owner: root
+#     group: root
+#     mode: "0644"
+#   when:
+#     - ansible_facts.kernel | lower is not search('ish')
+#     - ift_hostname | default('') | length == 0
