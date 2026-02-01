@@ -50,7 +50,7 @@ create_empty_fs() {
     lbl_2 "><> pwd:$(pwd)"
 
     lbl_2 "Clearing File System"
-    rm "$d_aok_fs"/* -rf
+    rm "${d_aok_fs:-/tmp3}"/* -rf
 
     cd "$d_aok_fs" || err_msg "Failed to cd into: $d_aok_fs"
 
@@ -254,9 +254,7 @@ prepare_shell_env() {
     {
         echo "/root/ish-fstools/tools/fs_cleanup.sh total"
         echo "time $cmd_2"
-        echo "time $cmd_1"
         echo "time $cmd_1 c"
-        # echo "time $cmd_1 && time $cmd_2"
         # echo "time $cmd_2 q"
         # echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
