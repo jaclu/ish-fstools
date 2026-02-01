@@ -80,7 +80,7 @@
   debug:
     msg: "{{ ift_alpine_packages | sort }}"
   delegate_to: localhost
-  # Needs to done per server,since they might run different versions of Alpine
-  # run_once: true
-  changed_when: ift_show_extra_status | default(false)
-  when: ansible_facts.os_family == 'Alpine' or (ift_show_extra_status | default(false))
+  changed_when: true
+  when:
+    - ift_show_extra_status | default(false)
+    - ansible_facts.os_family == 'Alpine'
