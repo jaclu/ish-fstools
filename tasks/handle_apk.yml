@@ -47,7 +47,8 @@
   debug:
     msg: "{{ apk_add | sort }}"
   delegate_to: localhost
-  run_once: true
+  # hosts might run different versions of Alpine, so needs to be done for each
+  # run_once: true
 
 - name: Handle apk - List what will be removed
   debug:
