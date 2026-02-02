@@ -75,7 +75,6 @@
 # The following are Alpine specific, located here to avoid having to split new and
 # old style file copying more than once
 #
-
 - name: Install custom /etc/init.d/sshd, supporting iSH logging
   copy:
     remote_src: true
@@ -84,7 +83,7 @@
     owner: root
     group: root
     mode: "0755"
-  notify: Restart sshd
+  # notify: Restart sshd
 
 - name: Deploy /etc/inittab
   copy:

@@ -61,7 +61,7 @@
     owner: root
     group: root
     mode: "0755"
-  notify: Restart sshd
+  # notify: Restart sshd
 
 - name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
   copy:
@@ -71,4 +71,4 @@
     owner: root
     group: root
     mode: "0755"
-  notify: Restart sshd
+  # notify: Restart sshd

@@ -18,7 +18,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
     replace: ""
-  notify: Restart sshd
+  # notify: Restart sshd
 
 - name: " sshd - Deduplicate intended Port lines"
   shell: |
@@ -41,7 +41,7 @@
   register: all_distros_sshd_port_dupes
   changed_when: all_distros_sshd_port_dupes.rc == 43
   failed_when: all_distros_sshd_port_dupes.rc not in [0, 43]
-  notify: Restart sshd
+  # notify: Restart sshd
 
 - name: " sshd - Ensure intended Port line is present once"
   lineinfile:
@@ -49,7 +49,7 @@
     line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
     regexp: "^Port {{ ift_port_sshd | default(2022) }}"
     state: present
-  notify: Restart sshd
+  # notify: Restart sshd
 
 #
 # Service tasks
@@ -59,7 +59,7 @@
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/sshd"
     state: link
-  notify: Restart sshd
+  # notify: Restart sshd
 
 - name: "Set runlevel for sshd"
   include_tasks: tasks/service_runlevel_set.yml # should be include
