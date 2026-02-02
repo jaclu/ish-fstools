@@ -15,14 +15,6 @@
 # to construct the final ift_ variables.
 #
 
-#
-#  If unspecified, hostname will not be set
-#
-#  WARNING: Be aware that this hostname will be set to all hosts,
-#           If used here! Only use if a single host is deployed!
-#
-# ift_hostname: NameOfDevice
-
 ift_pkgs_devel: false # set to true if devel packages should be used
 ift_pkgs_linting: false # set to true if linting packages should be used
 ift_pkgs_man: false # se to true if man pages for everything installed should be used
