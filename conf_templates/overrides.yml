@@ -22,6 +22,97 @@
 # ift_shell: "" # If unset no shell config is done for either root or ift_user_name
 # ift_timezone: "Europe/Amsterdam"
 
+# ift_pkgs_devel: true # set to true if devel packages should be used
+# ift_pkgs_linting: true # set to true if linting packages should be used
+# ift_pkgs_man: true # se to true if man pages for everything installed should be used
+
+#
+# Additional packages
+# These are appended to ift_alpine_packages, to make it simpler to just add packages
+# without having to list all the default ones.
+#
+# ift_extra_alpine_packages:
+#   #
+#   #  Shells
+#   #
+#   # - zsh-completions  # Additional completion definitions for Zsh (packaged as a plugin)
+#   - zsh-history-substring-search # Zsh port of the Fish shell's history search
+
+#   # These are pretty slow on iSH, syntax-parses the command line on every keystroke
+#   # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
+#   # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
+
+#   #
+#   #  Core utils
+#   #
+#   - logrotate # Tool to rotate logfiles
+#   - direnv # Environment variable switcher for the shell
+#   - bat # cat(1) clone with wings
+#   - fd # Simple, fast, user-friendly alternative to find
+#   - ranger # VIM-inspired filemanager for the console
+#   - ruby # An object-oriented language for quick and easy programming
+
+#   #
+#   #  Editors
+#   #
+#   - emacs-nox
+
+#   #
+#   # File managers
+#   #
+#   - ranger # VIM-inspired filemanager for the console
+#   - yazi # Blazing fast terminal file manager written in Rust
+
+#   #
+#   #  Remote
+#   #
+#   - autossh # Automatically restart SSH sessions and tunnels
+#   - unison # Efficient file-synchronization tool
+
+#   #
+#   #  Scripting
+#   #
+#   - py3-pendulum # Python datetimes made easy
+
+#
+# Additional packages
+# These are appended to ift_debian_packages, to make it simpler to just add packages
+# without having to list all the default ones.
+#
+# ift_extra_debian_packages:
+#   #
+#   #  Shells
+#   #
+
+#   # These are pretty slow on iSH, syntax-parses the command line on every keystroke
+#   # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
+#   # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
+
+#   #
+#   #  Core utils
+#   #
+#   - logrotate # Tool to rotate logfiles
+#   - direnv # Environment variable switcher for the shell
+#   - ranger # VIM-inspired filemanager for the console
+#   - ruby # An object-oriented language for quick and easy programming
+
+#   #
+#   #  Editors
+#   #
+#   # - emacs-nox
+#   - jed # really small emacs compatible editor
+
+#   #
+#   # File managers
+#   #
+#   - ranger # VIM-inspired filemanager for the console
+
+#   #
+#   #  Remote
+#   #
+#   - autossh # Automatically restart SSH sessions and tunnels
+#   - unison # Efficient file-synchronization tool
+
 # ift_alpine_packages:
 #   # Sample for a minimal install, without these the deploy will fail.
 #   # Each lists what options depend on them, if the corresponding option(-s) are
@@ -30,29 +121,6 @@
 #   - openssh-server # Needed for: ift_runlevel_sshd
 #   - shadow # Needed for: ift_shell
 #   - tzdata # Needed for: ift_timezone
-
-#
-# Additional packages
-# These are appended to ift_alpine_packages, to make it simpler to just add packages
-# without having to list all the default ones.
-#
-# ift_extra_alpine_packages:
-#   - bat  # cat(1) clone with wings
-#   #
-#   #  General Build env for Alpine iSH
-#   #
-#   - automake
-#   - autoconf
-#   - bison
-#   - build-base
-#   - bzip2-dev
-#   - libffi-dev
-#   - openssl-dev
-#   - readline-dev
-#   - sqlite-dev
-#   - tk-dev
-#   - xz-dev
-#   - zlib-dev
 
 #
 # If services are set to runlevel "", they will not be installed / activated.
