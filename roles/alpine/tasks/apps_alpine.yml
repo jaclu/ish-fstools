@@ -83,7 +83,6 @@
     owner: root
     group: root
     mode: "0755"
-  # notify: Restart sshd
 
 - name: Deploy /etc/inittab
   copy:

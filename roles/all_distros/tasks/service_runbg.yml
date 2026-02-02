@@ -21,4 +21,3 @@
   vars:
     srvc_name: "runbg"
     srvc_runlevel: "{{ ift_runlevel_runbg }}"
-    srvc_handler: Restart runbg
