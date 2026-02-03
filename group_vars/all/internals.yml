@@ -11,7 +11,7 @@
 
 # debian_reboot_if_needed: false
 
-vers_ift: 0.8.34
+vers_ift: 0.8.35
 
 # shouldn't be needed when it is set in inventory...
 # ansible_python_interpreter: /usr/bin/python3
