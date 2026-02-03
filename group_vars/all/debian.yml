@@ -37,6 +37,7 @@ ift_debian_packages:
   - pigz # Parallel implementation of gzip
   - ripgrep # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync # A file transfer program to keep remote files in sync
+  - dialog
   - whiptail
 
   #
