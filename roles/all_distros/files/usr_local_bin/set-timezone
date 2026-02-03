@@ -151,8 +151,14 @@ main() {
 #  recognizable styling. For this app, either is fine.
 #
 
-dialog_app="whiptail"
-#  dialog_app="dialog" # --erase-on-exit"
+if command -v dialog >/dev/null; then
+    dialog_app="dialog"
+elif command -v whiptail >/dev/null; then
+    dialog_app="whiptail"
+else
+    echo "DEPENDENCY: Neither whiptail or dialog found"
+    exit 1
+fi
 
 TMPDIR="${TMPDIR:-/tmp}"
 
