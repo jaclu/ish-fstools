@@ -72,7 +72,7 @@ ift_alpine_packages:
   # File managers
   #
   - ranger # VIM-inspired filemanager for the console
-  - yazi # Blazing fast terminal file manager written in Rust
+  # yazi - doesn't work on iSH
 
   #
   #  Remote
