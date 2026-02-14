@@ -120,6 +120,7 @@ ift_debian_pkgs_devel:
   - libreadline-dev # GNU readline development headers
   - libsqlite3-dev # SQLite development headers
   - liblzma-dev # XZ / LZMA development headers
+  - pkg-config # manage compile and link flags for libraries
   - zlib1g-dev # zlib development headers
 
 ift_debian_pkgs_linting:
