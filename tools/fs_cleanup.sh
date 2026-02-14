@@ -7,55 +7,9 @@
 #  License: MIT
 #
 
-# safe_remove() {
-#     local remove_dir=false
-#     local item
-
-#     # msg_dbg "safe_remove($*)"
-#     while [[ $1 == -* ]]; do
-#         case $1 in
-#             -r | --remove-dir) remove_dir=true ;;
-#             # --) # was a file/folder
-#             #     shift
-#             #     break
-#             #     ;;
-#             *) err_msg "Unknown option: $1" ;;
-#         esac
-#         shift
-#     done
-
-#     item=$1
-#     [[ -z $item ]] && err_msg "safe_remove: missing path"
-
-#     if [[ -d $item ]]; then
-#         if $remove_dir; then
-#             rm -rf -- "$item" || err_msg "Failed to remove directory: $item"
-#             lbl_2 "Removed directory: $item"
-#         else
-#             # shellcheck disable=SC2115 # item is already checked for being empty
-#             rm -rf -- "$item"/* "$item"/.??* 2>/dev/null || {
-#                 err_msg "Failed to clear directory: $item"
-#             }
-#             lbl_2 "Cleared directory: $item"
-#         fi
-#         return
-#     fi
-
-#     if [[ -f "$item" ]]; then
-#         rm -f -- "$item" || err_msg "Failed to remove file: $item"
-#         lbl_4 "Removed file: $item"
-
-#     # Normally if item is not found it's fine, I leave the deailed notifications
-#     # commented out for potential later debugging purposes
-#     # elif [[ -e $item ]]; then
-#     #     lbl_2 "Special file not removed: $item"
-#     # else
-#     #     lbl_2 "File not found: $item"
-#     fi
-# }
-
 delete_items() {
     local item
+
     for item in "${items[@]}"; do
         [[ -e $item ]] || {
             # lbl_3 "item not found: $item"
@@ -95,7 +49,11 @@ deploy_cleanup() {
         /root/tmp
     )
     delete_items --remove-dir
-    delete_items /iCloud # Keep folder just clear it
+
+    items=(
+        /iCloud
+    )
+    delete_items # Keep folder just clear it
 
     items=(
         /opt/AOK
