@@ -1,6 +1,6 @@
 ---
 skip_list:
-  - fqcn[action-core]
+  - fqcn
 
 exclude_paths:
   - not_tasks/
