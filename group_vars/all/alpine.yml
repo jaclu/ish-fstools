@@ -161,6 +161,7 @@ ift_alpine_pkgs_linting:
   - checkbashisms # really slow in iSH
   - cppcheck
   - shfmt
+  - py3-codespell
   - py3-flake8
   - py3-isort
   - py3-mypy
