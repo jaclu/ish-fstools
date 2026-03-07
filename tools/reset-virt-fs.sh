@@ -170,11 +170,6 @@ sync_fs_tools() {
             $d_aok_fs/$d_icloud_deploy_rel/prebuilds"
     }
 
-    #sync_something "olint venv" \
-    #    "$my_rsync \
-    #    $d_fake_icloud/deploy/prebuilds/olint-venv/olint-venv-25-12-29.tgz \
-    #    $d_aok_fs/$d_icloud_deploy_rel/prebuilds/olint-venv/"
-
     sync_something home_jaclu \
         "$my_rsync \
         $d_fake_icloud/deploy/saved_home_dirs/home_jaclu.tgz \
