@@ -157,7 +157,6 @@ ift_alpine_pkgs_devel:
 
 ift_alpine_pkgs_linting:
   # pip install only linters: bandit bashate codespell pymarkdownlnt
-  - black
   - checkbashisms # really slow in iSH
   - cppcheck
   - shfmt
