@@ -28,3 +28,4 @@
 
 - name: " services - Run service_runbg.yml"
   import_tasks: service_runbg.yml
+  when: ansible_facts.distribution != 'Devuan'

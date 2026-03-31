@@ -121,15 +121,15 @@
 #  Devuan
 #
 
-- name: Params checks Devuan - Fail if ift_runlevel_runbg is set but no openrc
-  fail:
-    msg: "openrc must be in ift_devuan_packages when ift_runlevel_runbg is defined"
-  delegate_to: localhost
-  run_once: true
-  when:
-    - ansible_facts.distribution == 'Devuan'
-    - ift_runlevel_runbg | default('') | length > 0
-    - "'openrc' not in (ift_devuan_packages | default([]))"
+# - name: Params checks Devuan - Fail if ift_runlevel_runbg is set but no openrc
+#   fail:
+#     msg: "openrc must be in ift_devuan_packages when ift_runlevel_runbg is defined"
+#   delegate_to: localhost
+#   run_once: true
+#   when:
+#     - ansible_facts.distribution == 'Devuan'
+#     - ift_runlevel_runbg | default('') | length > 0
+#     - "'openrc' not in (ift_devuan_packages | default([]))"
 
 - name: Param checks Devuan - Fail if ift_runlevel_sshd is set but packages missing
   fail:
