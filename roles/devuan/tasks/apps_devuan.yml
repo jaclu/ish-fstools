@@ -24,12 +24,6 @@
     state: present
     name: "{{ ift_devuan_packages }}"
 
-- name: " opt/openssh - Install openssh tarball in /opt"
-  unarchive:
-    src: "{{ ift_devuan_openssh_tgz }}"
-    dest: /
-    remote_src: true
-
 - name: Install abduco tarball in /usr/local
   unarchive:
     src: "{{ ift_devuan_abduco_tgz }}"

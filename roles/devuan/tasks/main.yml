@@ -29,61 +29,38 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ ift_locales }}"
+# - name: Check /sbin/init
+#   stat:
+#     path: /sbin/init
+#     follow: false
+#   register: devuan_init_stat
 
-- name: Check /sbin/init
-  stat:
-    path: /sbin/init
-    follow: false
-  register: devuan_init_stat
+# - name: Remove /sbin/init if it is a regular file
+#   file:
+#     path: /sbin/init
+#     state: absent
+#   when:
+#     - devuan_init_stat.stat.exists
+#     - devuan_init_stat.stat.isreg
 
-- name: Remove /sbin/init if it is a regular file
-  file:
-    path: /sbin/init
-    state: absent
-  when:
-    - devuan_init_stat.stat.exists
-    - devuan_init_stat.stat.isreg
-
-- name: Link the fake init to /sbin/init
-  file:
-    src: /usr/local/sbin/fake-init
-    dest: /sbin/init
-    state: link
-
-#
-# /opt/openssh config
-#
-- name: " opt/openssh - Ensure /var/lib/sshd exists"
-  file:
-    path: /var/lib/sshd
-    state: directory
-    owner: root
-    group: root
-    mode: "0755"
-
-- name: " opt/openssh - Ensure sshd user exists"
-  user:
-    name: sshd
-    comment: "OpenSSH Daemon User"
-    group: nogroup
-    home: /run/sshd
-    shell: /usr/sbin/nologin
-    system: true
-    create_home: true
+# - name: Link the fake init to /sbin/init
+#   file:
+#     src: /usr/local/sbin/fake-init
+#     dest: /sbin/init
+#     state: link
 
 - name: " opt/openssh - Install Devuan sshd_config"
   template:
-    src: "{{ d_repo_debian_role }}/templates/sshd_config.js2"
+    src: "{{ d_repo_devuan_role }}/templates/sshd_config.js2"
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
     mode: "0755"
-
-- name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
-  copy:
-    remote_src: true
-    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
+# - name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
+#   copy:
+#     remote_src: true
+#     src: "{{ d_repo_devuan_role }}/files/etc/init.d/sshd"
+#     dest: "{{ d_init_ift }}/sshd"
+#     owner: root
+#     group: root
+#     mode: "0755"
