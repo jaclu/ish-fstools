@@ -2,7 +2,8 @@
 
 ## Devuan
 
-Why is ssh installed in /opt/openssh
+purged
+ifupdown rsyslog tinysshd
 
 ## remove ish-aok references
 
