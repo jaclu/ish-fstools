@@ -90,6 +90,11 @@ set_hostname_from_file() {
     # }
 }
 
+display_hostname() {
+    cat "$f_etc_hostname"
+    exit 0
+}
+
 #===============================================================
 #
 #   Main
@@ -98,11 +103,7 @@ set_hostname_from_file() {
 
 f_etc_hostname=/etc/hostname
 
-[ -z "$1" ] && {
-    # no options, just display hostname
-    cat "$f_etc_hostname"
-    exit 0
-}
+[ -z "$1" ] && display_hostname # no options, just display hostname
 
 while [ -n "$1" ]; do
     case "$1" in
@@ -117,7 +118,7 @@ while [ -n "$1" ]; do
             set_hostname_from_file "$2"
             shift # purge param 2
             ;;
-        -*) ;; # Ignore all other options, for compatibility with default hostname
+        -*) display_hostname ;; # Ignore all other options, for compatibility with default hostname
         *) set_hostname "$1" ;;
     esac
     shift
