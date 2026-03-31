@@ -54,3 +54,7 @@ ift_alpine_generate_sshd_host_keys: true
 #  If set to true, and mtr was included in ift_alpine_packages it will trigger
 #  an error due to incompatible package selection
 ift_alpine_use_old_mtr: true # set to false if not desired
+
+ift_locales:
+  - en_US.UTF-8
+  - en_GB.UTF-8 # for those of us using 24h time :)
