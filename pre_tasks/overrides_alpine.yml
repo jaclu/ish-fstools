@@ -83,4 +83,4 @@
   changed_when: true
   when:
     - ift_show_extra_status | default(false)
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'

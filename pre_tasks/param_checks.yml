@@ -35,7 +35,7 @@
   run_once: true
   changed_when: ift_show_extra_status | default(false)
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
 
 - name: Param checks Alpine - Fail if ift_shell is set but shadow is not listed
@@ -44,7 +44,7 @@
   delegate_to: localhost
   run_once: true
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_shell | default('') | length > 0
     - "'shadow' not in (ift_alpine_packages | default([]))"
 
@@ -54,7 +54,7 @@
   delegate_to: localhost
   run_once: true
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_runlevel_runbg | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([]))"
 
@@ -66,7 +66,7 @@
   delegate_to: localhost
   run_once: true
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_runlevel_sshd | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([])) or
       ('openssh-server' not in (ift_alpine_packages | default([])) and
@@ -78,7 +78,7 @@
   delegate_to: localhost
   run_once: true
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_timezone | default('') | length > 0
     - "'tzdata' not in (ift_alpine_packages | default([]))"
 
@@ -139,7 +139,7 @@
   delegate_to: localhost
   run_once: true
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ift_runlevel_sshd | default('') | length > 0
     - "'openrc' not in (ift_alpine_packages | default([])) or
       ('openssh-server' not in (ift_alpine_packages | default([])) and

@@ -37,7 +37,7 @@
     - role: common_handlers
     - role: initial_prep
     - role: alpine
-      when: ansible_facts.os_family == 'Alpine'
+      when: ansible_facts.distribution == 'Alpine'
     - role: debian
       when: ansible_facts.distribution == 'Debian'
     - role: devuan

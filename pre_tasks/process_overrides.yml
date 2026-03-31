@@ -46,7 +46,7 @@
   run_once: true
   when:
     - __override_vars is defined
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
 
 - name: " pre-task overrides - Extend ift_debian_packages with extra packages"
   set_fact:
@@ -83,7 +83,7 @@
 #
 - name: " pre-task overrides - Handle Alpine specific configs"
   include_tasks: overrides_alpine.yml
-  when: ansible_facts.os_family == 'Alpine'
+  when: ansible_facts.distribution == 'Alpine'
 
 - name: " pre-task overrides - Handle Debian specific configs"
   include_tasks: overrides_debian.yml

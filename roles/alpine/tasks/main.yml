@@ -13,7 +13,7 @@
   file:
     path: /ish
     state: absent
-  when: ansible_facts.os_family == 'Alpine'
+  when: ansible_facts.distribution == 'Alpine'
 
 - name: "Add the Alpine testing repo if at least v{{ ift_alpine_testing_repo_minv }}"
   lineinfile:
@@ -21,7 +21,7 @@
     line: "https://dl-cdn.alpinelinux.org/alpine/edge/testing"
     insertafter: EOF
   when:
-    - ansible_facts.os_family == 'Alpine'
+    - ansible_facts.distribution == 'Alpine'
     - ansible_facts.distribution_version is version(ift_alpine_testing_repo_minv, '>=')
 
 - name: Run apps_alpine
