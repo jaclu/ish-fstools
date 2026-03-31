@@ -64,8 +64,7 @@ set_hostname_from_file() {
     f_new_hostname="$1"
 
     [ -z "$f_new_hostname" ] && {
-        show_help
-        exit 255 # odd but that is what hostname does...
+        error_msg "hostname param missing"
     }
     [ -f "$f_new_hostname" ] || {
         error_msg "No such file '$f_new_hostname'!"
@@ -74,9 +73,25 @@ set_hostname_from_file() {
         error_msg "File '$f_new_hostname' is empty!"
     }
     root_check
-    head -n 1 "$f_new_hostname" >"$f_etc_hostname" || {
+
+    f_tmp=$(mktemp) || exit 1
+    if head -n 1 "$f_new_hostname" >"$f_tmp" && mv "$f_tmp" /etc/hostname; then
+        # success, tmp file already moved
+        :
+    else
+        [ -f "$f_tmp" ] && rm "$f_tmp" # cleanup leftover temp file
         error_msg "Failed to use '$f_new_hostname' to update '$f_etc_hostname'!"
-    }
+    fi
+
+    # head -n 1 "$f_new_hostname" >"$f_etc_hostname" || {
+    #     error_msg "Failed to use '$f_new_hostname' to update '$f_etc_hostname'!"
+    # }
+}
+
+display_hostname() {
+    # actually displaying hostname
+    cat "$f_etc_hostname"
+    exi 0
 }
 
 #===============================================================
@@ -94,14 +109,15 @@ while [ -n "$1" ]; do
             exit 255 # odd but that is what hostname does...
             ;;
         -F | --file)
+            if [ -z "$2" ] || [ ! -f "$2" ]; then
+                error_msg "-F/--file expects a file name param"
+            fi
             set_hostname_from_file "$2"
             shift # purge param 2
             ;;
-        -*) ;; # Ignore all other options, for compatibility with default hostname
+        -*) ;;                  # Ignore all other options, for compatibility with default hostname
+        '') display_hostname ;; # no param, just display hostname
         *) set_hostname "$1" ;;
     esac
     shift
 done
-
-# actually displaying hostname
-cat "$f_etc_hostname"
