@@ -1,5 +1,9 @@
 # TODO
 
+## Devuan
+
+Why is ssh installed in /opt/openssh
+
 ## remove ish-aok references
 
 Since this fork is no longer maintained, no more suppprt for this fork needed
@@ -37,4 +41,4 @@ Sample url `https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86/`
 ## Deploy Times on iPad 7th
 
 - Alpine 3.19 - 37:46
-- Alpine 3.22 - 39:41
+- Alpine 3.22 - 39:41- Alpine 3.22 - 39:41
