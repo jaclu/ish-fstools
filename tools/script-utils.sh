@@ -65,7 +65,7 @@ is_android() {
 }
 
 is_termux() {
-    [ -n "$TERMUX_VERSION" ]
+    [ "$HOME" = /data/data/com.termux/files/home ]
 }
 
 is_ish() {
@@ -161,7 +161,7 @@ log_it() {
     _sr_use_lf=1
     while [ -n "$1" ]; do
         case "$1" in
-            ---*) break ;; # lbl_2
+            ---*) break ;; # dont parse any further opts
             -p | --pre-lf) printf '\n' ;;
             -n | --no-lf) _sr_use_lf=0 ;;
             -t | --timestamp) _sr_use_time_stamp=1 ;;
@@ -183,8 +183,12 @@ log_it() {
     else
         printf -- '%s' "$_s" >&2
     fi
-    [ -z "$f_script_utils_log_file" ] && return 0
 
+    [ -z "$f_script_utils_log_file" ] && return 0 # logfile not used
+    case "$_s" in
+        *[![:space:]]*) ;; # more than white space - log it to file
+        *) return 0 ;;     # only whitespace - skip logging it to file
+    esac
     # Always use timestamp if printing to logfile
     [ -z "$_t" ] && _t="[$(show_timestamp)] $_s"
     printf -- '%s\n' "$_t" >>"$f_script_utils_log_file"
@@ -223,7 +227,7 @@ err_msg() {
     fi
 
     [ -z "$app_name" ] && app_name=$(basename "$0")
-    log_it "${app_name}-${_em_label}: $_em_msg" -t # should always have timestamps
+    log_it "${app_name}[$$] ${_em_label}: $_em_msg" -t # should always have timestamps
     [ "$_em_exit_code" -gt -1 ] && script_utils_cleanup "$_em_exit_code"
     unset _em_in_progress # in case exit code was < 0
 }
@@ -494,7 +498,7 @@ create_f_tmp() {
 use_log_file() {
     #
     # provide a log_file and if defined all msgs and errors will be appended there
-    # after being printed to stdwerr
+    # after being printed to stderr. It is up to the caller to remove this logfile!
     #
     [ -z "$1" ] && err_msg "Call to use_log_file() - no param given"
     f_script_utils_log_file="$1"
