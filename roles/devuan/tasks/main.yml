@@ -49,18 +49,19 @@
 #     dest: /sbin/init
 #     state: link
 
-- name: " opt/openssh - Install Devuan sshd_config"
+- name: Install sshd_config
   template:
     src: "{{ d_repo_devuan_role }}/templates/sshd_config.js2"
     dest: /etc/ssh/sshd_config
     owner: root
     group: root
     mode: "0755"
-# - name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
-#   copy:
-#     remote_src: true
-#     src: "{{ d_repo_devuan_role }}/files/etc/init.d/sshd"
-#     dest: "{{ d_init_ift }}/sshd"
-#     owner: root
-#     group: root
-#     mode: "0755"
+
+- name: Install custom /etc/init.d/sshd, supporting iSH logging
+  copy:
+    remote_src: true
+    src: "{{ d_repo_devuan_role }}/files/etc/init.d/ssh"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
