@@ -24,23 +24,25 @@ install_ansible() {
             if ! diff -q "$our_apt_sources" "$apt_sources" >/dev/null 2>&1; then
                 cp "$our_apt_sources" /etc/apt
             fi
-            apt update
-            apt upgrade
-
-            apt -y install ansible || err_msg "Ansible install failed"
-
-            # bail-out to save the image with ansible
-            err_msg "Ansible was installed"
-
-            # apt -y install python3-venv pipx
-            # # pipx install ansible-core==2.11
-            # # pipx install ansible==7.7.0
-            # pipx install ansible==4.10.0
-
-            # # pipx install --include-deps ansible  # Fails needs python 3.9
-        else
+        elif ! fs_is_devuan; then
             err_msg "Unrecognized platform, can't install ansible"
         fi
+
+        # Should be debian/devuan
+        apt update
+        apt upgrade
+
+        apt -y install ansible || err_msg "Ansible install failed"
+
+        # bail-out to save the image with ansible
+        err_msg "Ansible was installed"
+
+        # apt -y install python3-venv pipx
+        # # pipx install ansible-core==2.11
+        # # pipx install ansible==7.7.0
+        # pipx install ansible==4.10.0
+
+        # # pipx install --include-deps ansible  # Fails needs python 3.9
     fi
 }
 

@@ -25,7 +25,7 @@ deploy_cleanup() {
     # shellcheck disable=SC2154 # is sourced
     if fs_is_alpine; then
         apk del ansible
-    elif fs_is_debian; then
+    elif fs_is_debian || fs_is_devuan; then
         apt -y purge ansible ieee-data
         apt -y autoremove
     else

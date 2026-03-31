@@ -30,6 +30,20 @@
     state: present
   with_items: "{{ ift_locales }}"
 
+- name: Check /sbin/init
+  ansible.builtin.stat:
+    path: /sbin/init
+    follow: false
+  register: devuan_init_stat
+
+- name: Remove /sbin/init if it is a regular file
+  ansible.builtin.file:
+    path: /sbin/init
+    state: absent
+  when:
+    - devuan_init_stat.stat.exists
+    - devuan_init_stat.stat.isreg
+
 - name: Link the fake init to /sbin/init
   file:
     src: /usr/local/sbin/fake-init

@@ -30,6 +30,7 @@ ift_devuan_packages:
   - gawk # GNU awk pattern-matching language
   - git # Distributed version control system
   - fzf # A command-line fuzzy finder
+  - iputils-ping
   - jq # Lightweight and flexible command-line JSON processor
   - mc # Filemanager/shell that emulates Norton Commander
   - pigz # Parallel implementation of gzip
@@ -81,7 +82,7 @@ ift_devuan_packages:
   #  Scripting
   #
   - python3
-  - sqlite # Popular minimal sql engine
+  - sqlite3 # Popular minimal sql engine
 
   #
   #  Terminal / session management
@@ -130,10 +131,10 @@ ift_devuan_pkgs_linting:
   - mypy # really slow on iSH
   - pycodestyle
   - pyflakes3
-  - pylint3 # really slow on iSH
+  - pylint # really slow on iSH
   - shellcheck
   - yamllint
 
-ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Devuan"
-ift_devuan_openssh_tgz: "{{ ift_prebuilds_devuan }}/openssh/openssh-10.2p1-ish-devuan.tgz"
-ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-devuan.tgz"
+ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Debian10"
+ift_devuan_openssh_tgz: "{{ ift_prebuilds_devuan }}/openssh/openssh-10.2p1-ish-deb10.tgz"
+ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-deb.tgz"

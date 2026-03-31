@@ -99,7 +99,11 @@ fs_is_alpine() {
 }
 
 fs_is_debian() {
-    [ -f /etc/debian_version ]
+    [ -f /etc/debian_version ] && ! fs_is_devuan
+}
+
+fs_is_devuan() {
+    test -f /etc/devuan_version
 }
 
 fs_is_ubuntu() {
