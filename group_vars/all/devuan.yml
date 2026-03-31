@@ -33,6 +33,7 @@ ift_devuan_packages:
   - iputils-ping
   - jq # Lightweight and flexible command-line JSON processor
   - mc # Filemanager/shell that emulates Norton Commander
+  # - openssh-server
   - pigz # Parallel implementation of gzip
   - ripgrep # Fast recursive searcher with regex, respects .gitignore, grep-like.
   - rsync # A file transfer program to keep remote files in sync
@@ -63,7 +64,6 @@ ift_devuan_packages:
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing
-  - openssh-server
 
   #
   #  Web Tools
@@ -93,7 +93,7 @@ ift_devuan_packages:
   #
   #  Service handling
   #
-  - openrc # OpenRC manages the services, startup and shutdown of a host
+  # - openrc # OpenRC manages the services, startup and shutdown of a host
 
   #
   #  Trust
