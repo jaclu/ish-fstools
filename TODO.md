@@ -2,10 +2,21 @@
 
 ## Devuan
 
-purged
-ifupdown rsyslog tinysshd
+### purged
+
+libpython3.9-minimal
+
+ifupdown rsyslog
 
 groff-base man-db sysv-rc
+
+#### tinysshd
+
+glib-networking glib-networking-common glib-networking-services libatk1.0-data
+libicu67 libidn11 libjson-glib-1.0-0 libjson-glib-1.0-common libmpdec3 libperl5.32
+libprotobuf23 libproxy1v5 libpython3.9 libpython3.9-minimal libpython3.9-stdlib
+librest-0.7-0 libsoup-gnome2.4-1 libsoup2.4-1 libsoup2.4-common libtiff5 libunbound8
+libwebp6 perl-modules-5.32 unbound-anchor
 
 ## remove ish-aok references
 
