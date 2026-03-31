@@ -5,6 +5,8 @@
 purged
 ifupdown rsyslog tinysshd
 
+groff-base man-db sysv-rc
+
 ## remove ish-aok references
 
 Since this fork is no longer maintained, no more suppprt for this fork needed
