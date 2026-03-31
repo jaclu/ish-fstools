@@ -31,13 +31,13 @@
   with_items: "{{ ift_locales }}"
 
 - name: Check /sbin/init
-  ansible.builtin.stat:
+  stat:
     path: /sbin/init
     follow: false
   register: devuan_init_stat
 
 - name: Remove /sbin/init if it is a regular file
-  ansible.builtin.file:
+  file:
     path: /sbin/init
     state: absent
   when:
