@@ -1,0 +1,54 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Install selected Devuan apps
+#
+
+- name: List what will be installed
+  debug:
+    msg: "{{ ift_devuan_packages | sort }}"
+  run_once: true
+
+- name: Remove packages listed in ift_devuan_purges
+  package:
+    state: absent
+    name: "{{ ift_devuan_purges }}"
+
+- name: Install selected packages
+  package:
+    state: present
+    name: "{{ ift_devuan_packages }}"
+
+- name: " opt/openssh - Install openssh tarball in /opt"
+  unarchive:
+    src: "{{ ift_devuan_openssh_tgz }}"
+    dest: /
+    remote_src: true
+
+- name: Install abduco tarball in /usr/local
+  unarchive:
+    src: "{{ ift_devuan_abduco_tgz }}"
+    dest: /
+    remote_src: true
+
+#
+#  Reuse file assets from the debian role - they are identical for iSH
+#
+- name: "Install extras to /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
+  copy:
+    remote_src: "{{ not initial_prep_old_ansible }}"
+    mode: preserve
+    src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
+    dest: /usr/local/bin/
+
+- name: "Install extras to /usr/local/sbin  -- {{ initial_prep_remote_src_lbl }}"
+  copy:
+    remote_src: "{{ not initial_prep_old_ansible }}"
+    mode: preserve
+    src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
+    dest: /usr/local/sbin/

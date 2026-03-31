@@ -1,0 +1,76 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Devuan FS
+#  Handle overrides, needs to be done as a task instead of inside a role,
+#  in order to be able to set global variables without linting errors
+#
+
+- name: Overrides Devuan - Set shell to bash
+  set_fact:
+    ift_shell: /bin/bash
+  delegate_to: localhost
+  run_once: true
+  when: ansible_facts.distribution == 'Devuan'
+
+- name: Overrides Devuan - Add dev packages when ift_pkgs_devel is true
+  set_fact:
+    ift_devuan_packages: >-
+      {{ ift_devuan_packages | union(ift_devuan_pkgs_devel | default([])) }}
+  when:
+    - ift_devuan_pkgs_devel | default('') | length > 0
+    - ift_pkgs_devel is defined and ift_pkgs_devel
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - Add linting packages when ift_pkgs_linting is true
+  set_fact:
+    ift_devuan_packages: >-
+      {{ ift_devuan_packages | union(ift_devuan_pkgs_linting | default([])) }}
+  when:
+    - ift_devuan_pkgs_linting | default('') | length > 0
+    - ift_pkgs_linting is defined and ift_pkgs_linting
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - Add man-db if ift_pkgs_man is true
+  set_fact:
+    ift_devuan_packages: "{{ ift_devuan_packages + ['man-db'] }}"
+  when: ift_pkgs_man | default(false)
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - Remove man-db if ift_pkgs_man is not true
+  set_fact:
+    ift_devuan_purges: "{{ ift_devuan_purges + ['man-db'] }}"
+  when: not (ift_pkgs_man | bool)
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - List of what apt packages will be installed
+  debug:
+    msg: "{{ ift_devuan_packages | sort }}"
+  delegate_to: localhost
+  run_once: true
+  changed_when: ift_show_extra_status | default(false)
+  when: ansible_facts.distribution == 'Devuan' or (ift_show_extra_status | default(false))
+
+- name: Overrides Devuan - List of what apt packages will be removed
+  debug:
+    msg: "{{ ift_devuan_purges | sort }}"
+  delegate_to: localhost
+  run_once: true
+  changed_when: ift_show_extra_status | default(false)
+  when:
+    - ansible_facts.distribution == 'Devuan'
+    - ift_devuan_purges
+    - ift_show_extra_status | default(false)

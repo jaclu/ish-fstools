@@ -155,6 +155,8 @@ sync_fs_tools() {
 
     if [ -f "$d_aok_fs"/etc/alpine-release ]; then
         platform_dest=prebuilds/Alpine
+    elif [ -f "$d_aok_fs"/etc/devuan_version ]; then
+        platform_dest=prebuilds/Devuan
     elif [ -f "$d_aok_fs"/etc/debian_version ]; then
         # only relevant for Deb10
         platform_dest=prebuilds/Debian10
@@ -238,7 +240,10 @@ prepare_shell_env() {
     cmd_1=/root/"$repo_name"/handle_localhost.sh
     cmd_2=/root/"$repo_name"/my-ish-fs/handle_localhost.sh
 
-    if [ -f "$d_aok_fs"/etc/debian_version ]; then
+    if [ -f "$d_aok_fs"/etc/devuan_version ]; then
+        lbl_3 "Detected Devuan FS"
+        f_history="$d_aok_fs"/root/.bash_history
+    elif [ -f "$d_aok_fs"/etc/debian_version ]; then
         lbl_3 "Detected Debian FS"
         f_history="$d_aok_fs"/root/.bash_history
     else

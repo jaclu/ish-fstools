@@ -1,0 +1,75 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Role: Setup Devuan
+#
+#  Devuan shares init scripts and helper binaries with the Debian role
+#  since both use OpenRC on iSH.
+#
+
+- name: Run apps_devuan
+  import_tasks: apps_devuan.yml
+
+- name: Install custom /etc/init.d/rc
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/rc"
+    dest: "{{ d_init_ift }}/rc"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Generate required locales
+  locale_gen:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ift_locales }}"
+
+- name: Link the fake init to /sbin/init
+  file:
+    src: /usr/local/sbin/fake-init
+    dest: /sbin/init
+    state: link
+
+#
+# /opt/openssh config
+#
+- name: " opt/openssh - Ensure /var/lib/sshd exists"
+  file:
+    path: /var/lib/sshd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " opt/openssh - Ensure sshd user exists"
+  user:
+    name: sshd
+    comment: "OpenSSH Daemon User"
+    group: nogroup
+    home: /run/sshd
+    shell: /usr/sbin/nologin
+    system: true
+    create_home: true
+
+- name: " opt/openssh - Install Devuan sshd_config"
+  template:
+    src: "{{ d_repo_debian_role }}/templates/sshd_config.js2"
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " opt/openssh - Install custom /etc/init.d/sshd, supporting iSH logging"
+  copy:
+    remote_src: true
+    src: "{{ d_repo_debian_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"

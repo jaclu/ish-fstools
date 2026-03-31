@@ -1,0 +1,139 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# Variables for Devuan FS
+#
+# Devuan is a Debian fork without systemd, using SysV init / OpenRC.
+# Package naming follows the base Debian release:
+#   Devuan 4 (Chimaera)  = Debian 11 (Bullseye)
+#   Devuan 5 (Daedalus)  = Debian 12 (Bookworm)
+# For Bookworm-based Devuan some linting package names differ from Buster-era Debian,
+# see ift_devuan_pkgs_linting comments below.
+#
+
+ift_devuan_packages:
+  #
+  #  Shells
+  #
+  # - bash # Always present
+  - bash-completion # Command-line tab-completion for bash
+  - zsh # Very advanced and programmable command interpreter (shell)
+
+  #
+  #  Core utils
+  #
+  - gawk # GNU awk pattern-matching language
+  - git # Distributed version control system
+  - fzf # A command-line fuzzy finder
+  - jq # Lightweight and flexible command-line JSON processor
+  - mc # Filemanager/shell that emulates Norton Commander
+  - pigz # Parallel implementation of gzip
+  - ripgrep # Fast recursive searcher with regex, respects .gitignore, grep-like.
+  - rsync # A file transfer program to keep remote files in sync
+  - dialog
+  - whiptail
+
+  #
+  #  Access
+  #
+  - sudo # Give certain users the ability to run some commands as root
+  - locales # Locales support
+  - gettext # GNU locale utilities
+  - tzdata # Timezone data
+
+  #
+  #  Editors
+  #
+  - mg # microscopic EMACS style editor
+  - nano # Enhanced clone of the Pico text editor
+  - vim # advanced text editor, with GUI
+
+  #
+  # File managers
+  #
+  - ranger # File browser
+
+  #
+  #  Remote
+  #
+  - mosh # Mobile shell surviving disconnects with local echo and line editing
+  # - openssh-server # will install pre-compiled openssh 10 - do not install via apt!
+
+  #
+  #  Web Tools
+  #
+  - curl # URL retrieval utility and library
+  - wget # Network utility to retrieve files from the Web
+  - w3m # text-based web & gopher browser, as well as pager
+
+  #
+  #  System info
+  #
+  - htop # Interactive process viewer
+  - ncdu # Text-based disk usage viewer
+
+  #
+  #  Scripting
+  #
+  - python3
+  - sqlite # Popular minimal sql engine
+
+  #
+  #  Terminal / session management
+  #
+  - tmux # Tool to control multiple terminals from a single terminal
+  - dvtm # Dynamic virtual terminal manager
+
+  #
+  #  Service handling
+  #
+  - openrc # OpenRC manages the services, startup and shutdown of a host
+
+  #
+  #  Trust
+  #
+  - ca-certificates # Common CA certificates PEM files from Mozilla
+
+ift_devuan_pkgs_devel:
+  - build-essential # Meta package: gcc, g++, make, libc-dev
+  - automake # GNU tool for automatically creating Makefiles
+  - autoconf # GNU tool for automatically configuring source code
+  - bison # GNU parser generator
+  - cmake # Cross-platform build system
+  - libtool # Generic library support script
+  - libbz2-dev # bzip2 development headers
+  - libevent-dev # Event notification library
+  - libncurses-dev # ncurses development headers
+  - libssl-dev # OpenSSL development headers
+  - libreadline-dev # GNU readline development headers
+  - libsqlite3-dev # SQLite development headers
+  - liblzma-dev # XZ / LZMA development headers
+  - pkg-config # manage compile and link flags for libraries
+  - zlib1g-dev # zlib development headers
+
+ift_devuan_pkgs_linting:
+  # Package names below match Devuan Beowulf (= Debian Buster).
+  # For Devuan 5 Daedalus (= Bookworm) rename:
+  #   black     -> python3-black
+  #   pylint3   -> python3-pylint
+  #   pyflakes3 -> python3-pyflakes
+  - black
+  - codespell
+  - cppcheck
+  - flake8
+  - isort
+  - mypy # really slow on iSH
+  - pycodestyle
+  - pyflakes3
+  - pylint3 # really slow on iSH
+  - shellcheck
+  - yamllint
+
+ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Devuan"
+ift_devuan_openssh_tgz: "{{ ift_prebuilds_devuan }}/openssh/openssh-10.2p1-ish-devuan.tgz"
+ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-devuan.tgz"

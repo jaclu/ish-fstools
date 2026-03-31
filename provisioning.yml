@@ -39,7 +39,9 @@
     - role: alpine
       when: ansible_facts.os_family == 'Alpine'
     - role: debian
-      when: ansible_facts.os_family == 'Debian'
+      when: ansible_facts.distribution == 'Debian'
+    - role: devuan
+      when: ansible_facts.distribution == 'Devuan'
     - role: all_distros
 
   post_tasks:

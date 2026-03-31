@@ -28,6 +28,7 @@ d_etc_ift: /etc/opt/ift
 # to transfer from deploy host
 d_repo_alpine_role: "{{ d_repo }}/roles/alpine"
 d_repo_debian_role: "{{ d_repo }}/roles/debian"
+d_repo_devuan_role: "{{ d_repo }}/roles/devuan"
 
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
@@ -72,3 +73,4 @@ ansible_user: root
 target_hosts: servers
 
 ift_debian_purges: []
+ift_devuan_purges: []

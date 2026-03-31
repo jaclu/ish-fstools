@@ -17,101 +17,141 @@
 #  If present it will be read as the last variables file, thus overriding all other
 #  variable definitions.
 #
+#  Since these overrides are used both for ifs-tools & my-ish-fs variables relevant
+#  to both must be present!
+#
+# ish-fstools
+#   hetz2 chroot: install 49s   update  38s
+#   iPad 7th:     update 13 min
+#   iPhone 14th:  update  7 min
+# my-ish-fs
+#   hetz2 chroot: install 15s   update  11s
+#   iPad 7th:     update  4 min
+#   iPhone 14th:  update  3 min
+#
 
-# ift_user_name: "" # defaults to ish, if "" no user account is created
-# ift_shell: "" # If unset no shell config is done for either root or ift_user_name
-# ift_timezone: "Europe/Amsterdam"
+ift_user_name: ish # set to "" to disable
+ift_timezone: Europe/Amsterdam
+
+# show some info about detected env, what will be installed etc
+# ift_show_extra_status: true
 
 # ift_pkgs_devel: true # set to true if devel packages should be used
 # ift_pkgs_linting: true # set to true if linting packages should be used
 # ift_pkgs_man: true # se to true if man pages for everything installed should be used
 
-#
-# Additional packages
-# These are appended to ift_alpine_packages, to make it simpler to just add packages
-# without having to list all the default ones.
-#
-# ift_extra_alpine_packages:
-#   #
-#   #  Shells
-#   #
-#   # - zsh-completions  # Additional completion definitions for Zsh (packaged as a plugin)
-#   - zsh-history-substring-search # Zsh port of the Fish shell's history search
+# When the sshd service is first started, host keys will be generated if absent
+# on iSH this takes a while... By enabling this option they can be pre-generated
+# during deploy. Debian always generates them when openssh-server is installed.
+# ift_alpine_generate_sshd_host_keys: false
 
-#   # These are pretty slow on iSH, syntax-parses the command line on every keystroke
-#   # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
-#   # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
+ift_extra_alpine_packages:
+  #
+  #  Shells
+  #
+  # - zsh-completions  # Additional completion definitions for Zsh (packaged as a plugin)
+  - zsh-history-substring-search # Zsh port of the Fish shell's history search
 
-#   #
-#   #  Core utils
-#   #
-#   - logrotate # Tool to rotate logfiles
-#   - direnv # Environment variable switcher for the shell
-#   - bat # cat(1) clone with wings
-#   - fd # Simple, fast, user-friendly alternative to find
-#   - ranger # VIM-inspired filemanager for the console
-#   - ruby # An object-oriented language for quick and easy programming
+  # These are pretty slow on iSH, syntax-parses the command line on every keystroke
+  # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
+  # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
 
-#   #
-#   #  Editors
-#   #
-#   - emacs-nox
+  #
+  #  Core utils
+  #
+  - logrotate # Tool to rotate logfiles
+  - direnv # Environment variable switcher for the shell
+  - bat # cat(1) clone with wings
+  - fd # Simple, fast, user-friendly alternative to find
+  - ranger # VIM-inspired filemanager for the console
+  - ruby # An object-oriented language for quick and easy programming
 
-#   #
-#   # File managers
-#   #
-#   - ranger # VIM-inspired filemanager for the console
-#   - yazi # Blazing fast terminal file manager written in Rust
+  #
+  #  Editors
+  #
+  # - emacs-nox
+  - slang # needed for jed
 
-#   #
-#   #  Remote
-#   #
-#   - autossh # Automatically restart SSH sessions and tunnels
-#   - unison # Efficient file-synchronization tool
+  #
+  # File managers
+  #
+  - ranger # VIM-inspired filemanager for the console
+  - yazi # Blazing fast terminal file manager written in Rust
 
-#   #
-#   #  Scripting
-#   #
-#   - py3-pendulum # Python datetimes made easy
+  #
+  #  Remote
+  #
+  - autossh # Automatically restart SSH sessions and tunnels
+  - unison # Efficient file-synchronization tool
 
-#
-# Additional packages
-# These are appended to ift_debian_packages, to make it simpler to just add packages
-# without having to list all the default ones.
-#
-# ift_extra_debian_packages:
-#   #
-#   #  Shells
-#   #
+  #
+  #  Scripting
+  #
+  - py3-pendulum # Python datetimes made easy
 
-#   # These are pretty slow on iSH, syntax-parses the command line on every keystroke
-#   # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
-#   # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
+ift_extra_devuan_packages:
+  #
+  #  Core utils
+  #
+  - logrotate # Tool to rotate logfiles
+  - direnv # Environment variable switcher for the shell
+  - ranger # VIM-inspired filemanager for the console
+  - ruby # An object-oriented language for quick and easy programming
 
-#   #
-#   #  Core utils
-#   #
-#   - logrotate # Tool to rotate logfiles
-#   - direnv # Environment variable switcher for the shell
-#   - ranger # VIM-inspired filemanager for the console
-#   - ruby # An object-oriented language for quick and easy programming
+  #
+  #  Editors
+  #
+  - jed # really small emacs compatible editor
 
-#   #
-#   #  Editors
-#   #
-#   # - emacs-nox
-#   - jed # really small emacs compatible editor
+  #
+  # File managers
+  #
+  - ranger # VIM-inspired filemanager for the console
 
-#   #
-#   # File managers
-#   #
-#   - ranger # VIM-inspired filemanager for the console
+  #
+  #  Remote
+  #
+  - autossh # Automatically restart SSH sessions and tunnels
+  - unison # Efficient file-synchronization tool
 
-#   #
-#   #  Remote
-#   #
-#   - autossh # Automatically restart SSH sessions and tunnels
-#   - unison # Efficient file-synchronization tool
+ift_extra_debian_packages:
+  #
+  #  Shells
+  #
+
+  # These are pretty slow on iSH, syntax-parses the command line on every keystroke
+  # - zsh-autosuggestions # Fish-like autosuggestions for Zsh
+  # - zsh-syntax-highlighting  # Fish shell like syntax highlighting for Zsh
+
+  #
+  #  Core utils
+  #
+  - logrotate # Tool to rotate logfiles
+  - direnv # Environment variable switcher for the shell
+  - ranger # VIM-inspired filemanager for the console
+  - ruby # An object-oriented language for quick and easy programming
+
+  #
+  #  Editors
+  #
+  # - emacs-nox
+  - jed # really small emacs compatible editor
+
+  #
+  # File managers
+  #
+  - ranger # VIM-inspired filemanager for the console
+
+  #
+  #  Remote
+  #
+  - autossh # Automatically restart SSH sessions and tunnels
+  - unison # Efficient file-synchronization tool
+
+
+  #
+  #  Scripting
+  #
 
 # ift_alpine_packages:
 #   # Sample for a minimal install, without these the deploy will fail.

@@ -16,7 +16,7 @@
     ift_shell: /bin/bash
   delegate_to: localhost
   run_once: true
-  when: ansible_facts.os_family == 'Debian'
+  when: ansible_facts.distribution == 'Debian'
 
 - name: Overrides Debian - Add dev apks when ift_pkgs_devel is true
   set_fact:
@@ -62,7 +62,7 @@
   delegate_to: localhost
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when: ansible_facts.os_family == 'Debian' or (ift_show_extra_status | default(false))
+  when: ansible_facts.distribution == 'Debian' or (ift_show_extra_status | default(false))
 
 - name: Overrides Debian - List of what apt packages will be removed
   debug:
@@ -71,6 +71,6 @@
   run_once: true
   changed_when: ift_show_extra_status | default(false)
   when:
-    - ansible_facts.os_family == 'Debian'
+    - ansible_facts.distribution == 'Debian'
     - ift_debian_purges
     - ift_show_extra_status | default(false)

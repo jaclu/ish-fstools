@@ -57,7 +57,18 @@
   run_once: true
   when:
     - __override_vars is defined
-    - ansible_facts.os_family == 'Debian'
+    - ansible_facts.distribution == 'Debian'
+
+- name: " pre-task overrides - Extend ift_devuan_packages with extra packages"
+  set_fact:
+    ift_devuan_packages: >-
+      {{ (ift_devuan_packages | default([])) +
+         (__override_vars.ift_extra_devuan_packages | default([])) }}
+  delegate_to: localhost
+  run_once: true
+  when:
+    - __override_vars is defined
+    - ansible_facts.distribution == 'Devuan'
 
 - name: " pre-task overrides - Apply overrides"
   set_fact:
@@ -76,4 +87,8 @@
 
 - name: " pre-task overrides - Handle Debian specific configs"
   include_tasks: overrides_debian.yml
-  when: ansible_facts.os_family == 'Debian'
+  when: ansible_facts.distribution == 'Debian'
+
+- name: " pre-task overrides - Handle Devuan specific configs"
+  include_tasks: overrides_devuan.yml
+  when: ansible_facts.distribution == 'Devuan'
