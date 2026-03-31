@@ -63,7 +63,7 @@ ift_devuan_packages:
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing
-  # - openssh-server # will install pre-compiled openssh 10 - do not install via apt!
+  - openssh-server
 
   #
   #  Web Tools
@@ -136,5 +136,4 @@ ift_devuan_pkgs_linting:
   - yamllint
 
 ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Debian10"
-ift_devuan_openssh_tgz: "{{ ift_prebuilds_devuan }}/openssh/openssh-10.2p1-ish-deb10.tgz"
 ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-deb.tgz"
