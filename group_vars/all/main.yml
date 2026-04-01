@@ -27,7 +27,7 @@ ift_user_name: ish # set to "" to disable
 ift_timezone: ""
 
 # show some info about detected env, what will be installed etc
-# ift_show_extra_status: true
+ift_show_extra_status: true
 
 #  Be aware that only Alpine supports the /bin/ash shell, on other file systems,
 #  /bin/ash will be changed into /bin/bash
