@@ -23,6 +23,21 @@
   # Must be first task in order for everything else to use the variable overrides
   import_tasks: process_overrides.yml
 
+#
+# Repo specific configs, should happen after overrides are processed
+#
+- name: " pre-task overrides - Handle Alpine specific configs"
+  include_tasks: overrides_alpine.yml
+  when: ansible_facts.distribution == 'Alpine'
+
+- name: " pre-task overrides - Handle Debian specific configs"
+  include_tasks: overrides_debian.yml
+  when: ansible_facts.distribution == 'Debian'
+
+- name: " pre-task overrides - Handle Devuan specific configs"
+  include_tasks: overrides_devuan.yml
+  when: ansible_facts.distribution == 'Devuan'
+
 - name: " pre-task - Check if this is iSH"
   # Might depend on some overrides, so run after process_overrides
   import_tasks: is_ish.yml
