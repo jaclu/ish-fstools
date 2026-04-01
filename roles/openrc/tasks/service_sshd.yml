@@ -64,14 +64,14 @@
 #
 # Service tasks
 #
-- name: " sshd conf - Create symbolic link in /etc/init.d"
+- name: " sshd - Create symbolic link in /etc/init.d"
   file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/sshd"
     state: link
   when: ansible_facts.distribution != 'Devuan'
 
-- name: " sshd conf - Set runlevel"
+- name: " sshd - Set runlevel"
   include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "{{ d_init_d }}/sshd"
