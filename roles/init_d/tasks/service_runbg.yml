@@ -1,0 +1,40 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  SysV init (init.d) handling of runbg
+#
+
+- name: Install /etc/init.d/runbg
+  copy:
+    remote_src: true
+    src: "{{ d_repo_openrc_role }}/files/etc/init.d/runbg"
+    dest: "{{ d_init_d }}/runbg"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " runbg - stop in runlevels 0,1,6"
+  file:
+    src: "{{ d_init_d }}/runbg"
+    dest: "/etc/rc{{ item }}.d/K01runbg"
+    state: link
+  loop:
+    - 0
+    - 1
+    - 6
+
+- name: " runbg - start in runlevels 2,3,4,5"
+  file:
+    src: "{{ d_init_d }}/runbg"
+    dest: "/etc/rc{{ item }}.d/S01runbg"
+    state: link
+  loop:
+    - 2
+    - 3
+    - 4
+    - 5

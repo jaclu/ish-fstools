@@ -67,7 +67,14 @@
   #   - role: debian
   #     when: ansible_facts.distribution == 'Debian'
   #   - role: all_distros
-  #
+  #   - role: openrc
+  #     when:
+  #       - ansible_facts.distribution == 'Alpine'
+  #       - ansible_facts.distribution == 'Debian'
+  #   - role: init_d
+  #     when:
+  #       - ansible_facts.distribution == 'Devuan'
+
   # post_tasks:
   #   - name: Run tasks/update_release.yml
   #     import_tasks: tasks/update_release.yml
