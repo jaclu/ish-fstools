@@ -37,9 +37,9 @@
     fi
   args:
     executable: /bin/bash
-  register: all_distros_sshd_port_dupes
-  changed_when: all_distros_sshd_port_dupes.rc == 43
-  failed_when: all_distros_sshd_port_dupes.rc not in [0, 43]
+  register: openrc_sshd_port_dupes
+  changed_when: openrc_sshd_port_dupes.rc == 43
+  failed_when: openrc_sshd_port_dupes.rc not in [0, 43]
 
 - name: " sshd - Ensure intended Port line is present once"
   lineinfile:

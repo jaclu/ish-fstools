@@ -1,0 +1,13 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Services managed by openrc handling
+#
+
+- name: Run services.yml
+  import_tasks: services.yml
