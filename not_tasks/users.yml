@@ -1,8 +1,10 @@
 ---
-- name: Dont use /bin/ash on Debian
+- name: Use /bin/bash on Debian or Devuan
   ansible.builtin.set_fact:
-    aok_user_shell: "{{ '/bin/bash' if ansible_facts.distribution == 'Debian' }}"
-  when: aok_user_shell == '/bin/ash'
+    aok_user_shell: "/bin/bash"
+  when:
+    - ansible_facts.distribution in ['Debian', 'Devuan']
+    - aok_user_shell == '/bin/ash'
 
 - name: Add a new user
   ansible.builtin.user:

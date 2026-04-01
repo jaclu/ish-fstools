@@ -44,9 +44,7 @@
       when: ansible_facts.distribution == 'Devuan'
     - role: all_distros
     - role: openrc
-      when:
-        - ansible_facts.distribution == 'Alpine'
-        - ansible_facts.distribution == 'Debian'
+      when: ansible_facts.distribution in ['Alpine', 'Debian']
     - role: init_d
       when:
         - ansible_facts.distribution == 'Devuan'
