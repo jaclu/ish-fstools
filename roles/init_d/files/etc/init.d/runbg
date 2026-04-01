@@ -1,20 +1,15 @@
 #! /bin/sh
 
 ### BEGIN INIT INFO
-# Provides:		sshd
-# Required-Start:	$remote_fs $syslog
-# Required-Stop:	$remote_fs $syslog
+# Provides:		runbg
+# Required-Start:
+# Required-Stop:
 # Default-Start:	2 3 4 5
 # Default-Stop:
-# Short-Description:	OpenBSD Secure Shell server
+# Short-Description:	GPS monitoring ensuring app continues in background
 ### END INIT INFO
 
 # set -e # invalid due to ! conditions below
-
-# /etc/init.d/ssh: start and stop the OpenBSD "secure shell(tm)" daemon
-
-test -x /usr/sbin/sshd || exit 0
-(/usr/sbin/sshd -\? 2>&1 | grep -q OpenSSH) 2>/dev/null || exit 0
 
 umask 022
 
@@ -41,9 +36,6 @@ case "$1" in
     start)
         check_dev_null
         log_daemon_msg "Starting runbg server" "runbg" || true
-
-        #  --quiet --oknodo --chuid 0:0 --exec
-        # shell check disable=SC2086
         if start-stop-daemon --start \
             --background \
             --make-pidfile \
@@ -58,7 +50,7 @@ case "$1" in
         ;;
 
     stop)
-        log_daemon_msg "Stopping OpenBSD Secure Shell server" "sshd" || true
+        log_daemon_msg "Stopping runbg server" "runbg" || true
         if start-stop-daemon --stop \
             --pidfile /run/runbg.pid \
             --retry 5; then
@@ -71,7 +63,7 @@ case "$1" in
 
     status)
         status_of_proc -p /run/runbg.pid /bin/cat runbg
-        exit $?
+        # exit $?
         ;;
 
     *)
