@@ -44,11 +44,10 @@ case "$1" in
 
         #  --quiet --oknodo --chuid 0:0 --exec
         # shell check disable=SC2086
-        start-stop-daemon --start --background \
+        if start-stop-daemon --start --background \
             --pidfile /run/runbg.pid \
-            --startas /bin/cat -- /dev/location >/dev/null
+            --startas /bin/cat -- /dev/location >/dev/null; then
 
-        if $?; then
             log_end_msg 0 || true
         else
             log_end_msg 1 || true
