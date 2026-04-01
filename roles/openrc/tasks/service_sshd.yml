@@ -13,13 +13,26 @@
 # Handling /etc/ssh/sshd_config
 #
 
-- name: " sshd - Remove all unintended Port lines"
+#
+# The following are Alpine specific, located here to avoid having to split new and
+# old style file copying more than once
+#
+- name: Install custom /etc/init.d/sshd, supporting iSH logging
+  copy:
+    remote_src: true
+    src: "{{ d_repo_openrc_role }}/files/etc/init.d/sshd"
+    dest: "{{ d_init_ift }}/sshd"
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " sshd conf - Remove all unintended Port lines"
   replace:
     path: /etc/ssh/sshd_config
     regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
     replace: ""
 
-- name: " sshd - Deduplicate intended Port lines"
+- name: " sshd conf - Deduplicate intended Port lines"
   shell: |
     tmp=$(mktemp)
     awk '
@@ -41,7 +54,7 @@
   changed_when: openrc_sshd_port_dupes.rc == 43
   failed_when: openrc_sshd_port_dupes.rc not in [0, 43]
 
-- name: " sshd - Ensure intended Port line is present once"
+- name: " sshd conf - Ensure intended Port line is present once"
   lineinfile:
     path: /etc/ssh/sshd_config
     line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
@@ -51,14 +64,14 @@
 #
 # Service tasks
 #
-- name: " sshd - Create symbolic link in /etc/init.d"
+- name: " sshd conf - Create symbolic link in /etc/init.d"
   file:
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/sshd"
     state: link
   when: ansible_facts.distribution != 'Devuan'
 
-- name: "Set runlevel for sshd"
+- name: " sshd conf - Set runlevel"
   include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "{{ d_init_d }}/sshd"

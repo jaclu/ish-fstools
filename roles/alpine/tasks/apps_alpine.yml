@@ -71,19 +71,6 @@
   changed_when: alpine_rename_uptime.rc == 43
   failed_when: alpine_rename_uptime.rc not in [0, 43]
 
-#
-# The following are Alpine specific, located here to avoid having to split new and
-# old style file copying more than once
-#
-- name: Install custom /etc/init.d/sshd, supporting iSH logging
-  copy:
-    remote_src: true
-    src: "{{ d_repo_alpine_role }}/files/etc/init.d/sshd"
-    dest: "{{ d_init_ift }}/sshd"
-    owner: root
-    group: root
-    mode: "0755"
-
 - name: Deploy /etc/inittab
   copy:
     remote_src: true
