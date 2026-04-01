@@ -43,6 +43,10 @@
     - role: devuan
       when: ansible_facts.distribution == 'Devuan'
     - role: all_distros
+    - role: openrc
+      when:
+        - ansible_facts.distribution == 'Alpine'
+        - ansible_facts.distribution == 'Debian'
 
   post_tasks:
     - name: Run tasks/update_release.yml
