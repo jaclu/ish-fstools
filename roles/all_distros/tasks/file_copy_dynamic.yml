@@ -78,13 +78,3 @@
     mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
-
-- name: Install service - runbg
-  copy:
-    remote_src: true
-    src: "{{ d_repo_all_distros_role }}/files{{ d_init_d }}/runbg"
-    dest: "{{ d_init_ift }}/"
-    owner: root
-    group: root
-    mode: "0755"
-  notify: Restart runbg
