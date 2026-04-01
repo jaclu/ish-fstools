@@ -12,7 +12,7 @@
 - name: Install /etc/init.d/runbg
   copy:
     remote_src: true
-    src: "{{ d_repo_openrc_role }}/files/etc/init.d/runbg"
+    src: "{{ d_repo }}/roles/sysv_init/files/etc/init.d/runbg"
     dest: "{{ d_init_d }}/runbg"
     owner: root
     group: root
