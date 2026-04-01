@@ -44,9 +44,12 @@ case "$1" in
 
         #  --quiet --oknodo --chuid 0:0 --exec
         # shell check disable=SC2086
-        if start-stop-daemon --start --background \
+        if start-stop-daemon --start \
+            --background \
+            --make-pidfile \
             --pidfile /run/runbg.pid \
-            --startas /bin/cat -- /dev/location >/dev/null; then
+            --startas /bin/sh -- \
+            -c 'exec /bin/cat /dev/location > /dev/null'; then
 
             log_end_msg 0 || true
         else
@@ -56,10 +59,10 @@ case "$1" in
 
     stop)
         log_daemon_msg "Stopping OpenBSD Secure Shell server" "sshd" || true
-        start-stop-daemon --stop --quiet --oknodo \
+        if start-stop-daemon --stop \
             --pidfile /run/runbg.pid \
-            --exec /bin/cat
-        if $?; then
+            --retry 5; then
+
             log_end_msg 0 || true
         else
             log_end_msg 1 || true
@@ -67,7 +70,8 @@ case "$1" in
         ;;
 
     status)
-        status_of_proc -p /run/runbg.pid /bin/cat runbg && exit 0 || exit $?
+        status_of_proc -p /run/runbg.pid /bin/cat runbg
+        exit $?
         ;;
 
     *)
