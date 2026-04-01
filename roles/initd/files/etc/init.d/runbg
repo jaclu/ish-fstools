@@ -46,7 +46,7 @@ case "$1" in
         # shell check disable=SC2086
         start-stop-daemon --start --background \
             --pidfile /run/runbg.pid \
-            /bin/cat /dev/location >/dev/null
+            --startas /bin/cat -- /dev/location >/dev/null
 
         if $?; then
             log_end_msg 0 || true
