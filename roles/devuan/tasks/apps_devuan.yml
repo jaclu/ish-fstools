@@ -26,23 +26,23 @@
 
 - name: Install abduco tarball in /usr/local
   unarchive:
+    remote_src: true
     src: "{{ ift_devuan_abduco_tgz }}"
     dest: /
-    remote_src: true
 
 #
 #  Reuse file assets from the debian role - they are identical for iSH
 #
-- name: "Install extras to /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
+- name: "Install extras to /usr/local/bin  -- {{ remote_src_lbl }}"
   copy:
-    remote_src: "{{ not b_old_ansible_detected }}"
-    mode: preserve
+    remote_src: true
     src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
-
-- name: "Install extras to /usr/local/sbin  -- {{ initial_prep_remote_src_lbl }}"
-  copy:
-    remote_src: "{{ not b_old_ansible_detected }}"
     mode: preserve
+
+- name: "Install extras to /usr/local/sbin  -- {{ remote_src_lbl }}"
+  copy:
+    remote_src: true
     src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
+    mode: preserve

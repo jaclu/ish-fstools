@@ -1,14 +1,14 @@
 ---
 # - name: Debian /usr/local/bin
 #   ansible.builtin.copy:
-#     mode: preserve
 #     remote_src: true
 #     src: "{{ aok_folder }}/FamDeb/usr_local_bin/"
 #     dest: /usr/local/bin/
+#     mode: preserve
 
 # - name: Debian /usr/local/sbin
 #   ansible.builtin.copy:
-#     mode: preserve
 #     remote_src: true
 #     src: "{{ aok_folder }}/FamDeb/usr_local_sbin/"
 #     dest: /usr/local/sbin/
+#     mode: preserve

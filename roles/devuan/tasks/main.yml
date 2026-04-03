@@ -32,12 +32,12 @@
 
 - name: Install inittab
   copy:
+    remote_src: true
     src: "{{ d_repo_devuan_role }}/files/etc/inittab"
     dest: /etc/inittab
     owner: root
     group: root
     mode: "0644"
-    remote_src: true
 
 - name: " opt/openssh - Install Debian sshd_config"
   template:

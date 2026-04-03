@@ -74,13 +74,13 @@
 - name: Deploy /etc/inittab
   copy:
     remote_src: true
-    mode: preserve
     src: "{{ d_repo_alpine_role }}/files/etc/inittab"
     dest: /etc/
+    mode: preserve
 
 - name: Install extras to /usr/local/bin
   copy:
     remote_src: true
-    mode: preserve
     src: "{{ d_repo_alpine_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
+    mode: preserve

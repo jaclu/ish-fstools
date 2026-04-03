@@ -1,18 +1,18 @@
 ---
 # - name: Devuan /usr/local/bin
 #   ansible.builtin.copy:
-#     mode: preserve
 #     src: /opt/AOK/Devuan/usr_local_bin/*
 #     dst: /usr/local/bin
+#     mode: preserve
 
 # - name: Devuan /usr/local/sbin
 #   ansible.builtin.copy:
-#     mode: preserve
 #     src: /opt/AOK/Devuan/usr_local_sbin/*
 #     dst: /usr/local/sbin
+#     mode: preserve
 
 - name: Devuan packages
   ansible.builtin.package:
-    mode: preserve
     name: "{{ packages_Devuan }}"
     state: present
+    mode: preserve

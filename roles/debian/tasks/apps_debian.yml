@@ -26,26 +26,26 @@
 
 - name: " opt/openssh - Install openssh tarball in /opt"
   unarchive:
+    remote_src: true
     src: "{{ ift_openssh_tgz }}"
     dest: /
-    remote_src: true
 
 - name: Install abduco tarball in /usr/local
   unarchive:
+    remote_src: true
     src: "{{ ift_abduco_tgz }}"
     dest: /
-    remote_src: true
 
 - name: "Install extras to /usr/local/bin  -- {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
-    mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
+    mode: preserve
 
-- name: "Install extras to /usr/local/sbin  -- {{ initial_prep_remote_src_lbl }}"
+- name: "Install extras to /usr/local/sbin  -- {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
-    mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
+    mode: preserve
