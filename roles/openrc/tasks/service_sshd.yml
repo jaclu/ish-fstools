@@ -69,11 +69,9 @@
     src: "{{ d_init_ift }}/sshd"
     dest: "{{ d_init_d }}/sshd"
     state: link
-  when: ansible_facts.distribution != 'Devuan'
 
 - name: " sshd - Set runlevel"
   include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "{{ d_init_d }}/sshd"
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
-  when: ansible_facts.distribution != 'Devuan'

@@ -23,9 +23,8 @@
     state: link
   when: ansible_facts.distribution == 'Debian'
 
-- name: " services - Run service_sshd.yml"
-  import_tasks: service_sshd.yml
-
 - name: " services - Run service_runbg.yml"
   import_tasks: service_runbg.yml
-  when: ansible_facts.distribution != 'Devuan'
+
+- name: " services - Run service_sshd.yml"
+  import_tasks: service_sshd.yml
