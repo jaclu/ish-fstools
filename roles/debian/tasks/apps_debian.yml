@@ -36,7 +36,7 @@
     dest: /
     remote_src: true
 
-- name: "Install extras to /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
+- name: "Install extras to /usr/local/bin  -- {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
     mode: preserve

@@ -7,12 +7,6 @@
 #  License: MIT
 #
 
-- name: Define initial_prep_remote_src_lbl
-  set_fact:
-    # all_distros_copy_style -> remote_src_copy_style -> initial_prep_remote_src_lbl
-    initial_prep_remote_src_lbl:
-      - "{{ 'slow old-style' if b_old_ansible_detected else 'remote_src' }}"
-
 - name: Clone this on remote end
   # Must be first task in order for everything else to use the variable overrides
   include_tasks: remote_repo.yml

@@ -26,7 +26,7 @@
     - environment
     - profile-hints
 
-- name: "Copy /etc/skel  --  {{ initial_prep_remote_src_lbl }}"
+- name: "Copy /etc/skel  --  {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
@@ -48,7 +48,7 @@
 # Originated from common_apps.yml
 #
 
-- name: "Common apps - /usr/local/lib  --  {{ initial_prep_remote_src_lbl }}"
+- name: "Common apps - /usr/local/lib  --  {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
@@ -63,14 +63,14 @@
     group: root
     mode: "0755"
 
-- name: "Common apps - /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
+- name: "Common apps - /usr/local/bin  -- {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
     mode: preserve
 
-- name: "Common apps - /usr/local/sbin  --  {{ initial_prep_remote_src_lbl }}"
+- name: "Common apps - /usr/local/sbin  --  {{ remote_src_lbl }}"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"

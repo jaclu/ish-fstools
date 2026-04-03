@@ -25,3 +25,8 @@
   when: b_old_ansible_detected | default(false)
   delegate_to: localhost
   run_once: true
+
+- name: Define remote_src_lbl depending on ansible < 2.8 or not
+  set_fact:
+    remote_src_lbl:
+      - "{{ 'slow old-style' if b_old_ansible_detected else 'remote_src' }}"
