@@ -38,14 +38,14 @@
 
 - name: "Install extras to /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
+    remote_src: "{{ not b_old_ansible_detected }}"
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
 
 - name: "Install extras to /usr/local/sbin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
+    remote_src: "{{ not b_old_ansible_detected }}"
     mode: preserve
     src: "{{ d_repo_debian_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/

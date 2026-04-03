@@ -1,0 +1,27 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Detects if deploy host uses ansible < 2.8
+#
+
+- name: Set b_old_ansible_detected if this is ansible < 2.8
+  set_fact:
+    b_old_ansible_detected: >-
+      {{ ansible_version.major < 2
+        or (ansible_version.major == 2
+            and ansible_version.minor < 8) }}
+  delegate_to: localhost
+  run_once: true
+
+- name: Display if this is old ansible < 2.8
+  debug:
+    msg: "This is running on an old ansbile < 2.8"
+  changed_when: ift_show_extra_status | default(false)
+  when: b_old_ansible_detected | default(false)
+  delegate_to: localhost
+  run_once: true

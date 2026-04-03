@@ -19,16 +19,16 @@
 - name: "Install some common config files"
   copy:
     remote_src: true
-    mode: preserve
     src: "{{ d_repo_all_distros_role }}/files/etc/{{ item }}"
     dest: "/etc/{{ item }}"
+    mode: preserve
   loop:
     - environment
     - profile-hints
 
 - name: "Copy /etc/skel  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
+    remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/etc/skel"
     dest: /etc
     owner: root
@@ -50,15 +50,13 @@
 
 - name: "Common apps - /usr/local/lib  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
-    mode: preserve
+    remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_lib/"
     dest: /usr/local/lib/
+    mode: preserve
 
 - name: Deploy /usr/local/lib/ift-utils.sh with correct d_repo path
   template:
-    # remote_src: true
-    # src: "{{ d_repo_all_distros_role }}/templates/ift-utils.sh.js2"
     src: ift-utils.sh.js2
     dest: /usr/local/lib/ift-utils.sh
     owner: root
@@ -67,14 +65,14 @@
 
 - name: "Common apps - /usr/local/bin  -- {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
-    mode: preserve
+    remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_bin/"
     dest: /usr/local/bin/
+    mode: preserve
 
 - name: "Common apps - /usr/local/sbin  --  {{ initial_prep_remote_src_lbl }}"
   copy:
-    remote_src: "{{ not initial_prep_old_ansible }}"
-    mode: preserve
+    remote_src: "{{ not b_old_ansible_detected }}"
     src: "{{ d_repo_all_distros_role }}/files/usr_local_sbin/"
     dest: /usr/local/sbin/
+    mode: preserve

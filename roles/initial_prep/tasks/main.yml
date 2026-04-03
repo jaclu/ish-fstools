@@ -7,29 +7,11 @@
 #  License: MIT
 #
 
-- name: Set initial_prep_old_ansible if this is ansible < 2.8
-  # old_ansible -> initial_prep_old_ansible
-  set_fact:
-    initial_prep_old_ansible: >-
-      {{ ansible_version.major < 2
-        or (ansible_version.major == 2
-            and ansible_version.minor < 8) }}
-  delegate_to: localhost
-  run_once: true
-
-- name: Check if this is old ansible < 2.8
-  debug:
-    msg: "         initial_prep_old_ansible: {{ initial_prep_old_ansible }}"
-  changed_when: ift_show_extra_status | default(false)
-  when: initial_prep_old_ansible or (ift_show_extra_status | default(false))
-  delegate_to: localhost
-  run_once: true
-
 - name: Define initial_prep_remote_src_lbl
   set_fact:
     # all_distros_copy_style -> remote_src_copy_style -> initial_prep_remote_src_lbl
     initial_prep_remote_src_lbl:
-      - "{{ 'slow old-style' if initial_prep_old_ansible else 'remote_src' }}"
+      - "{{ 'slow old-style' if b_old_ansible_detected else 'remote_src' }}"
 
 - name: Clone this on remote end
   # Must be first task in order for everything else to use the variable overrides
