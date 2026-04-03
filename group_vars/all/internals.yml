@@ -25,15 +25,19 @@ d_etc_ift: /etc/opt/ift
 
 # Where is this role on dest platform
 # Used for much faster installs of files, compared
-# to transfer from deploy host
+# to transfer from deploy host when done remotely on ridiculously slow systems like
+# iSH
+d_repo_all_distros_role: "{{ d_repo }}/roles/all_distros"
 d_repo_alpine_role: "{{ d_repo }}/roles/alpine"
 d_repo_debian_role: "{{ d_repo }}/roles/debian"
 d_repo_devuan_role: "{{ d_repo }}/roles/devuan"
+d_repo_openrc_role: "{{ d_repo }}/roles/openrc"
 
 d_init_d: /etc/init.d
 d_init_ift: "{{ d_init_d }}/ish-fstools_services"
 d_init_not: "{{ d_init_d }}/services-excluded-on-purpose"
 
+f_service_runbg: "{{ d_init_d }}/runbg"
 f_app_ift_launcher: /usr/local/sbin/ift-launcher
 f_app_ift_config: /usr/local/bin/config-ift
 
