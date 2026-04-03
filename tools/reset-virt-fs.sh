@@ -68,7 +68,6 @@ create_empty_fs() {
 }
 
 replace_fs() {
-    msg_dbg "replace_fs()"
     [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
         err_msg "chooted - found items in /dev"
     }
@@ -308,23 +307,7 @@ f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
 # trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
 
 # shellcheck source=/dev/null
-[ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
-
-[ -n "$AOK_TMPDIR" ] && {
-    TMPDIR="$(dirname "$AOK_TMPDIR")"
-    lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
-}
-
-if [ "$1" = "clear" ]; then
-    do_clear=true
-    if [ -n "$2" ]; then
-        fs_saved="aok_completed/$2.tgz"
-    else
-        fs_saved="" # force creation of fresh Alpine-miniroot FS
-    fi
-else
-    do_clear=false
-fi
+# [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
 # lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
 [ -z "$AOK_TMPDIR" ] && {
@@ -339,12 +322,29 @@ fi
 }
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"
 
+[ -n "$AOK_TMPDIR" ] && {
+    TMPDIR="$(dirname "$AOK_TMPDIR")"
+    lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
+}
+
 cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
 d_aok_fs="$AOK_TMPDIR"/aok_fs
+
+if [ "$1" = "clear" ]; then
+    do_clear=true
+    if [ -n "$2" ]; then
+        fs_saved="aok_completed/$2.tgz"
+    else
+        fs_saved="" # force creation of fresh Alpine-miniroot FS
+    fi
+else
+    do_clear=false
+fi
 
 $do_clear && replace_fs
 
 sync_fs_tools
 prepare_shell_env
+display_app_run_time
 
 lbl_1 "Done!"
