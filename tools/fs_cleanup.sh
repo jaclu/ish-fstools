@@ -62,10 +62,8 @@ deploy_cleanup() {
     delete_items --remove-dir --ignore-sys-path
 }
 
-total_cleanup() {
+all_caches_etc() {
     local items
-
-    deploy_cleanup
 
     lbl_1 "Total cleanup cache and tmp folders"
     items=(
@@ -76,6 +74,12 @@ total_cleanup() {
         /tmp
     )
     delete_items --ignore-sys-path
+
+}
+
+total_cleanup() {
+    deploy_cleanup
+    all_caches_etc
 }
 
 load_utils() {
@@ -104,6 +108,8 @@ load_utils
 
 if [[ "$1" = "total" ]]; then
     total_cleanup
+elif [[ "$1" = "most" ]]; then
+    all_caches_etc
 else
     deploy_cleanup
 fi
