@@ -68,12 +68,18 @@ create_empty_fs() {
 }
 
 replace_fs() {
-    [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
-        err_msg "chooted - found items in /dev"
-    }
-    [ "$(find "$d_aok_fs"/proc 2>/dev/null | wc -l)" -gt 1 ] && {
-        err_msg "chooted - found items in /proc"
-    }
+    # ensure chroo env is not in use
+    is_chrooted_ish && err_msg "ish env is already chrooted"
+    is_chrooted && err_msg "This can't be run in an chrooted env"
+    /opt/AOK/tools/do_chroot.sh -c || err_msg "chroot env not clean to delete"
+
+    # [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
+    #     err_msg "chooted - found items in /dev"
+    # }
+    # [ "$(find "$d_aok_fs"/proc 2>/dev/null | wc -l)" -gt 1 ] && {
+    #     err_msg "chooted - found items in /proc"
+    # }
+
     if [ -f "$fs_saved" ]; then
         unpack_saved_fs
     else
@@ -293,6 +299,8 @@ d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
 
 repo_name=$(basename "$d_repo")
 
+d_orig_aok_tmpdir="$AOK_TMPDIR"
+
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 my_rsync="rsync -a --out-format='%n'"
@@ -310,21 +318,24 @@ f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
 # [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
 
 # lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
-[ -z "$AOK_TMPDIR" ] && {
-
+if [ -d "$d_orig_aok_tmpdir" ]; then
+    AOK_TMPDIR="$d_orig_aok_tmpdir"
+elif [ -z "$AOK_TMPDIR" ]; then
     _d=/var/tmp/aok_tmp
     if [ -d "$_d" ]; then
         AOK_TMPDIR="$_d"
     else
         AOK_TMPDIR="/tmp"
-        lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
     fi
-}
+    lbl_2 "modified AOK_TMPDIR: $AOK_TMPDIR"
+fi
+unset d_orig_aok_tmpdir
+
 [ -z "$AOK_TMPDIR" ] && err_msg "Failed to locate $AOK_TMPDIR"
 
-[ -n "$AOK_TMPDIR" ] && {
-    TMPDIR="$(dirname "$AOK_TMPDIR")"
-    lbl_1 "Assigining TMPDIR via AOK_TMPDIR"
+[ -d "$AOK_TMPDIR" ] && {
+    TMPDIR="$(realpath "$AOK_TMPDIR")"
+    lbl_1 "Assigining TMPDIR via AOK_TMPDIR: $TMPDIR"
 }
 
 cd "$AOK_TMPDIR" || err_msg "Failed to cd $AOK_TMPDIR"
@@ -345,6 +356,6 @@ $do_clear && replace_fs
 
 sync_fs_tools
 prepare_shell_env
-display_app_run_time
 
+display_app_run_time
 lbl_1 "Done!"
