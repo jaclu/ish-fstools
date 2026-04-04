@@ -18,40 +18,62 @@
   run_once: true
   when: ansible_facts.distribution == 'Debian'
 
-- name: Overrides Debian - Add dev apks when ift_pkgs_devel is true
+- name: Overrides Debian - ift_pkgs_devel=true -> Add Development packages
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_devel | default([])) }}
   when:
-    - ift_debian_pkgs_devel | default('') | length > 0
-    - ift_pkgs_devel is defined and ift_pkgs_devel
+    - (ift_debian_pkgs_devel | default([])) | length > 0
+    - ift_pkgs_devel | default(false) | bool
   delegate_to: localhost
   run_once: true
   changed_when: false
 
-- name: Overrides Debian - Add linting apks when ift_debian_pkgs_linting is true
+- name: Overrides Debian - ift_pkgs_devel=false -> Uninstall Development packages
+  set_fact:
+    ift_debian_purges: >-
+      {{ ift_debian_purges | default([]) | union(ift_debian_pkgs_devel | default([])) }}
+  when:
+    - (ift_debian_pkgs_devel | default([])) | length > 0
+    - not (ift_pkgs_devel | default(false) | bool)
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Debian - ift_pkgs_lintingt=true -> Add Linting packages
   set_fact:
     ift_debian_packages: >-
       {{ ift_debian_packages | union(ift_debian_pkgs_linting | default([])) }}
   when:
-    - ift_debian_pkgs_linting | default('') | length > 0
-    - ift_pkgs_linting is defined and ift_pkgs_linting
+    - (ift_debian_pkgs_linting | default([])) | length > 0
+    - ift_pkgs_linting | default(false) | bool
   delegate_to: localhost
   run_once: true
   changed_when: false
 
-- name: Overrides Debian - Add man-db if ift_pkgs_man is true
+- name: Overrides Debian - ft_pkgs_lintingt=false -> Uninstall Linting packages
   set_fact:
-    ift_debian_packages: "{{ ift_debian_packages + ['man-db'] }}"
+    ift_debian_purges: >-
+      {{ ift_debian_purges | default([]) | union(ift_debian_pkgs_linting | default([])) }}
+  when:
+    - (ift_debian_pkgs_linting | default([])) | length > 0
+    - not (ift_pkgs_linting | default(false) | bool)
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Debian - ift_pkgs_man=true -> Add man-db
+  set_fact:
+    ift_debian_packages: "{{ ift_debian_packages | default([]) | union(['man-db']) }}"
   when: ift_pkgs_man | default(false)
   delegate_to: localhost
   run_once: true
   changed_when: false
 
-- name: Overrides Debian - Remove man-db if ift_pkgs_man is not true
+- name: Overrides Debian - ift_pkgs_man=false -> Uninstall man-db
   set_fact:
-    ift_debian_purges: "{{ ift_debian_purges + ['man-db'] }}"
-  when: not (ift_pkgs_man | bool)
+    ift_debian_purges: "{{ ift_debian_purges | default([]) | union(['man-db']) }}"
+  when: not (ift_pkgs_man | default(false) | bool)
   delegate_to: localhost
   run_once: true
   changed_when: false
@@ -72,5 +94,5 @@
   changed_when: ift_show_extra_status | default(false)
   when:
     - ansible_facts.distribution == 'Debian'
-    - ift_debian_purges
+    - ift_debian_purges | default([])
     - ift_show_extra_status | default(false)
