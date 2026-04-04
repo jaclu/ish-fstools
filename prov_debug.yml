@@ -47,14 +47,14 @@
   # #
   # # run specific task inside a role
   # #
-  tasks:
-    - name: Check if openrc was used during boot-up
-      import_tasks: tasks/was_openrc_used_to_boot_system.yml
+  # tasks:
+  #   - name: Check if openrc was used during boot-up
+  #     import_tasks: tasks/was_openrc_used_to_boot_system.yml
 
-    - name: Use just one task file from the role
-      include_role:
-        name: all_distros
-        tasks_from: service_sshd.yml
+  #   - name: Use just one task file from the role
+  #     include_role:
+  #       name: all_distros
+  #       tasks_from: service_sshd.yml
 
   # #
   # # run specific role(-s)
@@ -70,8 +70,7 @@
   #   - role: openrc
   #     when: ansible_facts.distribution in ['Alpine', 'Debian']
   #   - role: sysv_init
-  #     when:
-  #       - ansible_facts.distribution == 'Devuan'
+  #     when: ansible_facts.distribution == 'Devuan'
 
   # post_tasks:
   #   - name: Run tasks/update_release.yml
