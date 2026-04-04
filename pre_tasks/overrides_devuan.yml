@@ -18,7 +18,7 @@
   run_once: true
   when: ansible_facts.distribution == 'Devuan'
 
-- name: Overrides Devuan - Add dev packages when ift_pkgs_devel is true
+- name: Overrides Devuan - ift_pkgs_devel=true -> Add Development packages
   set_fact:
     ift_devuan_packages: >-
       {{ ift_devuan_packages | union(ift_devuan_pkgs_devel | default([])) }}
@@ -29,7 +29,7 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Devuan - Add dev packages to purges when ift_pkgs_devel is false
+- name: Overrides Devuan - ift_pkgs_devel=false -> Uninstall Development packages
   set_fact:
     ift_devuan_purges: >-
       {{ ift_devuan_purges | default([]) | union(ift_devuan_pkgs_devel | default([])) }}
@@ -40,7 +40,7 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Devuan - Add linting packages when ift_pkgs_linting is true
+- name: Overrides Devuan - ift_pkgs_lintingt=true -> Add Linting packages
   set_fact:
     ift_devuan_packages: >-
       {{ ift_devuan_packages | union(ift_devuan_pkgs_linting | default([])) }}
@@ -51,7 +51,7 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Devuan - Add linting packages to purges when ift_pkgs_linting is false
+- name: Overrides Devuan - ft_pkgs_lintingt=false -> Uninstall Linting packages
   set_fact:
     ift_devuan_purges: >-
       {{ ift_devuan_purges | default([]) | union(ift_devuan_pkgs_linting | default([])) }}
@@ -62,15 +62,15 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Devuan - Add man-db if ift_pkgs_man is true
+- name: Overrides Devuan - ift_pkgs_man=true -> Add man-db
   set_fact:
-    ift_devuan_packages: "{{ ift_devuan_packages + ['man-db'] }}"
+    ift_devuan_packages: "{{ ift_devuan_packages | default([]) | union(['man-db']) }}"
   when: ift_pkgs_man | default(false)
   delegate_to: localhost
   run_once: true
   changed_when: false
 
-- name: Overrides Devuan - Remove man-db if ift_pkgs_man is not true
+- name: Overrides Devuan - ift_pkgs_man=false -> Uninstall man-db
   set_fact:
     ift_devuan_purges: "{{ ift_devuan_purges | default([]) | union(['man-db']) }}"
   when: not (ift_pkgs_man | default(false) | bool)
