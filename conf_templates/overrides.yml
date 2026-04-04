@@ -81,7 +81,7 @@ ift_extra_alpine_packages:
   #
   #  Remote
   #
-  - autossh # Automatically restart SSH sessions and tunnels
+  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
   #
@@ -111,7 +111,7 @@ ift_extra_devuan_packages:
   #
   #  Remote
   #
-  - autossh # Automatically restart SSH sessions and tunnels
+  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
 ift_extra_debian_packages:
@@ -145,7 +145,7 @@ ift_extra_debian_packages:
   #
   #  Remote
   #
-  - autossh # Automatically restart SSH sessions and tunnels
+  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
 
@@ -158,7 +158,6 @@ ift_extra_debian_packages:
 #   # Each lists what options depend on them, if the corresponding option(-s) are
 #   # set to "" that package is not needed
 #   - openrc # Needed for: ift_runlevel_runbg, ift_runlevel_sshd
-#   - openssh-server # Needed for: ift_runlevel_sshd
 #   - shadow # Needed for: ift_shell
 #   - tzdata # Needed for: ift_timezone
 

@@ -103,8 +103,33 @@
   delegate_to: localhost
   run_once: true
   changed_when: false
-# The custom apk handler lists packages to be added / removed, so skip this for Alpine
 
+- name: Overrides Alpine - Add openssh-server if ift_port_sshd is defined
+  set_fact:
+    ift_alpine_packages: >-
+      {{
+        ift_alpine_packages | default([])
+        | union(['openssh-server'])
+      }}
+  when: (ift_port_sshd | default('') | trim) != ''
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Alpine - Remove openssh-server if ift_port_sshd is un-defined
+  set_fact:
+    ift_alpine_purges: >-
+      {{
+        ift_alpine_purges | default([])
+        | union(['openssh-server'])
+      }}
+  when: (ift_port_sshd | default('') | trim) == ''
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+#
+# The custom apk handler lists packages to be added / removed, so skip this for Alpine
+#
 # - name: Overrides Alpine - List of what apk packages will be installed
 #   debug:
 #     msg: "{{ ift_alpine_packages | sort }}"

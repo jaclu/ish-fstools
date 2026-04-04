@@ -19,7 +19,7 @@
   when: not (is_ish | bool)
   listen: Restart runbg
 
-- name: Restart via OpenRC - runbg
+- name: Restart service - runbg
   service:
     name: runbg
     state: restarted

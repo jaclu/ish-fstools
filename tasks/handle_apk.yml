@@ -55,7 +55,7 @@
 
 - name: Handle apk - List what will be removed
   debug:
-    msg: "{{ apk_del }}"
+    msg: "{{ apk_del | sort }}"
   delegate_to: localhost
   run_once: true
   changed_when: apk_del | default([]) | length > 0
