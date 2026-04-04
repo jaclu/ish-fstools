@@ -34,7 +34,7 @@ pidfile="/run/runbg.pid"
 
 notification() {
     msg="$1"
-    # _w=/usr/local/bin/wall
+    _w=/usr/local/bin/wall
 
     if [ -e "$_w" ]; then
         $_w --nobanner "$msg"
@@ -64,8 +64,7 @@ log_it() {
 }
 
 check_for_other_polling() {
-    other_pids="$(ps ax | grep /dev/location | grep -v grep |
-        awk '{ print $1 }' | tr '\n' ' ')"
+    other_pids="$(pgrep -f /dev/location | awk '{ print $1 }' | tr '\n' ' ')"
 }
 
 start_pre() {

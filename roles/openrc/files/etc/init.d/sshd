@@ -33,11 +33,13 @@ log_it() {
 generate_host_key_type() {
 	local bit_size key_type
 
+
 	key_type=$1
 	if [ ! -f /etc/ssh/ssh_host_"${key_type}"_key ]; then
 		case $key_type in
 			ecdsa)	bit_size="$ecdsa_bit_size";;
 			rsa)	bit_size="$rsa_bit_size";;
+                        *) ;;
 		esac
 		einfo "Generating $key_type SSH host key..."
 		ssh-keygen \
@@ -182,5 +184,5 @@ warn_deprecated_var() {
 
 	ewarn "Variable \$$varname is deprecated and will be removed in the future!"
 	# shellcheck disable=SC2015
-	[ "$replacement" ] && ewarn "Use \$$replacement instead of \$$varname." ||:
+	[ -n "$replacement" ] && ewarn "Use \$$replacement instead of \$$varname." ||:
 }
