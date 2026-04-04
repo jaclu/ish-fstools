@@ -94,5 +94,5 @@
   changed_when: ift_show_extra_status | default(false)
   when:
     - ansible_facts.distribution == 'Devuan'
-    - ift_devuan_purges
+    - ift_devuan_purges | default([])
     - ift_show_extra_status | default(false)
