@@ -10,14 +10,16 @@
 #
 
 - name: Remove packages listed in ift_debian_purges
-  package:
+  apt:
     state: absent
-    name: "{{ ift_debian_purges }}"
+    purge: true
+    autoremove: true
+    pkg: "{{ ift_debian_purges | default([]) }}"
 
 - name: Install selected packages
-  package:
+  apt:
     state: present
-    name: "{{ ift_debian_packages }}"
+    pkg: "{{ ift_debian_packages | default([]) }}"
 
 - name: " opt/openssh - Install openssh tarball in /opt"
   unarchive:
