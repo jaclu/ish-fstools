@@ -11,7 +11,7 @@
 #
 
 #
-#  Crucial apps needed during: Checkout or update ish-fstools repo
+#  Crucial apps needed during: Checkout or update of ish-fstools repo
 #
 - name: " pre-task - Install crucial apps needed for deploy (Alpine)"
   include_tasks: tasks/handle_apk.yml # should be include
