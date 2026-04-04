@@ -9,16 +9,19 @@
 #  Install selected Alpine apps
 #
 
-- name: Install selected packages
+- name: Install/Remove selected packages
   include_tasks: tasks/handle_apk.yml
   vars:
-    apk_add: "{{ ift_alpine_packages }}"
+    apk_add: "{{ ift_alpine_packages | default([]) }}"
+    # Uninstall ansible if already running on iSH - it can't be used there
     apk_del: >-
       {{
-        (['ansible'] if is_ish else [])
-        + (['docs'] if not (ift_pkgs_man | default(false)) else [])
+        ift_alpine_purges | default([]) +
+        (['ansible'] if (is_ish | default(false)) else [])
       }}
-  when: ift_alpine_packages | default([]) | length > 0
+  when: >
+    ((ift_alpine_packages | default([])) | length > 0) or
+    ((ift_alpine_purges | default([])) | length > 0)
 
 - name: "Install old IP# able mtr 0.92-a"
   shell:
