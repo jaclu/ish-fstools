@@ -17,7 +17,7 @@
 - name: Remove packages listed in ift_devuan_purges
   package:
     state: absent
-    name: "{{ ift_devuan_purges }}"
+    name: "{{ ift_devuan_purges | default([]) }}"
 
 - name: Install selected packages
   package:

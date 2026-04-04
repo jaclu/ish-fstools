@@ -23,8 +23,19 @@
     ift_devuan_packages: >-
       {{ ift_devuan_packages | union(ift_devuan_pkgs_devel | default([])) }}
   when:
-    - ift_devuan_pkgs_devel | default('') | length > 0
-    - ift_pkgs_devel is defined and ift_pkgs_devel
+    - (ift_devuan_pkgs_devel | default([])) | length > 0
+    - ift_pkgs_devel | default(false) | bool
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - Add dev packages to purges when ift_pkgs_devel is false
+  set_fact:
+    ift_devuan_purges: >-
+      {{ ift_devuan_purges | default([]) | union(ift_devuan_pkgs_devel | default([])) }}
+  when:
+    - (ift_devuan_pkgs_devel | default([])) | length > 0
+    - not (ift_pkgs_devel | default(false) | bool)
   delegate_to: localhost
   run_once: true
   changed_when: false
@@ -34,8 +45,19 @@
     ift_devuan_packages: >-
       {{ ift_devuan_packages | union(ift_devuan_pkgs_linting | default([])) }}
   when:
-    - ift_devuan_pkgs_linting | default('') | length > 0
-    - ift_pkgs_linting is defined and ift_pkgs_linting
+    - (ift_devuan_pkgs_linting | default([])) | length > 0
+    - ift_pkgs_linting | default(false) | bool
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Devuan - Add linting packages to purges when ift_pkgs_linting is false
+  set_fact:
+    ift_devuan_purges: >-
+      {{ ift_devuan_purges | default([]) | union(ift_devuan_pkgs_linting | default([])) }}
+  when:
+    - (ift_devuan_pkgs_linting | default([])) | length > 0
+    - not (ift_pkgs_linting | default(false) | bool)
   delegate_to: localhost
   run_once: true
   changed_when: false
@@ -50,8 +72,8 @@
 
 - name: Overrides Devuan - Remove man-db if ift_pkgs_man is not true
   set_fact:
-    ift_devuan_purges: "{{ ift_devuan_purges + ['man-db'] }}"
-  when: not (ift_pkgs_man | bool)
+    ift_devuan_purges: "{{ ift_devuan_purges | default([]) | union(['man-db']) }}"
+  when: not (ift_pkgs_man | default(false) | bool)
   delegate_to: localhost
   run_once: true
   changed_when: false

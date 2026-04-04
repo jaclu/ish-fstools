@@ -38,7 +38,7 @@ ift_timezone: Europe/Amsterdam
 
 # ift_pkgs_devel: true # set to true if devel packages should be used
 # ift_pkgs_linting: true # set to true if linting packages should be used
-# ift_pkgs_man: true # se to true if man pages for everything installed should be used
+ift_pkgs_man: true # se to true if man pages for everything installed should be used
 
 # When the sshd service is first started, host keys will be generated if absent
 # on iSH this takes a while... By enabling this option they can be pre-generated
