@@ -84,7 +84,9 @@
   delegate_to: localhost
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when: ansible_facts.distribution == 'Debian' or (ift_show_extra_status | default(false))
+  when:
+    - ansible_facts.distribution == 'Debian'
+    - (ift_show_extra_status | default(false))
 
 - name: Overrides Debian - List of what apt packages will be removed
   debug:
@@ -94,5 +96,5 @@
   changed_when: ift_show_extra_status | default(false)
   when:
     - ansible_facts.distribution == 'Debian'
-    - ift_debian_purges | default([])
+    - (ift_debian_purges | default([])) | length > 0
     - ift_show_extra_status | default(false)
