@@ -136,5 +136,10 @@ ift_devuan_pkgs_linting:
   - shellcheck
   - yamllint
 
+#
+#  Packages to be removed if present
+#
+ift_devuan_purges: []
+
 ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Debian10"
 ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-deb.tgz"
