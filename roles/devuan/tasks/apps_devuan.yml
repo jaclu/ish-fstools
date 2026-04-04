@@ -15,14 +15,16 @@
   run_once: true
 
 - name: Remove packages listed in ift_devuan_purges
-  package:
+  apt:
     state: absent
-    name: "{{ ift_devuan_purges | default([]) }}"
+    purge: true
+    autoremove: true
+    pkg: "{{ ift_devuan_purges | default([]) }}"
 
 - name: Install selected packages
-  package:
+  apt:
     state: present
-    name: "{{ ift_devuan_packages }}"
+    pkg: "{{ ift_devuan_packages | default([]) }}"
 
 - name: Install abduco tarball in /usr/local
   unarchive:
