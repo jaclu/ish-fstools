@@ -53,7 +53,9 @@ cp conf_templates/overrides.yml vars/
   modification.
 - `vars/overrides.yml` Edit this file to customize deployment parameters.
 
-## Deployment
+## Display ansible_facts
+
+ansible localhost -m ansible.builtin.setup | less
 
 ### Remote Deployment via Deploy Host
 

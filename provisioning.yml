@@ -9,16 +9,6 @@
 #  main toolbook
 #
 
-# - name: Show all gathered facts
-#   hosts: all
-#   vars_files:
-#     - vars.yml
-#   gather_facts: true
-#   tasks:
-#     - name: Display all facts
-#       debug:
-#         var: ansible_facts
-
 - name: Setting up iSH FS
   hosts: "{{ target_hosts | default('localhost') }}"
   vars:
