@@ -49,13 +49,19 @@
   delegate_to: localhost
   # hosts might run different versions of Alpine, so needs to be done for each
   # run_once: true
+  changed_when: ift_show_extra_status | default(false)
+  when:
+    - (ift_show_extra_status | default(false))
 
 - name: Handle apk - List what will be removed
   debug:
     msg: "{{ apk_del }}"
   delegate_to: localhost
   run_once: true
-  when: apk_del | default([]) | length > 0
+  changed_when: apk_del | default([]) | length > 0
+  when:
+    - apk_del | default([]) | length > 0
+    - (ift_show_extra_status | default(false))
 
 - name: Handle apk - Install selected packages using apk directly (much faster)
   shell:
