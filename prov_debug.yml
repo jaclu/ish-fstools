@@ -15,6 +15,13 @@
   hosts: "{{ target_hosts | default('localhost') }}"
   gather_facts: false
 
+  # ============================================================
+  #
+  #     pre_tasks needs to always be run, to ensure python
+  #     is installed, and to modify package variables depending
+  #     on environment
+  #
+  # ============================================================
   pre_tasks:
     - name: Prepare env to run playbooks
       # only disable skip_cloning when you want to skip cloning the repo
@@ -25,45 +32,45 @@
       import_tasks: pre_tasks/main.yml
       tags: always
 
+  # ============================================================
   #
-  # only one of the below can be used - put the active one last
+  #     Run a specific task file
   #
-
-  # #
-  # # run specific task file
-  # #
+  # ============================================================
   # tasks:
   #   - name: Run specific task file
   #     import_tasks: tasks/restart_runbg.yml
 
-  # #
-  # # run specific task
-  # #
-  # tasks:
-  #   - name: Intentional fail
-  #     fail:
-  #       msg: "Intentional fail"
-
-  # #
-  # # run specific task inside a role
-  # #
+  # ============================================================
+  #
+  #     Run a specific task
+  #
+  # ============================================================
   # tasks:
   #   - name: Check if openrc was used during boot-up
   #     import_tasks: tasks/was_openrc_used_to_boot_system.yml
 
+  # ============================================================
+  #
+  #     Run specific task inside a role
+  #
+  # ============================================================
+  # tasks:
   #   - name: Use just one task file from the role
   #     include_role:
   #       name: all_distros
   #       tasks_from: service_sshd.yml
 
-  # #
-  # # run specific role(-s)
-  # #
-  # roles:
-  #   - role: common_handlers
-  #   - role: initial_prep
-  #   - role: alpine
-  #     when: ansible_facts.distribution == 'Alpine'
+  # ============================================================
+  #
+  #     Run specific role(-s)
+  #
+  # ============================================================
+  roles:
+    - role: common_handlers
+    - role: initial_prep
+    - role: alpine
+      when: ansible_facts.distribution == 'Alpine'
   #   - role: debian
   #     when: ansible_facts.distribution == 'Debian'
   #   - role: all_distros
@@ -72,6 +79,11 @@
   #   - role: sysv_init
   #     when: ansible_facts.distribution == 'Devuan'
 
+  # ============================================================
+  #
+  #     Run the post tasks
+  #
+  # ============================================================
   # post_tasks:
   #   - name: Run tasks/update_release.yml
   #     import_tasks: tasks/update_release.yml
