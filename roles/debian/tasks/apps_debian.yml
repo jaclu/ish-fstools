@@ -9,11 +9,6 @@
 #  Install selected Debian apps
 #
 
-- name: List what will be installed
-  debug:
-    msg: "{{ ift_debian_packages | sort }}"
-  run_once: true
-
 - name: Remove packages listed in ift_debian_purges
   package:
     state: absent

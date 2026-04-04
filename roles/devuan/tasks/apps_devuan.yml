@@ -9,11 +9,6 @@
 #  Install selected Devuan apps
 #
 
-- name: List what will be installed
-  debug:
-    msg: "{{ ift_devuan_packages | sort }}"
-  run_once: true
-
 - name: Remove packages listed in ift_devuan_purges
   apt:
     state: absent
