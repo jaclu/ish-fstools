@@ -18,6 +18,10 @@
   vars:
     apk_upgrade: 1
     apk_add: "{{ crucial_apps }}"
+    apk_del: >-
+      {{
+        ['ansible'] if (is_ish | default(false)) else []
+      }}
   when:
     - ansible_facts.distribution == 'Alpine'
     - not (ift_quick_deploy | default(false))
