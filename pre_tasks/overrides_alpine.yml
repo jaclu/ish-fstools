@@ -103,24 +103,25 @@
   delegate_to: localhost
   run_once: true
   changed_when: false
+# The custom apk handler lists packages to be added / removed, so skip this for Alpine
 
-- name: Overrides Alpine - List of what apk packages will be installed
-  debug:
-    msg: "{{ ift_alpine_packages | sort }}"
-  delegate_to: localhost
-  run_once: true
-  changed_when: ift_show_extra_status | default(false)
-  when:
-    - ansible_facts.distribution == 'Alpine'
-    - (ift_show_extra_status | default(false))
+# - name: Overrides Alpine - List of what apk packages will be installed
+#   debug:
+#     msg: "{{ ift_alpine_packages | sort }}"
+#   delegate_to: localhost
+#   run_once: true
+#   changed_when: ift_show_extra_status | default(false)
+#   when:
+#     - ansible_facts.distribution == 'Alpine'
+#     - (ift_show_extra_status | default(false))
 
-- name: Overrides Alpine - List of what apk packages will be removed
-  debug:
-    msg: "{{ ift_alpine_purges | sort }}"
-  delegate_to: localhost
-  run_once: true
-  changed_when: ift_show_extra_status | default(false)
-  when:
-    - ansible_facts.distribution == 'Alpine'
-    - (ift_alpine_purges | default([])) | length > 0
-    - ift_show_extra_status | default(false)
+# - name: Overrides Alpine - List of what apk packages will be removed
+#   debug:
+#     msg: "{{ ift_alpine_purges | sort }}"
+#   delegate_to: localhost
+#   run_once: true
+#   changed_when: ift_show_extra_status | default(false)
+#   when:
+#     - ansible_facts.distribution == 'Alpine'
+#     - (ift_alpine_purges | default([])) | length > 0
+#     - ift_show_extra_status | default(false)

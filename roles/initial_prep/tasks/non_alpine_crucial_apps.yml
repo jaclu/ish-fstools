@@ -14,7 +14,7 @@
     update_cache: true
     upgrade: true
 
-- name: "(Non Alpine) List what will be installed"
+- name: "(Non Alpine) List what crucial apps will be installed"
   debug:
     msg: "{{ crucial_apps | sort }}"
   delegate_to: localhost

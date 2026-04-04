@@ -14,14 +14,9 @@
   vars:
     apk_add: "{{ ift_alpine_packages | default([]) }}"
     # Uninstall ansible if already running on iSH - it can't be used there
-    apk_del: >-
-      {{
-        ift_alpine_purges | default([]) +
-        (['ansible'] if (is_ish | default(false)) else [])
-      }}
+    apk_del: "{{ ift_alpine_purges | default([]) }}"
   when: >
-    ((ift_alpine_packages | default([])) | length > 0) or
-    ((ift_alpine_purges | default([])) | length > 0)
+    ((ift_alpine_packages | default([])) | length > 0)
 
 - name: "Install old IP# able mtr 0.92-a"
   shell:
