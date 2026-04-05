@@ -38,11 +38,3 @@
     owner: root
     group: root
     mode: "0644"
-
-- name: " opt/openssh - Install Debian sshd_config"
-  template:
-    src: sshd_config.js2
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: "0755"

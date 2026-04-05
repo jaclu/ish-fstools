@@ -11,3 +11,18 @@
 
 - name: Run service_runbg.yml
   import_tasks: service_runbg.yml
+  when:
+    - (ift_runlevel_runbg | default('') | trim) != ''
+
+- name: Run service_sshd.yml
+  import_tasks: service_sshd.yml
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''
+
+- name: Remove dependency cache files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - /etc/init.d/.depend.*

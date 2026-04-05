@@ -66,11 +66,11 @@
   #     Run specific role(-s)
   #
   # ============================================================
-  roles:
-    - role: common_handlers
-    - role: initial_prep
-    - role: alpine
-      when: ansible_facts.distribution == 'Alpine'
+  # roles:
+  #   - role: common_handlers
+  #   - role: initial_prep
+  #   - role: alpine
+  #     when: ansible_facts.distribution == 'Alpine'
   #   - role: debian
   #     when: ansible_facts.distribution == 'Debian'
   #   - role: all_distros

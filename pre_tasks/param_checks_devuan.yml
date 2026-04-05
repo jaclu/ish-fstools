@@ -1,0 +1,29 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Param checks for Devuan FS
+#
+
+# - name: Params checks Devuan - Fail if ift_runlevel_runbg is set but no openrc
+#   fail:
+#     msg: "openrc must be in ift_devuan_packages when ift_runlevel_runbg is defined"
+#   delegate_to: localhost
+#   run_once: true
+#   when:
+#     - ansible_facts.distribution == 'Devuan'
+#     - ift_runlevel_runbg | default('') | length > 0
+#     - "'openrc' not in (ift_devuan_packages | default([]))"
+
+- name: Param checks Devuan - Fail if ift_timezone is set but tzdata missing
+  fail:
+    msg: "tzdata must be in ift_devuan_packages when ift_timezone is defined and non-empty"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - ift_timezone | default('') | length > 0
+    - "'tzdata' not in (ift_devuan_packages | default([]))"

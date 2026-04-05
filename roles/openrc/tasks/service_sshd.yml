@@ -10,13 +10,34 @@
 #
 
 #
-# Handling /etc/ssh/sshd_config
+#  Configure sshd
 #
+- name: " opt/openssh - Ensure /var/lib/sshd exists"
+  file:
+    path: /var/lib/sshd
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
 
-#
-# The following are Alpine specific, located here to avoid having to split new and
-# old style file copying more than once
-#
+- name: " opt/openssh - Ensure sshd user exists"
+  user:
+    name: sshd
+    comment: "OpenSSH Daemon User"
+    group: nogroup
+    home: /run/sshd
+    shell: /usr/sbin/nologin
+    system: true
+    create_home: true
+
+- name: " opt/openssh - Install sshd_config"
+  template:
+    src: sshd_config.js2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0755"
+
 - name: Install custom /etc/init.d/sshd, supporting iSH logging
   copy:
     remote_src: true

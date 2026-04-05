@@ -37,39 +37,6 @@
   run_once: true
   when: __override_raw is defined
 
-- name: " pre-task overrides - Extend ift_alpine_packages with extra packages"
-  set_fact:
-    ift_alpine_packages: >-
-      {{ (ift_alpine_packages | default([])) +
-         (__override_vars.ift_extra_alpine_packages | default([])) }}
-  delegate_to: localhost
-  run_once: true
-  when:
-    - __override_vars is defined
-    - ansible_facts.distribution == 'Alpine'
-
-- name: " pre-task overrides - Extend ift_debian_packages with extra packages"
-  set_fact:
-    ift_debian_packages: >-
-      {{ (ift_debian_packages | default([])) +
-         (__override_vars.ift_extra_debian_packages | default([])) }}
-  delegate_to: localhost
-  run_once: true
-  when:
-    - __override_vars is defined
-    - ansible_facts.distribution == 'Debian'
-
-- name: " pre-task overrides - Extend ift_devuan_packages with extra packages"
-  set_fact:
-    ift_devuan_packages: >-
-      {{ (ift_devuan_packages | default([])) +
-         (__override_vars.ift_extra_devuan_packages | default([])) }}
-  delegate_to: localhost
-  run_once: true
-  when:
-    - __override_vars is defined
-    - ansible_facts.distribution == 'Devuan'
-
 - name: " pre-task overrides - Apply overrides"
   set_fact:
     "{{ item.key }}": "{{ item.value }}"

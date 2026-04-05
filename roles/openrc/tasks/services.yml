@@ -14,7 +14,6 @@
 
 - name: " services - Run service_disabling_defaults.yml"
   import_tasks: service_disabling_defaults.yml
-  when: ansible_facts.distribution != 'Devuan'
 
 - name: " services - Create symbolic link for /etc/init.d/rc"
   file:
@@ -25,7 +24,11 @@
 
 - name: " services - Run service_runbg.yml"
   import_tasks: service_runbg.yml
+  when:
+    - (ift_runlevel_runbg | default('') | trim) != ''
 
 - name: " services - Run service_sshd.yml"
   import_tasks: service_sshd.yml
-  when: (ift_port_sshd | default('') | trim) != ''
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''

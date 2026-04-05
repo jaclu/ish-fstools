@@ -16,7 +16,7 @@
     autoremove: true
     pkg: "{{ ift_devuan_purges | default([]) }}"
 
-- name: Install selected packages
+- name: Install selected packages listed in ift_devuan_packages
   apt:
     state: present
     pkg: "{{ ift_devuan_packages | default([]) }}"

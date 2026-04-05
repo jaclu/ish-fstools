@@ -11,6 +11,16 @@
 #  in order to be able to set global variables without linting errors
 #
 
+- name: "Overrides Alpine - Extend ift_alpine_packages with extra packages"
+  set_fact:
+    ift_alpine_packages: >-
+      {{ (ift_alpine_packages | default([])) +
+         (__override_vars.ift_extra_alpine_packages | default([])) }}
+  delegate_to: localhost
+  run_once: true
+  when:
+    - __override_vars is defined
+
 - name: Overrides Alpine - Pkgs for Alpine >= 3.17
   set_fact:
     ift_alpine_packages: >-
@@ -104,26 +114,33 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Alpine - Add openssh-server if ift_port_sshd is defined
+- name: Overrides Alpine - Add openssh-server if it's env is defined
   set_fact:
     ift_alpine_packages: >-
       {{
         ift_alpine_packages | default([])
         | union(['openssh-server'])
       }}
-  when: (ift_port_sshd | default('') | trim) != ''
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''
   delegate_to: localhost
   run_once: true
   changed_when: false
 
-- name: Overrides Alpine - Remove openssh-server if ift_port_sshd is un-defined
+- name: Overrides Alpine - Add autossh if it's env is defined
   set_fact:
-    ift_alpine_purges: >-
+    ift_alpine_packages: >-
       {{
-        ift_alpine_purges | default([])
-        | union(['openssh-server'])
+        ift_alpine_packages | default([])
+        | union(['autossh'])
       }}
-  when: (ift_port_sshd | default('') | trim) == ''
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''
+    - (ift_runlevel_autossh | default('') | trim) != ''
+    - (ift_jump_port | default('') | trim) != ''
+    - (ift_jump_host | default('') | trim) != ''
   delegate_to: localhost
   run_once: true
   changed_when: false
@@ -137,7 +154,6 @@
 #   run_once: true
 #   changed_when: ift_show_extra_status | default(false)
 #   when:
-#     - ansible_facts.distribution == 'Alpine'
 #     - (ift_show_extra_status | default(false))
 
 # - name: Overrides Alpine - List of what apk packages will be removed
@@ -147,6 +163,5 @@
 #   run_once: true
 #   changed_when: ift_show_extra_status | default(false)
 #   when:
-#     - ansible_facts.distribution == 'Alpine'
 #     - (ift_alpine_purges | default([])) | length > 0
 #     - ift_show_extra_status | default(false)

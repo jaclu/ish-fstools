@@ -1,0 +1,39 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  SysV init (init.d) handling of sshd
+#
+
+- name: Install sshd_config
+  template:
+    src: sshd_config.js2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: " sshd - stop in runlevels 0,1,6"
+  file:
+    src: "{{ d_init_d }}/ssh"
+    dest: "/etc/rc{{ item }}.d/K01ssh"
+    state: link
+  loop:
+    - 0
+    - 1
+    - 6
+
+- name: " sshd - start in runlevels 2,3,4,5"
+  file:
+    src: "{{ d_init_d }}/ssh"
+    dest: "/etc/rc{{ item }}.d/S01ssh"
+    state: link
+  loop:
+    - 2
+    - 3
+    - 4
+    - 5

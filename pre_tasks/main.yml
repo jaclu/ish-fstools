@@ -24,7 +24,7 @@
 
 - name: " pre-task - Handle vars/overrides.yml"
   # Must be first task in order for everything else to use the variable overrides
-  import_tasks: process_overrides.yml
+  import_tasks: overrides.yml
 
 #
 # Repo specific configs, should happen after overrides are processed

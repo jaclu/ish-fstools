@@ -11,12 +11,21 @@
 #  in order to be able to set global variables without linting errors
 #
 
+- name: Overrides Debian - Extend ift_debian_packages with extra packages
+  set_fact:
+    ift_debian_packages: >-
+      {{ (ift_debian_packages | default([])) +
+         (__override_vars.ift_extra_debian_packages | default([])) }}
+  delegate_to: localhost
+  run_once: true
+  when:
+    - __override_vars is defined
+
 - name: Overrides Debian - Debian env - overrides for global vars
   set_fact:
     ift_shell: /bin/bash
   delegate_to: localhost
   run_once: true
-  when: ansible_facts.distribution == 'Debian'
 
 - name: Overrides Debian - ift_pkgs_devel=true -> Add Development packages
   set_fact:
@@ -78,15 +87,44 @@
   run_once: true
   changed_when: false
 
+- name: Overrides Alpine - Add openssh-server if it's env is defined
+  set_fact:
+    ift_debian_packages: >-
+      {{
+        ift_debian_packages | default([])
+        | union(['openssh-server'])
+      }}
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Overrides Alpine - Add autossh if it's env is defined
+  set_fact:
+    ift_debian_packages: >-
+      {{
+        ift_debian_packages | default([])
+        | union(['autossh'])
+      }}
+  when:
+    - (ift_runlevel_sshd | default('') | trim) != ''
+    - (ift_port_sshd | default('') | trim) != ''
+    - (ift_runlevel_autossh | default('') | trim) != ''
+    - (ift_jump_port | default('') | trim) != ''
+    - (ift_jump_host | default('') | trim) != ''
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
 - name: Overrides Debian - List of what apt packages will be installed
   debug:
     msg: "{{ ift_debian_packages | sort }}"
   delegate_to: localhost
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when:
-    - ansible_facts.distribution == 'Debian'
-    - (ift_show_extra_status | default(false))
+  when: (ift_show_extra_status | default(false))
 
 - name: Overrides Debian - List of what apt packages will be removed
   debug:
@@ -95,6 +133,5 @@
   run_once: true
   changed_when: ift_show_extra_status | default(false)
   when:
-    - ansible_facts.distribution == 'Debian'
     - (ift_debian_purges | default([])) | length > 0
     - ift_show_extra_status | default(false)

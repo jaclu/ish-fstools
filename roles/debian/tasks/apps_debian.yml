@@ -16,7 +16,7 @@
     autoremove: true
     pkg: "{{ ift_debian_purges | default([]) }}"
 
-- name: Install selected packages
+- name: Install selected packages listed in ift_debian_packages
   apt:
     state: present
     pkg: "{{ ift_debian_packages | default([]) }}"
