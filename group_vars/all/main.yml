@@ -37,8 +37,8 @@ ift_shell: /bin/ash # set to "" to disable
 # ift_port_sshd: 2022 # set to "" if sshd should not be configured
 
 #  Runlevels for services
-ift_runlevel_runbg: default # set to "" if this service is not wanted
 ift_runlevel_sshd: default # set to "" if this service is not wanted
+ift_runlevel_runbg: default # set to "" if this service is not wanted
 
 #
 #  Alpine only settings!

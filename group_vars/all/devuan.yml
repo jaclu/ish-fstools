@@ -33,7 +33,6 @@ ift_devuan_packages:
   - iputils-ping
   - jq # Lightweight and flexible command-line JSON processor
   - mc # Filemanager/shell that emulates Norton Commander
-  - openssh-server
   - passwd # change and administer password and group data
   - pigz # Parallel implementation of gzip
   - ripgrep # Fast recursive searcher with regex, respects .gitignore, grep-like.

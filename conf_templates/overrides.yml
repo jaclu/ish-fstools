@@ -43,7 +43,7 @@ ift_pkgs_man: true # se to true if man pages for everything installed should be 
 # When the sshd service is first started, host keys will be generated if absent
 # on iSH this takes a while... By enabling this option they can be pre-generated
 # during deploy. Debian always generates them when openssh-server is installed.
-# ift_alpine_generate_sshd_host_keys: false
+ift_alpine_generate_sshd_host_keys: true
 
 ift_extra_alpine_packages:
   #
@@ -81,7 +81,6 @@ ift_extra_alpine_packages:
   #
   #  Remote
   #
-  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
   #
@@ -111,7 +110,6 @@ ift_extra_devuan_packages:
   #
   #  Remote
   #
-  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
 ift_extra_debian_packages:
@@ -145,7 +143,6 @@ ift_extra_debian_packages:
   #
   #  Remote
   #
-  # - autossh # Automatically restart SSH sessions and tunnels
   - unison # Efficient file-synchronization tool
 
 

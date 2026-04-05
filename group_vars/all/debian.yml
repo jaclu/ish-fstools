@@ -60,7 +60,6 @@ ift_debian_packages:
   #  Remote
   #
   - mosh # Mobile shell surviving disconnects with local echo and line editing
-  # - openssh-server # will install pre-compiled openssh 10 - do not install via apt!
 
   #
   #  Web Tools
