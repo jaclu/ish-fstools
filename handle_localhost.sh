@@ -68,10 +68,22 @@ do_ansible() {
     # export PYTHONWARNINGS=ignore::UserWarning
 
     lbl_1 "Running $playbook on localhost"
-    ansible-playbook -e target_hosts=local "$verbose_flag" "$playbook" || {
+    $playbook_cmd -e target_hosts=local "$playbook" || {
         err_msg "running playbook failed"
     }
+}
 
+increase_verbos_lvl() {
+    # increment numeric level
+    verbose_lvl=$((verbose_lvl + 1))
+
+    # build -v, -vv, -vvv ...
+    playbook_cmd="ansible-playbook -"
+    i=0
+    while [ "$i" -lt "$verbose_lvl" ]; do
+        playbook_cmd="${playbook_cmd}v"
+        i=$((i + 1))
+    done
 }
 
 load_utils() {
@@ -85,19 +97,6 @@ load_utils() {
     }
 }
 
-increase_verbos_lvl() {
-    # increment numeric level
-    verbose_lvl=$((verbose_lvl + 1))
-
-    # build -v, -vv, -vvv ...
-    verbose_flag='-'
-    i=0
-    while [ "$i" -lt "$verbose_lvl" ]; do
-        verbose_flag="${verbose_flag}v"
-        i=$((i + 1))
-    done
-}
-
 #===============================================================
 #
 #   Main
@@ -108,7 +107,7 @@ d_repo="$(dirname "$0")"
 d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 chain_my_ish_fs=0
-verbose_flag=""
+playbook_cmd="ansible-playbook"
 verbose_lvl=0
 
 load_utils

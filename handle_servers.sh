@@ -28,8 +28,8 @@ do_ansible() {
 
     lbl_1 "Running $playbook on remote servers"
     # running this on actual iSH takes over 10 mins, so seeing ok task done adds sanity
-    ANSIBLE_DISPLAY_OK_HOSTS=yes ansible-playbook "$playbook" "$verbose_flag" \
-        -e target_hosts=servers || err_msg "running playbook failed"
+    ANSIBLE_DISPLAY_OK_HOSTS=yes $playbook_cmd \
+        -e target_hosts=servers "$playbook" || err_msg "running playbook failed"
 }
 
 increase_verbos_lvl() {
@@ -37,10 +37,10 @@ increase_verbos_lvl() {
     verbose_lvl=$((verbose_lvl + 1))
 
     # build -v, -vv, -vvv ...
-    verbose_flag='-'
+    playbook_cmd="ansible-playbook -"
     i=0
     while [ "$i" -lt "$verbose_lvl" ]; do
-        verbose_flag="${verbose_flag}v"
+        playbook_cmd="${playbook_cmd}v"
         i=$((i + 1))
     done
 }
@@ -66,7 +66,7 @@ d_repo="$(dirname "$0")"
 d_my_ish_fs="$d_repo/my-ish-fs"
 quick_mode=0
 chain_my_ish_fs=0
-verbose_flag=""
+playbook_cmd="ansible-playbook"
 verbose_lvl=0
 
 load_utils
