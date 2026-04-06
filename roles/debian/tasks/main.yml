@@ -12,6 +12,10 @@
 - name: Run apps_debian
   import_tasks: apps_debian.yml
 
+- name: "Deploy custom_openssh {{ ift_openssh_tgz }}"
+  import_tasks: custom_openssh.yml
+  when: ift_openssh_tgz | default('') | length > 0
+
 - name: Install custom /etc/init.d/rc
   copy:
     remote_src: true
@@ -32,10 +36,3 @@
     src: /usr/local/sbin/fake-init
     dest: /sbin/init
     state: link
-
-- name: "Custom /etc/default/ssh"
-  copy:
-    remote_src: "{{ not b_old_ansible_detected }}"
-    src: "{{ d_repo_debian_role }}/files/etc/default/ssh"
-    dest: /etc/default
-    mode: preserve

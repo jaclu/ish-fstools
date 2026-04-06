@@ -21,12 +21,6 @@
     state: present
     pkg: "{{ ift_debian_packages | default([]) }}"
 
-- name: Install openssh tarball in /opt/openssh
-  unarchive:
-    remote_src: true
-    src: "{{ ift_openssh_tgz }}"
-    dest: /
-
 - name: Install abduco tarball in /usr/local
   unarchive:
     remote_src: true

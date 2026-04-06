@@ -1,0 +1,28 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+# Install custom compiled openssh
+#
+- name: Install openssh tarball in /opt/openssh
+  unarchive:
+    remote_src: true
+    src: "{{ ift_openssh_tgz }}"
+    dest: /
+
+- name: "Install /etc/default/ssh"
+  copy:
+    remote_src: "{{ not b_old_ansible_detected }}"
+    src: "{{ d_repo_debian_role }}/files/etc/default/ssh"
+    dest: /etc/default
+    mode: preserve
+
+- name: Link custom ssh bin in /usr/local/bin
+  file:
+    src: /opt/openssh/bin/ssh
+    dest: /usr/local/bin/ssh
+    state: link
