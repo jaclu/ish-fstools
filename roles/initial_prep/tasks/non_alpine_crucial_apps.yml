@@ -19,9 +19,7 @@
     msg: "{{ crucial_apps | sort }}"
   delegate_to: localhost
   run_once: true
-  changed_when: ift_show_extra_status | default(false)
-  when:
-    - (ift_show_extra_status | default(false))
+  changed_when: false
 
 - name: "(Non Alpine) Install crucial apps needed for deploy"
   package:
