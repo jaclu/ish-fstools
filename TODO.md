@@ -1,5 +1,10 @@
 # TODO
 
+## Deb10
+
+setup role/deb10_custom_openssh
+to handle custom compiled /opt/openssh for bins
+
 ## Devuan
 
 ### purged
