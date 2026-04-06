@@ -37,6 +37,7 @@
       when: ansible_facts.distribution in ['Alpine', 'Debian']
     - role: sysv_init
       when: ansible_facts.distribution == 'Devuan'
+    - role: services
 
   post_tasks:
     - name: Run tasks/update_release.yml
