@@ -12,7 +12,8 @@ extra_started_commands="reload"
 
 # Custom addiion in order to find SSHD_BINARY for custom openssh deploy
 if test -f /etc/default/ssh; then
-    . /etc/default/ssh
+   # shellcheck source=/dev/null
+   . /etc/default/ssh
 fi
 
 # NOTE: SSHD_* variables are deprecated and will be removed in future!

@@ -19,6 +19,7 @@ test -x /usr/sbin/sshd || exit 0
 umask 022
 
 if test -f /etc/default/ssh; then
+    # shellcheck source=/dev/null
     . /etc/default/ssh
 fi
 
