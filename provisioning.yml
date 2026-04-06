@@ -26,7 +26,6 @@
   roles:
     - role: common_handlers
     - role: initial_prep
-    - role: all_distros
     - role: alpine
       when: ansible_facts.distribution == 'Alpine'
     - role: debian
@@ -37,6 +36,7 @@
       when: ansible_facts.distribution in ['Alpine', 'Debian']
     - role: sysv_init
       when: ansible_facts.distribution == 'Devuan'
+    - role: all_distros
     - role: services
 
   post_tasks:
