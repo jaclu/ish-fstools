@@ -1,0 +1,13 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Service configs for either service handler
+#
+
+- name: Run sshd_config.yml
+  import_tasks: sshd_config.yml

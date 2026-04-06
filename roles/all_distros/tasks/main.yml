@@ -22,9 +22,6 @@
 - name: Configs for /etc
   import_tasks: etc_configs.yml
 
-- name: Run sshd_config.yml
-  import_tasks: sshd_config.yml
-
 - name: Run timezone.yml
   import_tasks: timezone.yml
   when: ift_timezone | default('') | length > 0
