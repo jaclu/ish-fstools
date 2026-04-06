@@ -12,7 +12,7 @@
 #
 #  Configure sshd
 #
-- name: " opt/openssh - Ensure /var/lib/sshd exists"
+- name: Ensure /var/lib/sshd exists
   file:
     path: /var/lib/sshd
     state: directory
@@ -20,7 +20,7 @@
     group: root
     mode: "0755"
 
-- name: " opt/openssh - Ensure sshd user exists"
+- name: Ensure sshd user exists
   user:
     name: sshd
     comment: "OpenSSH Daemon User"
@@ -30,14 +30,6 @@
     system: true
     create_home: true
 
-- name: " opt/openssh - Install sshd_config"
-  template:
-    src: sshd_config.js2
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: "0755"
-
 - name: Install custom /etc/init.d/sshd, supporting iSH logging
   copy:
     remote_src: true
@@ -46,41 +38,6 @@
     owner: root
     group: root
     mode: "0755"
-
-- name: " sshd conf - Remove all unintended Port lines"
-  replace:
-    path: /etc/ssh/sshd_config
-    regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
-    replace: ""
-
-- name: " sshd conf - Deduplicate intended Port lines"
-  shell: |
-    tmp=$(mktemp)
-    awk '
-      /^Port {{ ift_port_sshd | default(2022) }}/ {
-        if (!seen++) { print; next }
-        next
-      }
-      { print }
-    ' /etc/ssh/sshd_config > "$tmp" || exit 30
-    if ! cmp -s /etc/ssh/sshd_config "$tmp"; then
-      mv "$tmp" /etc/ssh/sshd_config || exit 31
-      exit 43
-    else
-      rm "$tmp" || exit 32
-    fi
-  args:
-    executable: /bin/bash
-  register: openrc_sshd_port_dupes
-  changed_when: openrc_sshd_port_dupes.rc == 43
-  failed_when: openrc_sshd_port_dupes.rc not in [0, 43]
-
-- name: " sshd conf - Ensure intended Port line is present once"
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
-    regexp: "^Port {{ ift_port_sshd | default(2022) }}"
-    state: present
 
 #
 # Service tasks

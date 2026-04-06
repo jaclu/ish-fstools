@@ -9,14 +9,6 @@
 #  SysV init (init.d) handling of sshd
 #
 
-- name: Install sshd_config
-  template:
-    src: sshd_config.js2
-    dest: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: "0755"
-
 - name: " sshd - stop in runlevels 0,1,6"
   file:
     src: "{{ d_init_d }}/ssh"

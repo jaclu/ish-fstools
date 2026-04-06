@@ -9,8 +9,6 @@
 # possible, but leave them commented.  Uncommented options override the
 # default value.
 
-Include /etc/ssh/sshd_config.d/*.conf
-
 Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools
 #AddressFamily any
 #ListenAddress 0.0.0.0
@@ -128,3 +126,8 @@ Subsystem	sftp	/usr/lib/openssh/sftp-server
 #===============================================================
 
 Compression no # net is fast, this host is underperformant...
+
+#
+#  Standard overrides
+#
+Include /etc/ssh/sshd_config.d/*.conf
