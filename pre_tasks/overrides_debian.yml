@@ -87,21 +87,23 @@
   run_once: true
   changed_when: false
 
-- name: Overrides Alpine - Add openssh-server if it's env is defined
-  set_fact:
-    ift_debian_packages: >-
-      {{
-        ift_debian_packages | default([])
-        | union(['openssh-server'])
-      }}
-  when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
-    - (ift_port_sshd | default('') | trim) != ''
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
+# Since the Deb10 openssh packages can't be used on iSH, a self compiled openssh
+# has to be used instead
+# - name: Overrides Debian - Add openssh-server if it's env is defined
+#   set_fact:
+#     ift_debian_packages: >-
+#       {{
+#         ift_debian_packages | default([])
+#         | union(['openssh-server'])
+#       }}
+#   when:
+#     - (ift_runlevel_sshd | default('') | trim) != ''
+#     - (ift_port_sshd | default('') | trim) != ''
+#   delegate_to: localhost
+#   run_once: true
+#   changed_when: false
 
-- name: Overrides Alpine - Add autossh if it's env is defined
+- name: Overrides Debian - Add autossh if it's env is defined
   set_fact:
     ift_debian_packages: >-
       {{
