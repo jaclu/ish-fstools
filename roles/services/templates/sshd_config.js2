@@ -4,8 +4,6 @@
 
 # sshd_config(5) for more information.
 
-# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
 # The strategy used for options in the default sshd_config shipped with
 
 # OpenSSH is to specify options with their default value where
