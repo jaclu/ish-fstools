@@ -21,7 +21,7 @@
     state: present
     pkg: "{{ ift_debian_packages | default([]) }}"
 
-- name: " opt/openssh - Install openssh tarball in /opt"
+- name: Install openssh tarball in /opt/openssh
   unarchive:
     remote_src: true
     src: "{{ ift_openssh_tgz }}"
