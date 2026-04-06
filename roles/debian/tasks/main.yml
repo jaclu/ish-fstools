@@ -33,9 +33,9 @@
     dest: /sbin/init
     state: link
 
-- name: "Custom /etc/defaults/ssh"
+- name: "Custom /etc/default/ssh"
   copy:
     remote_src: "{{ not b_old_ansible_detected }}"
-    src: "{{ d_repo_debian_role }}/files/etc/defaults/ssh"
-    dest: /etc/defaults
+    src: "{{ d_repo_debian_role }}/files/etc/default/ssh"
+    dest: /etc/default
     mode: preserve
