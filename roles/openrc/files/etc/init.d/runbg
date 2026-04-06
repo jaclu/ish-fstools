@@ -1,4 +1,5 @@
 #!/sbin/openrc-run
+# shellcheck shell=bash
 #
 # Copyright (c) 2021-2025: Jacob.Lundqvist@gmail.com
 # License: MIT
@@ -10,13 +11,16 @@
 #  This process has no noticeable impact on battery life.
 #
 
-description="Reads GPS to ensure iSH continues to run when in the background"
+# shellcheck disable=SC2034
+{
+    description="Reads GPS to ensure iSH continues to run when in the background"
 
-command="/bin/cat"
-command_args="/dev/location > /dev/null"
-command_background="YES"
+    command="/bin/cat"
+    command_args="/dev/location > /dev/null"
+    command_background="YES"
 
-pidfile="/run/runbg.pid"
+    pidfile="/run/runbg.pid"
+}
 
 #
 #  The above is all that is needed to have cat /dev/location > /dev/null
