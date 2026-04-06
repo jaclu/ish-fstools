@@ -9,15 +9,15 @@
 #  Param checks for Debian FS
 #
 
-# - name: Params checks Debian - No openssh via apt
-#   fail:
-#     msg: "OpenSSH 10 is pre-compiled, do NOT install via ift_debian_packages"
-#   delegate_to: localhost
-#   run_once: true
-#   when:
-#     - (ift_debian_packages | default([]))
-#       | intersect(['openssh', 'openssh-server'])
-#       | length > 0
+- name: Params checks Debian - No openssh via apt, uses tarball
+  fail:
+    msg: "OpenSSH 10 is pre-compiled, do NOT install via ift_debian_packages"
+  delegate_to: localhost
+  run_once: true
+  when:
+    - (ift_debian_packages | default([]))
+      | intersect(['openssh', 'openssh-server'])
+      | length > 0
 
 - name: Params checks Debian - Fail if ift_runlevel_runbg is set but no openrc
   fail:
