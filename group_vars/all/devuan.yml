@@ -63,6 +63,7 @@ ift_devuan_packages:
   #
   #  Remote
   #
+  - inetutils-telnet # telnet client
   - mosh # Mobile shell surviving disconnects with local echo and line editing
 
   #
