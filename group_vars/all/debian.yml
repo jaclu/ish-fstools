@@ -59,7 +59,9 @@ ift_debian_packages:
   #
   #  Remote
   #
+  - inetutils-telnet # telnet client
   - mosh # Mobile shell surviving disconnects with local echo and line editing
+  # openssh - dont install Deb10 needs custom built /opt/openssh
 
   #
   #  Web Tools
