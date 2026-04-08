@@ -27,7 +27,7 @@
 #  Step Two - if iSH, is it the iSH-AOK variant?
 #
 - name: " pre-task - Check if running ish-AOK"
-  ansible.builtin.command: grep -qi ish-AOK /proc/version
+  command: grep -qi ish-AOK /proc/version
   changed_when: false
   failed_when: false
   register: ish_aok_check
@@ -36,7 +36,7 @@
     - is_ish_aok is not defined
 
 - name: " pre-task - Set is_ish_aok fact"
-  ansible.builtin.set_fact:
+  set_fact:
     is_ish_aok: "{{ ish_aok_check.rc == 0 }}"
   when:
     - is_ish
