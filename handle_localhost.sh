@@ -117,7 +117,7 @@ while [ -n "$1" ]; do
         "") break ;; # no param
         v) increase_verbos_lvl ;;
         c) chain_my_ish_fs=1 ;;
-        q) quick_mode=1 ;;
+        q) quick_mode=1 ;; # using prov_debug to do quick test of specific tasks
         *) err_msg "Optional param:  q to run quick-mode - a limited deploy" ;;
     esac
     shift

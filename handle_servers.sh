@@ -76,7 +76,7 @@ while [ -n "$1" ]; do
         "") break ;; # no param
         v) increase_verbos_lvl ;;
         c) chain_my_ish_fs=1 ;;
-        q) quick_mode=1 ;;
+        q) quick_mode=1 ;; # using prov_debug to do quick test of specific tasks
         *)
             lbl_2 "Options:"
             lbl_3 "c - deploy my_ish_fs once this is done"
