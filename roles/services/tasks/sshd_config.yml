@@ -48,6 +48,6 @@
 - name: " sshd conf - Ensure intended Port line is present once"
   lineinfile:
     path: /etc/ssh/sshd_config
-    line: "Port {{ ift_port_sshd | default(2022) }}  # Defined by ish-fstools"
+    line: "Port {{ ift_port_sshd | default(2022) }}"
     regexp: "^Port {{ ift_port_sshd | default(2022) }}"
     state: present

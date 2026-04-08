@@ -16,7 +16,8 @@
 
 # snippets to override directives set in this file.
 
-Port {{ ift_port_sshd | default(2022) }} # Defined by ish-fstools
+# Defined by ish-fstools, if service autossh is used, ensure it points to this port!
+Port {{ ift_port_sshd | default(2022) }}
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
