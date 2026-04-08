@@ -28,6 +28,4 @@
 
 - name: " services - Run service_sshd.yml"
   import_tasks: service_sshd.yml
-  when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
-    - (ift_port_sshd | default('') | trim) != ''
+  when: use_sshd | default(false)

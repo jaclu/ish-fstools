@@ -6,7 +6,7 @@
 #
 #  License: MIT
 #
-# Install custom compiled openssh
+# Install custom compiled openssh from {{ ift_openssh_tgz }}
 #
 - name: Install openssh tarball in /opt/openssh
   unarchive:

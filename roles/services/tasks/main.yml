@@ -11,3 +11,4 @@
 
 - name: Run sshd_config.yml
   import_tasks: sshd_config.yml
+  when: use_sshd | default(false)
