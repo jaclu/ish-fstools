@@ -167,3 +167,9 @@ ift_extra_debian_packages:
 
 # Min version of Alpine Linux when edge/testing repositories will be added.
 # ift_alpine_testing_repo_minv: 3.22
+
+# Since Debian 10 is so old, its openssh can no longer be used without
+# triggering an enormous amount of security warnings. The recommended option is
+# to compile openssh to be installed in /opt/openssh
+# if such a tarball is available, point to it here, and it will be used
+# ift_openssh_tgz: /foo/bar/openssh.tgz
