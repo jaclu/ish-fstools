@@ -17,8 +17,7 @@
 - name: Check if requested shell exists
   stat:
     path: "{{ ift_shell }}"
-  when:
-    - ift_shell | default('') | length > 0
+  when: ift_shell | default('') | length > 0
   register: all_distros_shell_path
 
 - name: Abort if requested shell does not exist

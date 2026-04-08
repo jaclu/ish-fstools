@@ -50,8 +50,7 @@
   # hosts might run different versions of Alpine, so needs to be done for each
   # run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when:
-    - (ift_show_extra_status | default(false))
+  when: (ift_show_extra_status | default(false))
 
 - name: Handle apk - List what will be removed
   debug:

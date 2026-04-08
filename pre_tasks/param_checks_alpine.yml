@@ -30,8 +30,7 @@
   delegate_to: localhost
   run_once: true
   changed_when: ift_show_extra_status | default(false)
-  when:
-    - ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
+  when: ift_alpine_use_old_mtr and ('mtr' in ift_alpine_packages)
 
 - name: Param checks Alpine - Fail if ift_shell is set but shadow is not listed
   fail:

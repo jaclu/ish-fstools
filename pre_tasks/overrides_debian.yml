@@ -18,8 +18,7 @@
          (__override_vars.ift_extra_debian_packages | default([])) }}
   delegate_to: localhost
   run_once: true
-  when:
-    - __override_vars is defined
+  when: __override_vars is defined
 
 - name: Overrides Debian - Debian env - overrides for global vars
   set_fact:

@@ -38,5 +38,4 @@
   debug:
     msg: "Simulating service restart -->->   sshd   <-<--"
 
-  when:
-    - not (is_ish | bool)
+  when: not (is_ish | default(false) | bool)

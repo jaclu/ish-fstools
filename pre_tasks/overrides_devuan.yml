@@ -18,8 +18,7 @@
          (__override_vars.ift_extra_devuan_packages | default([])) }}
   delegate_to: localhost
   run_once: true
-  when:
-    - __override_vars is defined
+  when: __override_vars is defined
 
 - name: Overrides Devuan - Set shell to bash
   set_fact:

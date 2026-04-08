@@ -18,15 +18,13 @@
          (__override_vars.ift_extra_alpine_packages | default([])) }}
   delegate_to: localhost
   run_once: true
-  when:
-    - __override_vars is defined
+  when: __override_vars is defined
 
 - name: Overrides Alpine - Pkgs for Alpine >= 3.17
   set_fact:
     ift_alpine_packages: >-
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_317 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.17"
+  when: ansible_facts.distribution_version >= "3.17"
   delegate_to: localhost
   # Needs to done per server,since they might run different versions of Alpine
   # run_once: true
@@ -38,8 +36,7 @@
       {{ ift_alpine_packages | union(ift_alpine_pkgs_min_320 | default([])) }}
     ift_alpine_pkgs_linting: >-
       {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_320 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.20"
+  when: ansible_facts.distribution_version >= "3.20"
   delegate_to: localhost
   changed_when: false
 
@@ -47,8 +44,7 @@
   set_fact:
     ift_alpine_pkgs_linting: >-
       {{ ift_alpine_pkgs_linting | union(ift_alpine_pkgs_lint_min_323 | default([])) }}
-  when:
-    - ansible_facts.distribution_version >= "3.23"
+  when: ansible_facts.distribution_version >= "3.23"
   delegate_to: localhost
   # Needs to done per server,since they might run different versions of Alpine
   # run_once: true
