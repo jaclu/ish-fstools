@@ -1,6 +1,5 @@
 #!/bin/sh
-# This is sourced. Fake bang-path to help editors and linters
-# shellcheck disable=SC2034,SC2292 # this defines a lot of things for other scripts
+# shellcheck disable=SC2292 # needed when this is imported into bash script
 #
 # Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #
@@ -66,17 +65,15 @@ is_android() {
 }
 
 is_termux() {
-    [ -n "$TERMUX_VERSION" ]
+    [ "$HOME" = /data/data/com.termux/files/home ]
 }
 
 is_ish() {
     [ -d /proc/ish ]
 }
 
-is_chrooted_ish() {
-    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
-    # file inside the chrooted env when entering/leaving the chroot
-    [ -f /etc/opt/chrooted_ish ]
+is_ish_aok() {
+    is_ish && grep -qi ish-AOK /proc/version
 }
 
 is_chrooted() {
@@ -85,6 +82,12 @@ is_chrooted() {
     is_linux || return 1
     [ ! -f /proc/self/mountinfo ] && return 1
     ! grep -q " / / " /proc/self/mountinfo
+}
+
+is_chrooted_ish() {
+    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
+    # file inside the chrooted env when entering/leaving the chroot
+    is_chrooted && [ -f /etc/opt/chrooted_ish ]
 }
 
 is_linux_native() { # Filters out chrooted and various Linux based derivates
@@ -100,7 +103,11 @@ fs_is_alpine() {
 }
 
 fs_is_debian() {
-    [ -f /etc/debian_version ]
+    [ -f /etc/debian_version ] && ! fs_is_devuan
+}
+
+fs_is_devuan() {
+    test -f /etc/devuan_version
 }
 
 fs_is_ubuntu() {
@@ -158,7 +165,7 @@ log_it() {
     _sr_use_lf=1
     while [ -n "$1" ]; do
         case "$1" in
-            ---*) break ;; # lbl_2
+            ---*) break ;; # dont parse any further opts
             -p | --pre-lf) printf '\n' ;;
             -n | --no-lf) _sr_use_lf=0 ;;
             -t | --timestamp) _sr_use_time_stamp=1 ;;
@@ -180,8 +187,12 @@ log_it() {
     else
         printf -- '%s' "$_s" >&2
     fi
-    [ -z "$f_script_utils_log_file" ] && return 0
 
+    [ -z "$f_script_utils_log_file" ] && return 0 # logfile not used
+    case "$_s" in
+        *[![:space:]]*) ;; # more than white space - log it to file
+        *) return 0 ;;     # only whitespace - skip logging it to file
+    esac
     # Always use timestamp if printing to logfile
     [ -z "$_t" ] && _t="[$(show_timestamp)] $_s"
     printf -- '%s\n' "$_t" >>"$f_script_utils_log_file"
@@ -220,7 +231,7 @@ err_msg() {
     fi
 
     [ -z "$app_name" ] && app_name=$(basename "$0")
-    log_it "${app_name}-${_em_label}: $_em_msg" -t # should always have timestamps
+    log_it "${app_name}[$$] ${_em_label}: $_em_msg" -t # should always have timestamps
     [ "$_em_exit_code" -gt -1 ] && script_utils_cleanup "$_em_exit_code"
     unset _em_in_progress # in case exit code was < 0
 }
@@ -491,7 +502,7 @@ create_f_tmp() {
 use_log_file() {
     #
     # provide a log_file and if defined all msgs and errors will be appended there
-    # after being printed to stdwerr
+    # after being printed to stderr. It is up to the caller to remove this logfile!
     #
     [ -z "$1" ] && err_msg "Call to use_log_file() - no param given"
     f_script_utils_log_file="$1"
@@ -523,20 +534,19 @@ t_start="$(date +%s)" # is used in display_app_run_time()
     current_dbg_lvl=0
 }
 
-#
-#  ish-fstools specific env variables
-#
+# shellcheck disable=SC2034 # defined here, but used in calling scripts
+{
+    # Set base repo directory
+    d_repo="{{ d_repo | default('/opt/ish-fstools') }}"
 
-# Set base repo directory
-d_repo="{{ d_repo | default('/opt/ish-fstools') }}"
+    #
+    #  Some hint files for /usr/local/sbin/ift-launcher
+    #
+    d_ift_etc_opt=/etc/opt/ift
+    f_login_default_user="$d_ift_etc_opt"/login-default-username
+    f_logins_continuous="$d_ift_etc_opt"/login-continuous # login user again or shutdown
+    f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console  # first pts should be console
+    f_profile_hints="$d_ift_etc_opt"/show_profile_hints   # not sure if this is used
+}
 
-#
-#  Some hint files for /usr/local/sbin/ift-launcher
-#
-d_ift_etc_opt=/etc/opt/ift
-f_login_default_user="$d_ift_etc_opt"/login-default-username
-f_logins_continuous="$d_ift_etc_opt"/login-continuous # login user again or shutdown
-f_pts_0_as_console="$d_ift_etc_opt"/pts_0_as_console  # first pts should be console
-f_profile_hints="$d_ift_etc_opt"/show_profile_hints   # not sure if this is used
-
-return 0
+return 0 # ensures the above doesn't indicate sourcing failed
