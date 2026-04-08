@@ -72,10 +72,8 @@ is_ish() {
     [ -d /proc/ish ]
 }
 
-is_chrooted_ish() {
-    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
-    # file inside the chrooted env when entering/leaving the chroot
-    [ -f /etc/opt/chrooted_ish ]
+is_ish_aok() {
+    is_ish && grep -qi ish-AOK /proc/version
 }
 
 is_chrooted() {
@@ -84,6 +82,12 @@ is_chrooted() {
     is_linux || return 1
     [ ! -f /proc/self/mountinfo ] && return 1
     ! grep -q " / / " /proc/self/mountinfo
+}
+
+is_chrooted_ish() {
+    # Relies on /opt/AOK/tools/do_chroot.sh or similar creating/removing this
+    # file inside the chrooted env when entering/leaving the chroot
+    is_chrooted && [ -f /etc/opt/chrooted_ish ]
 }
 
 is_linux_native() { # Filters out chrooted and various Linux based derivates
