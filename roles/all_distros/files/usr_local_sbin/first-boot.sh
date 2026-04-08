@@ -9,9 +9,13 @@
 #  Tasks to run at 1s boot on iSH platform, such as changing ssh port
 #  depending on if this is iSH / iSH-AOK
 
-is_aok_kernel() {
-    this_is_ish || return 1
-    grep -qi aok /proc/ish/version 2>/dev/null
+is_ish() {
+    [ -d /proc/ish ]
+}
+
+is_ish_aok() {
+    is_ish || return 1
+    grep -qi ish-aok /proc/version 2>/dev/null
 }
 
 set_sshd_port() {
@@ -39,11 +43,11 @@ set_sshd_port() {
 first_boot_done=/etc/opt/ift/1st-boot-done
 
 [ -f "$first_boot_done" ] && exit 0 # first boot has been done
+is_ish || exit 0                    # not meanigul to run until the platform is iSH
 
-test -d /proc/ish || exit 1 # Abort if this is not iSH platform
-
-if is_aok_kernel; then
+if is_ish_aok; then
     set_sshd_port 2023
+    rm -f /usr/local/bin/uptime # On AOK regular uptime can be used
 fi
 
 build_files="

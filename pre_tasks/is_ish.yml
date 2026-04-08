@@ -9,17 +9,38 @@
 #  Detects if this is running on iSH
 #
 
+#
+#  Step One - is this running on iSH
+#
 - name: " pre-task - Check for /proc/ish"
   stat:
     path: /proc/ish
-  when: is_ish is not defined
   register: ish_proc
+  when: is_ish is not defined
 
 - name: " pre-task - Set is_ish fact"
   set_fact:
-    is_ish: "{{ ish_proc.stat.exists }}"
-  delegate_to: localhost
+    is_ish: "{{ ish_proc.stat.exists | default(false) }}"
   when: is_ish is not defined
+
+#
+#  Step Two - if iSH, is it the iSH-AOK variant?
+#
+- name: " pre-task - Check if running ish-AOK"
+  ansible.builtin.command: grep -qi ish-AOK /proc/version
+  changed_when: false
+  failed_when: false
+  register: ish_aok_check
+  when:
+    - is_ish
+    - is_ish_aok is not defined
+
+- name: " pre-task - Set is_ish_aok fact"
+  ansible.builtin.set_fact:
+    is_ish_aok: "{{ ish_aok_check.rc == 0 }}"
+  when:
+    - is_ish
+    - is_ish_aok is not defined
 
 - name: " pre-task - Was  iSH  detected"
   debug:
