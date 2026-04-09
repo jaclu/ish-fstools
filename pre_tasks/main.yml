@@ -55,11 +55,7 @@
   set_fact:
     use_sshd: true
   when:
-    - ansible_facts.distribution != 'Debian'
-      or (
-      ansible_facts.distribution == 'Debian'
-      and ift_openssh_tgz is string
-      and ift_openssh_tgz | length > 0
-      )
     - (ift_runlevel_sshd | default('') | trim) != ''
     - (ift_port_sshd | default('') | trim) != ''
+    - ansible_facts.distribution != 'Debian'
+      or (ift_openssh_tgz | default('') | length > 0)
