@@ -193,6 +193,11 @@ sync_fs_tools() {
         --delete-delay \
         $d_repo $d_aok_fs/root"
 
+    sync_something spd "$my_rsync \
+        --exclude=.git/ \
+        --exclude=configs/ \
+        /home/jaclu/git_repos/mine/spd $d_aok_fs/root"
+
     chown -R 501:501 "$d_aok_fs"/iCloud
 
     # replace_repo_conf
@@ -260,6 +265,7 @@ prepare_shell_env() {
         echo "/root/ish-fstools/tools/fs_cleanup.sh total"
         echo "time $cmd_2"
         echo "time $cmd_1 c"
+        echo "/root/spd/tasks/tasks/service_runbg.sh"
         # echo "time $cmd_2 q"
         # echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
@@ -302,7 +308,7 @@ d_orig_aok_tmpdir="$AOK_TMPDIR"
 
 # shellcheck source=/dev/null
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
-my_rsync="rsync -a --out-format='%n'"
+my_rsync="rsync -a --delete-excluded --out-format='%n'"
 
 load_utils
 
