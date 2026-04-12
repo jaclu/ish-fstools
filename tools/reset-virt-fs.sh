@@ -266,7 +266,7 @@ prepare_shell_env() {
         echo "/root/ish-fstools/tools/fs_cleanup.sh total"
         echo "time $cmd_2"
         echo "time $cmd_1 c"
-        echo "/root/spd/tasks/service_runbg.sh"
+        echo "/root/spd/tasks/service_runbg.sh install"
         # echo "time $cmd_2 q"
         # echo "time $cmd_1 q"
         # s="[ -f /etc/alpine-release ] && apk add bash"
