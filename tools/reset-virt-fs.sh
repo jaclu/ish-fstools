@@ -45,7 +45,8 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.21.5-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
-    miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
+    miniroot_fs="alpine-minirootfs-3.23.3-x86.tar.gz"
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
