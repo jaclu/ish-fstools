@@ -187,17 +187,25 @@ sync_fs_tools() {
         $d_fake_icloud/deploy/sshd_config \
         $d_aok_fs/$d_icloud_deploy_rel"
 
-    sync_something ish-fstools "$my_rsync \
-        --exclude=.git/ \
-        --exclude=.cache.olint \
-        --exclude=.ansible/ \
-        --delete-delay \
-        $d_repo $d_aok_fs/root"
+    case "$deploy_mthd" in
 
-    sync_something spd "$my_rsync \
-        --exclude=.git/ \
-        --exclude=configs/ \
-        /home/jaclu/git_repos/mine/spd $d_aok_fs/root"
+        ish-fstools)
+
+            sync_something ish-fstools "$my_rsync \
+                --exclude=.git/ \
+                --exclude=.cache.olint \
+                --exclude=.ansible/ \
+                --delete-delay \
+                $d_repo $d_aok_fs/root"
+            ;;
+        spd)
+            sync_something spd "$my_rsync \
+                --exclude=.git/ \
+                --exclude=configs/ \
+                /home/jaclu/git_repos/mine/spd $d_aok_fs/root"
+            ;;
+        *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
+    esac
 
     chown -R 501:501 "$d_aok_fs"/iCloud
 
@@ -263,15 +271,28 @@ prepare_shell_env() {
 
     lbl_2 "prepping $f_history"
     {
-        echo "/root/ish-fstools/tools/fs_cleanup.sh total"
-        echo "time $cmd_2"
-        echo "time $cmd_1 c"
-        echo "/root/spd/tasks/service_runbg.sh install"
-        # echo "time $cmd_2 q"
-        # echo "time $cmd_1 q"
-        # s="[ -f /etc/alpine-release ] && apk add bash"
-        # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
-        # echo ./ish-fstools/tools/fs_cleanup.sh
+        case "$deploy_mthd" in
+
+            ish-fstools)
+                # echo "/root/ish-fstools/tools/fs_cleanup.sh total"
+                echo "time $cmd_2"
+                echo "time $cmd_1 c"
+                # echo "time $cmd_2 q"
+                # echo "time $cmd_1 q"
+                # s="[ -f /etc/alpine-release ] && apk add bash"
+                # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
+                # echo ./ish-fstools/tools/fs_cleanup.sh
+                ;;
+            spd)
+                echo "/root/spd/tasks/FileSystem_Alpine.sh install"
+                echo "/root/spd/services/service_runbg.sh remove"
+                echo "/root/spd/services/service_runbg.sh install"
+                # echo "/root/spd/services/service_autossh.sh remove"
+                # echo "/root/spd/services/service_autossh.sh install"
+                # echo "/root/spd/debug/cfg_test.sh"
+                ;;
+            *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
+        esac
     } >>"$f_history"
     chmod 600 "$f_history"
 }
@@ -302,6 +323,8 @@ load_utils() {
 
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
+
+deploy_mthd=spd
 
 repo_name=$(basename "$d_repo")
 
