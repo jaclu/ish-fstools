@@ -284,6 +284,8 @@ prepare_shell_env() {
                 # echo ./ish-fstools/tools/fs_cleanup.sh
                 ;;
             spd)
+                echo "/root/spd/tasks/FileSystem_Debian.sh install"
+                echo "/root/spd/tasks/FileSystem_Devuan.sh install"
                 echo "/root/spd/tasks/FileSystem_Alpine.sh install"
                 echo "/root/spd/services/service_runbg.sh remove"
                 echo "/root/spd/services/service_runbg.sh install"
