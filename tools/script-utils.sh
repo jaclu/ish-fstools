@@ -12,12 +12,18 @@
 # If caller is a POSIX script, use this, changing path to this if need-be:
 #
 # load_utils() {
-#     _lu_d_base="${1:-$d_repo}"
-#     _lu_f_utils="$_lu_d_base"/utils/script-utils.sh
-
-#     # shellcheck source=utils/script-utils.sh disable=SC2317
-#     . "$_lu_f_utils" || {
-#         printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
+#     _lu_f_utils="$D_REPO"/tools/script-utils.sh
+#     [ -f "$_lu_f_utils" ] || {
+#         printf '\n%s[%s] ERROR: source file not found: %s\n' \
+#             "$0" "$$" "$_lu_f_utils" >&2
+#         exit 1
+#     }
+#     # shellcheck source=/dev/null
+#     . "$_lu_f_utils"
+#     [ -n "$t_start" ] || {
+#         # guaranteed variable undefined, sourcing must have failed
+#         printf '\n%s[%s] ERROR: Sourcing %s failed to define: t_start\n' \
+#             "$0" "$$" "$_lu_f_utils" >&2
 #         exit 1
 #     }
 # }
@@ -27,7 +33,7 @@
 # load_utils() {
 #     local d_base="${1:-$d_repo}"
 #     local f_utils="$d_base"/utils/script-utils.sh
-
+#
 #     # source a POSIX file
 #     # shellcheck source=utils/script-utils.sh disable=SC1091,SC2317
 #     source "$f_utils" || {
@@ -50,8 +56,19 @@
 #
 #---------------------------------------------------------------
 
+#
+# Platform type identifiers
+#
 is_linux() { # returns true if kernel is Linux, very broad check
     [ "$(uname -s)" = "Linux" ]
+}
+
+is_linux_native() { # Filters out chrooted and various Linux based derivates
+    is_linux || return 1
+    if is_ish || is_termux || is_android || is_chrooted; then
+        return 1
+    fi
+    return 0
 }
 
 is_macos() {
@@ -90,14 +107,9 @@ is_chrooted_ish() {
     is_chrooted && [ -f /etc/opt/chrooted_ish ]
 }
 
-is_linux_native() { # Filters out chrooted and various Linux based derivates
-    is_linux || return 1
-    if is_ish || is_termux || is_android || is_chrooted; then
-        return 1
-    fi
-    return 0
-}
-
+#
+# File System type identifiers
+#
 fs_is_alpine() {
     [ -f /etc/alpine-release ]
 }
@@ -114,6 +126,15 @@ fs_is_ubuntu() {
     grep -qs '^ID=ubuntu$' /etc/os-release
 }
 
+yaml_true() {
+    _s="$(echo "$1" | tr '[:upper:]' '[:lower:]')"
+    [ -z "$_s" ] && err_msg "yaml_true() - no param"
+    case "$_s" in
+        1 | yes | true) return 0 ;;
+        *) ;;
+    esac
+    return 1
+}
 # ---  not currently used
 
 fs_is_gentoo() {
@@ -231,7 +252,11 @@ err_msg() {
     fi
 
     [ -z "$app_name" ] && app_name=$(basename "$0")
+
+    echo >&2
     log_it "${app_name}[$$] ${_em_label}: $_em_msg" -t # should always have timestamps
+    echo >&2
+
     [ "$_em_exit_code" -gt -1 ] && script_utils_cleanup "$_em_exit_code"
     unset _em_in_progress # in case exit code was < 0
 }
@@ -250,7 +275,7 @@ msg_dbg() {
     else
         _md_this_dbg_lvl=0
     fi
-    [ "$_md_this_dbg_lvl" -le "$current_dbg_lvl" ] && log_it "><>  $1" "$3"
+    [ "$_md_this_dbg_lvl" -le "$current_dbg_lvl" ] && log_it "DBG  $1" "$3"
 }
 
 lbl_1() {
@@ -413,6 +438,46 @@ was_sys_path() {
     return 1
 }
 
+_do_safe_remove() {
+    _sr_item=$1
+    msg_dbg "_do_safe_remove($_sr_item)" 1
+
+    _sr_err_ex_code=1 # "${2:-1}"
+    [ -z "$_sr_item" ] && err_msg "safe_remove() - missing path" "$_sr_err_ex_code"
+
+    $_sr_check_sys_path && was_sys_path "$_sr_item" && {
+        err_msg "Refusing to remove a sys-path: $_sr_item" "$_sr_err_ex_code"
+    }
+
+    if [ -d "$_sr_item" ]; then
+        mount | grep "$_sr_item" && {
+            err_msg "safe_remove() - this is a mount point: $_sr_item" "$_sr_err_ex_code"
+        }
+        if $_sr_remove_dir; then
+            rm -rf -- "$_sr_item" || {
+                err_msg "Failed to remove directory: $_sr_item" "$_sr_err_ex_code"
+            }
+            $_sr_display_removal && lbl_3 "Removed directory: $_sr_item"
+        else
+            # shellcheck disable=SC2115 # _sr_item is already checked for being empty
+            rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
+                err_msg "Failed to clear directory: $_sr_item" "$_sr_err_ex_code"
+            }
+            $_sr_display_removal && lbl_4 "Cleared directory: $_sr_item"
+        fi
+        return
+    fi
+
+    if [ -f "$_sr_item" ] || [ -L "$_sr_item" ]; then
+        rm -- "$_sr_item" || {
+            err_msg "Failed to remove file: $_sr_item" "$_sr_err_ex_code"
+        }
+        $_sr_display_removal && lbl_4 "Removed file: $_sr_item"
+    else
+        err_msg "Refusing to remove non-file: $_sr_item" "$_sr_err_ex_code"
+    fi
+}
+
 safe_remove() {
     #
     # if item is a folder it is just cleared, unless it is prefixed with --remove-dir
@@ -440,39 +505,40 @@ safe_remove() {
         shift
     done
 
-    _sr_item=$1
-    _sr_err_ex_code="${2:-1}"
-    [ -z "$_sr_item" ] && err_msg "delete_item: missing path" "$_sr_err_ex_code"
+    for f; do
+        [ -e "$f" ] || {
+            if [ -L "$f" ]; then
+                msg_dbg "safe_remove - Will process dead symlink: $f" 1
+            else
+                msg_dbg "safe_remove - Warning ignored missing file [$f]" 1
+                continue
+            fi
+        }
+        _do_safe_remove "$f"
+    done
+}
 
-    $_sr_check_sys_path && was_sys_path "$_sr_item" && {
-        err_msg "Refusing to remove a sys-path: $_sr_item" "$_sr_err_ex_code"
+source_it() {
+    # Fails if $2 was provided and that variable was not defined as non-empty
+    _f="$1"
+    _si_inspect_variable="$2"
+
+    # msg_dbg "[$0] source_it($_f)"
+    [ "$app_name_full_path" = "$_f" ] && {
+        echo
+        echo "WARNING: Attempt at self sourcing ignored: $_f"
+        echo
     }
 
-    if [ -d "$_sr_item" ]; then
-        mount | grep "$_sr_item" && {
-            err_msg "safe_remove() - this is a mount point: $_sr_item" "$_sr_err_ex_code"
+    # shellcheck source=/dev/null # filename is dynamic
+    . "$_f"
+    [ -n "$_si_inspect_variable" ] && {
+        # if variable name provided verify that it has content
+        eval "_v2=\"\${$_si_inspect_variable}\""
+        [ -n "$_v2" ] || {
+            err_msg "Sourcing $_f didn't define variable: $_si_inspect_variable"
         }
-        if $_sr_remove_dir; then
-            rm -rf -- "$_sr_item" || {
-                err_msg "Failed to remove directory: $_sr_item" "$_sr_err_ex_code"
-            }
-            $_sr_display_removal && lbl_3 "Removed directory: $_sr_item"
-        else
-            # shellcheck disable=SC2115 # _sr_item is already checked for being empty
-            rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {
-                err_msg "Failed to clear directory: $_sr_item" "$_sr_err_ex_code"
-            }
-            $_sr_display_removal && lbl_4 "Cleared directory: $_sr_item"
-        fi
-        return
-    fi
-
-    if [ -f "$_sr_item" ]; then
-        rm -f -- "$_sr_item" || {
-            err_msg "Failed to remove file: $_sr_item" "$_sr_err_ex_code"
-        }
-        $_sr_display_removal && lbl_4 "Removed file: $_sr_item"
-    fi
+    }
 }
 
 #---------------------------------------------------------------
@@ -493,7 +559,7 @@ create_f_tmp() {
     # It will also be autoremoved once script exits, unless some of the signals
     # monitored are overridden
     #
-    f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+    f_tmp=$(mktemp -t "${app_name:-script-utils.sh}") || {
         err_msg "mktemp failed"
     }
     trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
@@ -523,8 +589,12 @@ use_log_file() {
 #  Locations for various stuff
 #
 
+# echo "><> processing script_utils"
+
 TMPDIR="${TMPDIR:-/tmp}"
 TMPDIR="${TMPDIR%/}" # strip trailing slah, mostly for MacOS
+
+app_name_full_path=$(realpath "$0")
 
 [ -z "$app_name" ] && app_name=$(basename "$0")
 t_start="$(date +%s)" # is used in display_app_run_time()
