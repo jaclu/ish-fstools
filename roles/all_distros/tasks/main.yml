@@ -44,7 +44,7 @@
     cmd: |
       set -o pipefail
       ex_code=0
-      tmp_file=$(mktemp)
+      tmp_file=$(mktemp -t ift_launcher-check.XXXXXX)
       config-ift -l > "$tmp_file" | exit 30
       if grep -qv "{{ f_app_ift_launcher }}" "$tmp_file"; then
           {{ f_app_ift_config }} -l ift | exit 31

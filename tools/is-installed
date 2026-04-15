@@ -221,7 +221,7 @@ while [ $# -gt 0 ]; do
 done
 
 # shellcheck disable=SC2154 # app_name defined in script-utils.sh
-f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
+f_tmp=$(mktemp -t "${app_name:-sshd_config_yml}".XXXXXX) || {
     err_msg "mktemp failed"
 }
 trap 'rm -f "$f_tmp"' EXIT HUP INT TERM

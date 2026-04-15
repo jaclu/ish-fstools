@@ -39,7 +39,7 @@ copy_files() {
             ;;
     esac
     show_msg "$dst <- $rel_path  - rsyncing changes"
-    tmp_log="$(mktemp)"
+    tmp_log="$(mktemp -t simple-upgrade.XXXXXX)"
     rsync -ahP "$src" "$dst" >"$tmp_log" 2>&1 || {
         cat "$tmp_log"
         rm -f "$tmp_log"

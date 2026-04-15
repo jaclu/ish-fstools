@@ -225,7 +225,7 @@ reset_root_home_privs() {
 copy_skel_files() {
     lbl_1 "Deploying repo skel files"
 
-    tmp=$(mktemp) || exit 2
+    tmp=$(mktemp -t reset-virt-fs.XXXXXX) || exit 2
 
     lbl_2 "Using tmpfile base: $tmp"
 

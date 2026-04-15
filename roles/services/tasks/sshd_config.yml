@@ -25,7 +25,7 @@
 
 - name: " sshd conf - Deduplicate intended Port lines"
   shell: |
-    tmp=$(mktemp)
+    tmp=$(mktemp -t deduplicate-sshd-ports.XXXXXX)
     awk '
       /^Port {{ ift_port_sshd | default(2022) }}/ {
         if (!seen++) { print; next }

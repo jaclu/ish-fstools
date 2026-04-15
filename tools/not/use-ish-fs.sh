@@ -114,7 +114,7 @@ sync_something() {
         echo
         lbl_2 "rsync $_ss_src $_ss_dst"
     }
-    _tmp_log="$(mktemp)"
+    _tmp_log="$(mktemp -t use-ish-fs.XXXXXX)"
 
     # shellcheck disable=SC2086  # Suppresses warnings about unquoted variables.
     rsync -ahP $_ss_rsync_opts "$_ss_src" "$_ss_dst" >"$_tmp_log" 2>&1 || {
