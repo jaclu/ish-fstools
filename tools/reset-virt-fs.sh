@@ -95,25 +95,10 @@ sync_something() {
 
     [ -z "$_ss_cmd" ] && err_msg "sync_something() - no param"
     lbl_2 "sync_something() - $_ss_lbl - $do_clear"
-    # if $do_clear; then
+    #  shellcheck disable=SC2154 # f_tmp defined in script-utils.sh
     eval "$_ss_cmd" >"$f_tmp" 2>&1 || {
         err_msg "Failed to sync ish-fstools - $_ss_lbl"
     }
-    # lbl_4 "f_tmp: $f_tmp"
-    # exit 3
-
-    # tail -n +2 "$f_tmp"
-    # sed -n '2,50p' "$f_tmp"
-    # sed -n "2,${_ss_cutoff_size}p" "$f_tmp" | grep -v -e '^sending incremental file list$' \
-    #     -e '^\r' \
-    #     -e '^[[:space:]]'
-
-    # grep -v -e '^sending incremental file list$' \
-    #     -e '^\r' \
-    #     -e '^[[:space:]]' \
-    #     -e '/\/$/' \
-    #     "$f_tmp" | head -n $_ss_cutoff_size
-
     sed -e '/^sending incremental file list$/d' \
         -e '/^\r/d' \
         -e '/^[[:space:]]/d' \
@@ -124,8 +109,6 @@ sync_something() {
     [ "$(wc -l "$f_tmp" | cut -d' ' -f1)" -gt "$_ss_cutoff_size" ] && {
         echo "... (limited to $_ss_cutoff_size lines of output)"
     }
-
-    rm -f "$f_tmp"
 }
 
 # remove_symbolic_links_in_dest() {
@@ -224,26 +207,22 @@ reset_root_home_privs() {
 
 copy_skel_files() {
     lbl_1 "Deploying repo skel files"
-
-    tmp=$(mktemp -t reset-virt-fs.XXXXXX) || exit 2
-
-    lbl_2 "Using tmpfile base: $tmp"
-
+    lbl_2 "Using tmpfile base: $f_tmp"
     (
         cd "$d_repo"/roles/all_distros/files/etc/skel \
             && tar cf - .
-        echo $? >"$tmp.left"
+        echo $? >"$f_tmp.left"
     ) | (
         cd "$d_aok_fs"/root \
             && tar xpf -
-        echo $? >"$tmp.right"
+        echo $? >"$f_tmp.right"
     )
 
-    left=$(cat "$tmp.left" 2>/dev/null)
-    right=$(cat "$tmp.right" 2>/dev/null)
-    lbl_2 "left: $$tmp.left"
-    lbl_2 "right: $$tmp.right"
-    rm -f "$tmp.left" "$tmp.right" "$tmp"
+    left=$(cat "$f_tmp.left" 2>/dev/null)
+    right=$(cat "$f_tmp.right" 2>/dev/null)
+    lbl_2 "left: $f_tmp.left"
+    lbl_2 "right: $f_tmp.right"
+    rm -f "$f_tmp.left" "$f_tmp.right"
 
     if [ "$left" -ne 0 ] || [ "$right" -ne 0 ]; then
         err_msg "copying /etc/skel to \$HOME failed (tar create=$left, extract=$right)" >&2
@@ -332,21 +311,14 @@ repo_name=$(basename "$d_repo")
 
 d_orig_aok_tmpdir="$AOK_TMPDIR"
 
-# shellcheck source=/dev/null
+# shell check source=/
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 my_rsync="rsync -a --delete-excluded --out-format='%n'"
 
 load_utils
-
-# tmp file that can be used during the un of the app, will be auto removed on exit
-# shellcheck disable=SC2154 # app_name defined in tools/script-utils.sh
-f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name}.XXXXXX") || {
-    err_msg "mktemp failed"
-}
-# trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
-
-# shellcheck source=/dev/null
-# [ -z "$d_aok_etc" ] && . /opt/AOK/tools/utils.sh
+# tmp file that can be used during the run of the app, will be auto removed on exit
+# if it still exists
+tmp_file_create # defaults to f_tmp
 
 # lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
 if [ -d "$d_orig_aok_tmpdir" ]; then

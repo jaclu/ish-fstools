@@ -25,19 +25,25 @@
 
 - name: " sshd conf - Deduplicate intended Port lines"
   shell: |
-    tmp=$(mktemp -t deduplicate-sshd-ports.XXXXXX)
+    f_tmp=$(mktemp "${TMPDIR:-/tmp}"/deduplicate-sshd-ports.XXXXXX)
     awk '
       /^Port {{ ift_port_sshd | default(2022) }}/ {
         if (!seen++) { print; next }
         next
       }
       { print }
-    ' /etc/ssh/sshd_config > "$tmp" || exit 30
-    if ! cmp -s /etc/ssh/sshd_config "$tmp"; then
-      mv "$tmp" /etc/ssh/sshd_config || exit 31
+    ' /etc/ssh/sshd_config > "$f_tmp" || {
+      rm -f "$f_tmp"
+      exit 30
+    }
+    if ! cmp -s /etc/ssh/sshd_config "$f_tmp"; then
+      mv "$f_tmp" /etc/ssh/sshd_config || {
+        rm -f "$f_tmp"
+        exit 31
+      }
       exit 43
     else
-      rm "$tmp" || exit 32
+      rm -f "$f_tmp"
     fi
   args:
     executable: /bin/bash

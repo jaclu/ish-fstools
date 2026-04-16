@@ -72,7 +72,7 @@
       else
           cmd_ps="ps -ax" # handle normal ps cmds
       fi
-      tmp_file=$(mktemp -t is_ish.XXXXXX)
+      tmp_file=$(mktemp "${TMPDIR:-/tmp}"/is_ish.XXXXXX)
       $cmd_ps >"$tmp_file"  # busybox ps lacks have the normal options
       if grep -q "cat $gps_device\$" "$tmp_file"; then
           echo "backgrounding already active"
