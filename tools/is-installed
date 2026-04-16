@@ -33,6 +33,7 @@ apk_cache_sync() {
 }
 
 show_wildcard_matches() {
+    #  shellcheck disable=SC2154 # f_tmp defined in script-utils.sh
     [ -s "$f_tmp" ] || return
     if [ "$use_wildcards" = 1 ]; then
         lbl_2 "$1 wildcard ending matches for: $pkg_name"
@@ -220,10 +221,5 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-# shellcheck disable=SC2154 # app_name defined in script-utils.sh
-f_tmp=$(mktemp -t "${TMPDIR:-/tmp}/${app_name:-sshd_config_yml}".XXXXXX) || {
-    err_msg "mktemp failed"
-}
-trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
-
+tmp_file_create
 is_installed

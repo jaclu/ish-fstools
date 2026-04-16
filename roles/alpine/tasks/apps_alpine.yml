@@ -22,6 +22,10 @@
   shell:
     cmd: |
       set -u
+      cleanup() {
+          [ -n "$d_tmp" ] && [ -d "$d_tmp" ] && rm -rf "$d_tmp"
+          exit "$1"
+      }
       if command -v mtr ; then
           [ "$(mtr -v)" = "mtr 0.91.1-4c982" ] && {
               exit 0 # correct "old" version installed
@@ -32,14 +36,13 @@
       #
       #  Download and install specific older mtr
       #
-      d_tmp="$(mktemp -d -t old-mtr.XXXXXX)" || exit 31
-      cd "$d_tmp" || exit 32
+      d_tmp="$(mktemp -d "${TMPDIR:-/tmp}"/old-mtr.XXXXXX)" || exit 31
+      cd "$d_tmp" || cleanup 32
       url_prefix="https://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86"
-      wget "$url_prefix"/mtr-0.92-r0.apk || exit 33
-      wget "$url_prefix"/mtr-doc-0.92-r0.apk || exit 34
-      apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || exit 35
-      rm -rf "$d_tmp" || exit 36
-      exit 43
+      wget "$url_prefix"/mtr-0.92-r0.apk || cleanup 33
+      wget "$url_prefix"/mtr-doc-0.92-r0.apk || cleanup 34
+      apk add mtr-0.92-r0.apk mtr-doc-0.92-r0.apk || cleanup 35
+      cleanup 43
   args:
     executable: /bin/sh
   when:
