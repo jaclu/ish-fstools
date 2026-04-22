@@ -263,13 +263,14 @@ prepare_shell_env() {
                 # echo ./ish-fstools/tools/fs_cleanup.sh
                 ;;
             spd)
-                echo "/root/spd/tasks/FileSystem-Debian.sh install"
-                echo "/root/spd/tasks/FileSystem-Devuan.sh install"
-                echo "/root/spd/tasks/FileSystem-Alpine.sh install"
-                echo "/root/spd/tasks/service-autossh.sh install"
-                echo "/root/spd/tasks/service-runbg.sh install"
+                echo "/root/spd/tasks/FileSystem-Debian.sh"
+                echo "/root/spd/tasks/FileSystem-Devuan.sh"
+                echo "/root/spd/tasks/FileSystem-Alpine.sh"
+                echo "/root/spd/tasks/service-autossh.sh"
+                echo "/root/spd/tasks/service-runbg.sh"
                 #echo "/root/spd/tasks/all-distros.sh install"
-                echo "/root/spd/tasks/platform-iSH.sh install"
+                echo "export current_dbg_lvl=4"
+                echo "/root/spd/tasks/platform-iSH.sh"
                 # echo "/root/spd/services/service_autossh.sh remove"
                 # echo "/root/spd/services/service_autossh.sh install"
                 # echo "/root/spd/debug/cfg_test.sh"
