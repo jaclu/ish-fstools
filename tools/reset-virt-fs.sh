@@ -310,6 +310,7 @@ d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
 
 deploy_mthd=spd
+# deploy_mthd=ish-fstools
 
 repo_name=$(basename "$d_repo")
 
