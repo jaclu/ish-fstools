@@ -72,6 +72,7 @@ replace_fs() {
     # ensure chroo env is not in use
     is_chrooted_ish && err_msg "ish env is already chrooted"
     is_chrooted && err_msg "This can't be run in an chrooted env"
+    /opt/AOK/tools/do_chroot.sh -c || exit 1
 
     # [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
     #     err_msg "chooted - found items in /dev"
