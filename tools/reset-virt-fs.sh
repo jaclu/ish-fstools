@@ -31,8 +31,11 @@ unpack_saved_fs() {
     #
     # -  39/31s /root/ish-fstools/handle_localhost.sh
     #
-    lbl_1 "unpack_saved_fs() - $fs_saved"
+    lbl_2 "unpack_saved_fs() - $fs_saved"
+    _usf_t1="$(date +%s)"
     /opt/AOK/tools/aok_fs-replace "$fs_saved"
+    _usf_elapsed="$(($(date +%s) - _usf_t1))"
+    lbl_1 "Unpack time: $(display_time_elapsed "$_usf_elapsed")"
 }
 
 create_empty_fs() {
@@ -72,7 +75,7 @@ replace_fs() {
     # ensure chroo env is not in use
     is_chrooted_ish && err_msg "ish env is already chrooted"
     is_chrooted && err_msg "This can't be run in an chrooted env"
-    /opt/AOK/tools/do_chroot.sh -c || exit 1
+    /opt/AOK/tools/do_chroot.sh --check || exit 1
 
     # [ "$(find "$d_aok_fs"/dev 2>/dev/null | wc -l)" -gt 1 ] && {
     #     err_msg "chooted - found items in /dev"
@@ -272,10 +275,9 @@ prepare_shell_env() {
                 #echo "/root/spd/tasks/all-distros.sh install"
                 #echo "time /root/spd/tasks/service-autossh.sh remove"
                 echo "/root/spd/tasks/service-autossh.sh" # && less /etc/init.d/autossh"
+                echo "ls -la /usr/local/bin"
+                echo "/root/spd/tasks/files-iSH.sh"
                 echo "/root/spd/tasks/platform-iSH.sh"
-                # echo "/root/spd/services/service_autossh.sh remove"
-                # echo "/root/spd/services/service_autossh.sh install"
-                # echo "/root/spd/debug/cfg_test.sh"
                 ;;
             *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
         esac
@@ -317,7 +319,7 @@ repo_name=$(basename "$d_repo")
 
 d_orig_aok_tmpdir="$AOK_TMPDIR"
 
-# shell check source=/
+# shellcheck disable=SC1091
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 my_rsync="rsync -a --delete-excluded --out-format='%n'"
 
