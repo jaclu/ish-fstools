@@ -189,7 +189,13 @@ sync_fs_tools() {
             sync_something spd "$my_rsync \
                 --exclude=.git/ \
                 --exclude=configs/ \
-                /home/jaclu/git_repos/mine/spd $d_aok_fs/root"
+                $real_home/git_repos/mine/spd $d_aok_fs/root"
+            sync_something spd_config "$my_rsync \
+                $real_home/git_repos/mine/spd/config_templates/ \
+		$d_aok_fs/root/spd/configs"
+            sync_something spd_override "$my_rsync \
+	    	$real_home/.config/spd_overrides.yml \
+		$d_aok_fs/root/spd/configs/overrides.yml"
             ;;
         *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
     esac
@@ -319,9 +325,20 @@ repo_name=$(basename "$d_repo")
 
 d_orig_aok_tmpdir="$AOK_TMPDIR"
 
+f_real_home=/tmp/real_home
+
+[ "$(whoami)" != "root" ] && echo "$HOME" >"$f_real_home"
+
 # shellcheck disable=SC1091
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 my_rsync="rsync -a --delete-excluded --out-format='%n'"
+
+real_home=$(cat "$f_real_home")
+[ -n "$real_home" ] || {
+    echo "Failed to preserve orig HOME env"
+    exit 1
+}
+rm -f "$f_real_home"
 
 load_utils
 # tmp file that can be used during the run of the app, will be auto removed on exit
