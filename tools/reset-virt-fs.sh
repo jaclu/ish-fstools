@@ -190,11 +190,11 @@ sync_fs_tools() {
                 --exclude=.git/ \
                 --exclude=configs/ \
                 $real_home/git_repos/mine/spd $d_aok_fs/root"
-	    d_r_ssh="$d_aok_fs"/root/.ssh
-	    mkdir -p "$d_r_ssh"
-	    chmod 0700 "$d_r_ssh"
-	    cp ~jaclu/.ssh/id_ish* "$d_r_ssh"
-	    chmod 0600 "$d_r_ssh"/*
+            d_r_ssh="$d_aok_fs"/root/.ssh
+            mkdir -p "$d_r_ssh"
+            chmod 0700 "$d_r_ssh"
+            cp ~jaclu/.ssh/id_ish* "$d_r_ssh"
+            chmod 0600 "$d_r_ssh"/*
             ;;
         *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
     esac
@@ -281,7 +281,7 @@ prepare_shell_env() {
                 #echo "time /root/spd/tasks/service-autossh.sh remove"
                 echo "ls -la /usr/local/bin"
                 #echo "/root/spd/tasks/files-iSH.sh"
-		echo "less /etc/init.d/autossh"
+                echo "less /etc/init.d/autossh"
                 echo "/root/spd/tasks/service-autossh.sh"
                 echo "/root/spd/tasks/platform-iSH.sh"
                 ;;
@@ -289,7 +289,7 @@ prepare_shell_env() {
         esac
     } >>"$f_history"
     chmod 600 "$f_history"
-    echo "$(hostname -s)-ish" > "$d_aok_fs"/etc/hostname
+    echo "$(hostname -s)-ish" >"$d_aok_fs"/etc/hostname
 }
 
 save_new_fs() {
