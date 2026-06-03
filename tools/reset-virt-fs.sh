@@ -186,10 +186,21 @@ sync_fs_tools() {
                 $d_repo $d_aok_fs/root"
             ;;
         spd)
+            d_spd_base_dest="$d_aok_fs"/root/spd
             sync_something spd "$my_rsync \
                 --exclude=.git/ \
                 --exclude=configs/ \
-                $real_home/git_repos/mine/spd $d_aok_fs/root"
+                $d_spd_base $d_aok_fs/root"
+
+            # ensure real global_overrides.yml is used
+            rel_f_overrides=config_templates/global_overrides.yml
+            f_overrides_dest="$d_spd_base_dest/$rel_f_overrides"
+            [ -L "$f_overrides_dest" ] && {
+                rm -f "$f_overrides_dest" || err_msg "Failed to rm $f_overrides_dest"
+                cp "$d_spd_base/$rel_f_overrides" "$f_overrides_dest" || {
+                    err_msg "Failed to replace soft-linked $rel_f_overrides"
+                }
+            }
             d_r_ssh="$d_aok_fs"/root/.ssh
             mkdir -p "$d_r_ssh"
             chmod 0700 "$d_r_ssh"
@@ -281,8 +292,9 @@ prepare_shell_env() {
                 #echo "time /root/spd/tasks/service-autossh.sh remove"
                 echo "ls -la /usr/local/bin"
                 #echo "/root/spd/tasks/files-iSH.sh"
-                echo "less /etc/init.d/autossh"
+                #echo "less /etc/init.d/autossh"
                 echo "/root/spd/tasks/service-autossh.sh"
+                echo "/root/spd/tasks/service-sshd.sh"
                 echo "/root/spd/tasks/platform-iSH.sh"
                 ;;
             *) err_msg "Unhandled deploy_mthd: $deploy_mthd" ;;
@@ -334,12 +346,14 @@ f_real_home=/tmp/real_home
 hide_run_as_root=1 . /opt/AOK/tools/run_as_root.sh
 my_rsync="rsync -a --delete-excluded --out-format='%n'"
 
-real_home=$(cat "$f_real_home")
-[ -n "$real_home" ] || {
+d_real_home=$(cat "$f_real_home")
+[ -n "$d_real_home" ] || {
     echo "Failed to preserve orig HOME env"
     exit 1
 }
 rm -f "$f_real_home"
+
+d_spd_base="$d_real_home"/git_repos/mine/spd
 
 load_utils
 # tmp file that can be used during the run of the app, will be auto removed on exit
