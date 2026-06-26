@@ -50,7 +50,8 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.3-x86.tar.gz"
-    miniroot_fs="alpine-minirootfs-3.24.1-x86.tar.gz"
+    miniroot_fs="alpine-minirootfs-3.23.5-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.24.1-x86.tar.gz" # python doesn't work
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
