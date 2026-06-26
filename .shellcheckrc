@@ -1,4 +1,2 @@
 source-path=.
-enable=all
-disable=SC2250,SC2312
 external-sources=true
