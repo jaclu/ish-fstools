@@ -49,7 +49,8 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
-    miniroot_fs="alpine-minirootfs-3.23.3-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.23.3-x86.tar.gz"
+    miniroot_fs="alpine-minirootfs-3.24.1-x86.tar.gz"
     lbl_1 "create_empty_fs()"
     lbl_2 "><> pwd:$(pwd)"
 
@@ -331,8 +332,8 @@ load_utils() {
 d_repo=$(cd -- "$(dirname -- "$0")/.." && pwd) # one folder above this
 d_fake_icloud=~jaclu/cloud/Uni/fake_iCloud
 
-deploy_mthd=spd
-# deploy_mthd=ish-fstools
+# deploy_mthd=spd
+deploy_mthd=ish-fstools
 
 repo_name=$(basename "$d_repo")
 
