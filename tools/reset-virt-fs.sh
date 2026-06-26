@@ -275,10 +275,10 @@ prepare_shell_env() {
 
             ish-fstools)
                 # echo "/root/ish-fstools/tools/fs_cleanup.sh total"
-                echo "time $cmd_2"
-                echo "time $cmd_1 c"
-                # echo "time $cmd_2 q"
-                # echo "time $cmd_1 q"
+                echo "$cmd_2"
+                echo "$cmd_1 c"
+                # echo "$cmd_2 q"
+                # echo "$cmd_1 q"
                 # s="[ -f /etc/alpine-release ] && apk add bash"
                 # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
                 # echo ./ish-fstools/tools/fs_cleanup.sh
