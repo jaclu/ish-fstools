@@ -164,4 +164,4 @@ is_chrooted && {
         err_msg "my-ish-fs reported error"
     }
 }
-exit 0
+script_utils_cleanup 0
