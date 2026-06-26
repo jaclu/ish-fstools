@@ -86,11 +86,20 @@ increase_verbos_lvl() {
     done
 }
 
+cleanup_custom() {
+    # This is is called from script-utils cleanup, or indirectly by err_msg,
+    # so only do final tasks and potentially local cleanup here, don't exit!
+    # $1 is the exit code that will be used, just for info, in case what happens
+    # here depends on success/error exit
+    display_app_run_time
+    date
+}
+
 load_utils() {
     _lu_d_base="${1:-$d_repo}"
     _lu_f_utils="$_lu_d_base"/tools/script-utils.sh
 
-    # shellcheck source=tools/script-utils.sh disable=SC1091,SC2317
+    # shellcheck source=tools/script-utils.sh disable=SC2317
     . "$_lu_f_utils" || {
         printf '\nERROR: Failed to source: %s\n' "$_lu_f_utils" >&2
         exit 1
