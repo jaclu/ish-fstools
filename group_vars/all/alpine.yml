@@ -147,6 +147,7 @@ ift_alpine_pkgs_devel:
   - cmake # Cross-platform, open-source make system
   - libtool # A generic library support script
   - bzip2-dev # A high-quality data compression program
+  - libbsd-dev # commonly-used BSD functions not implemented by all libcs
   - libevent-dev # An event notification library
   # lazygit       doesn't work on iSH
   - ncurses-dev # Console display library
