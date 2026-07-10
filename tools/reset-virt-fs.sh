@@ -150,7 +150,8 @@ sync_fs_tools() {
     if [ -f "$d_aok_fs"/etc/alpine-release ]; then
         platform_dest=prebuilds/Alpine
     elif [ -f "$d_aok_fs"/etc/devuan_version ]; then
-        platform_dest=prebuilds/Debian10
+        # only relevant for Devuan
+        platform_dest=prebuilds/Devuan
     elif [ -f "$d_aok_fs"/etc/debian_version ]; then
         # only relevant for Deb10
         platform_dest=prebuilds/Debian10
