@@ -20,7 +20,7 @@ ift_pkgs_linting: false # set to true if linting packages should be used
 ift_pkgs_man: false # se to true if man pages for everything installed should be used
 
 #  Create a user account (will be given no password sudo privs)
-ift_user_name: ish # set to "" to disable
+user_name: ish # set to "" to disable
 
 #  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
 #  set to "" if no system timezone should be defined, then UTC will be used

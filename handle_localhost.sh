@@ -142,9 +142,12 @@ is_chrooted && {
     f_chroot_default_cmd=/.chroot_default_cmd
     f_first_ish_boot_cmd="$d_repo"/tools/ish-first-boot.sh
 
-    [ -f "$f_ift_launcher" ] && {
-        lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
-        echo "$f_ift_launcher" >"$f_chroot_default_cmd"
+    [ -f /etc/devuan_version ] || {
+        # Don't add this on Devuan
+        [ -f "$f_ift_launcher" ] && {
+            lbl_4 "Setting $f_chroot_default_cmd to: $f_ift_launcher"
+            echo "$f_ift_launcher" >"$f_chroot_default_cmd"
+        }
     }
     lbl_4 "Deploying: $f_first_ish_boot_cmd"
     cp "$f_first_ish_boot_cmd" /usr/local/sbin || {
@@ -159,6 +162,8 @@ is_chrooted && {
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
+    display_app_run_time
+
     lbl_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_localhost.sh || {
         err_msg "my-ish-fs reported error"

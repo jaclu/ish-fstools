@@ -16,13 +16,13 @@
 #  All Distros
 #
 
-- name: Param checks - Fail if ift_user_name is defined, but not ift_shell
+- name: Param checks - Fail if user_name is defined, but not ift_shell
   fail:
-    msg: "ift_shell must be defined when ift_user_name is set"
+    msg: "ift_shell must be defined when user_name is set"
   delegate_to: localhost
   run_once: true
   when:
-    - ift_user_name | default('') | length > 0
+    - user_name | default('') | length > 0
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
 - name: Run param_checks_alpine.yml

@@ -141,5 +141,5 @@ ift_devuan_pkgs_linting:
 #
 ift_devuan_purges: []
 
-ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Debian10"
-ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-deb.tgz"
+ift_prebuilds_devuan: "{{ d_icloud_deploy }}/prebuilds/Devuan"
+# ift_devuan_abduco_tgz: "{{ ift_prebuilds_devuan }}/abduco-0.6-deb.tgz"

@@ -30,7 +30,7 @@
 #   iPhone 14th:  update  3 min
 #
 
-ift_user_name: ish # set to "" to disable
+user_name: ish # set to "" to disable
 ift_timezone: Europe/Amsterdam
 
 # show some info about detected env, what will be installed etc

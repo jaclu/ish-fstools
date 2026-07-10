@@ -35,6 +35,7 @@ deploy_cleanup() {
     # suitable for post all install step
     lbl_1 "Deploy cleanup"
     items=(
+        /.chroot_default_cmd
         /root/.ansible
         /root/.ash_history
         /root/.bash_history

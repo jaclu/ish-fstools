@@ -28,7 +28,7 @@
 
 - name: Run user_account.yml
   import_tasks: user_account.yml
-  when: ift_user_name | default('') | length > 0
+  when: user_name | default('') | length > 0
 
 - name: Run root_shell.yml
   import_tasks: root_shell.yml

@@ -26,7 +26,7 @@
     remote_src: true
     src: "{{ ift_devuan_abduco_tgz }}"
     dest: /
-
+  when: ift_devuan_abduco_tgz | default('') | length > 0
 #
 #  Reuse file assets from the debian role - they are identical for iSH
 #

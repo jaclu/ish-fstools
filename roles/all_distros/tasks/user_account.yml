@@ -9,10 +9,10 @@
 #  Defines user account
 #
 
-- name: User acct - Find user with UID 501 different from ift_user_name
+- name: User acct - Find user with UID 501 different from user_name
   command:
     cmd: >
-      awk -F: -v user="{{ ift_user_name }}" '
+      awk -F: -v user="{{ user_name }}" '
       $3 == 501 && $1 != user { print $1 }' /etc/passwd
   register: all_distros_conflicting_user
   changed_when: false
@@ -24,10 +24,10 @@
       {{ all_distros_conflicting_user.stdout_lines | join(", ") }}
   when: all_distros_conflicting_user.stdout != ""
 
-- name: User acct - Find group with GID 501 different from ift_user_name
+- name: User acct - Find group with GID 501 different from user_name
   command:
     cmd: >
-      awk -F: -v group="{{ ift_user_name }}" '
+      awk -F: -v group="{{ user_name }}" '
       $3 == 501 && $1 != group { print $1 }' /etc/group
   register: all_distros_conflicting_group
   changed_when: false
@@ -44,50 +44,50 @@
     name: sudo
     state: present
 
-- name: "User acct - Ensure group with GID 501 exists: {{ ift_user_name }}"
+- name: "User acct - Ensure group with GID 501 exists: {{ user_name }}"
   group:
-    name: "{{ ift_user_name }}"
+    name: "{{ user_name }}"
     gid: 501
     state: present
-  when: ift_user_name | default('') | length > 0
+  when: user_name | default('') | length > 0
 
-- name: User acct - Ensure UID:501 user exists with correct shell ({{ ift_user_name }}
+- name: User acct - Ensure UID:501 user exists with correct shell ({{ user_name }}
   user:
-    name: "{{ ift_user_name }}"
+    name: "{{ user_name }}"
     uid: 501
-    group: "{{ ift_user_name }}"
+    group: "{{ user_name }}"
     groups: sudo
     # shell: "{{ ift_shell }}"
     state: present
     password: "" # ← explicitly sets empty password, avoids '!' in /etc/shadow
   when:
-    - ift_user_name | default('') | length > 0
+    - user_name | default('') | length > 0
     - ift_shell | default('') | length > 0
 
-- name: User acct - Check current shell for {{ ift_user_name }}
-  command: getent passwd "{{ ift_user_name }}"
+- name: User acct - Check current shell for {{ user_name }}
+  command: getent passwd "{{ user_name }}"
   register: all_distros_passwd_line
   changed_when: false
 
-- name: User acct - Set shell for {{ ift_user_name }}
-  command: chsh -s "{{ ift_shell }}" "{{ ift_user_name }}"
+- name: User acct - Set shell for {{ user_name }}
+  command: chsh -s "{{ ift_shell }}" "{{ user_name }}"
   when:
-    - ift_user_name | default('') | length > 0
+    - user_name | default('') | length > 0
     - ift_shell | default('') | length > 0
     - all_distros_passwd_line.stdout.split(':')[6] != ift_shell
   changed_when: true
 
-- name: User acct - Enable autologin for {{ ift_user_name }}
+- name: User acct - Enable autologin for {{ user_name }}
   shell:
     cmd: |
       set -o pipefail
-      if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ ift_user_name }}$"; then
-        "{{ f_app_ift_config }}" -a "{{ ift_user_name }}" || exit 30
+      if "{{ f_app_ift_config }}" | grep autologin | grep -v " {{ user_name }}$"; then
+        "{{ f_app_ift_config }}" -a "{{ user_name }}" || exit 30
         exit 43
       fi
   args:
     executable: /bin/bash
-  when: ift_user_name | default('') | length > 0
+  when: user_name | default('') | length > 0
   register: all_distros_autologin_result
   changed_when: "all_distros_autologin_result.rc == 43"
   failed_when: >
@@ -97,7 +97,7 @@
 - name: "Ensure ish-fstools is owned by UID 501 and GID 501 {{ d_repo }}"
   file:
     path: "{{ d_repo }}"
-    owner: "{{ ift_user_name }}"
-    group: "{{ ift_user_name }}"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
     recurse: true
-  when: ift_user_name | default('') | length > 0
+  when: user_name | default('') | length > 0
