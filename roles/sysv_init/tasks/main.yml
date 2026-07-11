@@ -10,11 +10,11 @@
 #
 
 - name: Run service_runbg.yml
-  import_tasks: service_runbg.yml
+  include_tasks: service_runbg.yml
   when: (ift_runlevel_runbg | default('') | trim) != ''
 
 - name: Run service_sshd.yml
-  import_tasks: service_sshd.yml
+  include_tasks: service_sshd.yml
   when: use_sshd | default(false)
 
 - name: Remove dependency cache files

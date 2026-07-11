@@ -20,7 +20,7 @@
     gather_subset: all
 
 - name: " pre-task - Check if this is ansible < 2.8"
-  include_tasks: check_if_old_ansible.yml
+  import_tasks: check_if_old_ansible.yml
 
 - name: " pre-task - Handle vars/overrides.yml"
   # Must be first task in order for everything else to use the variable overrides

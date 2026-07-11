@@ -26,13 +26,13 @@
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
 - name: Run param_checks_alpine.yml
-  import_tasks: param_checks_alpine.yml
+  include_tasks: param_checks_alpine.yml
   when: ansible_facts.distribution == 'Alpine'
 
 - name: Run param_checks_debian.yml
-  import_tasks: param_checks_debian.yml
+  include_tasks: param_checks_debian.yml
   when: ansible_facts.distribution == 'Debian'
 
 - name: Run param_checks_devuan.yml
-  import_tasks: param_checks_debian.yml
+  include_tasks: param_checks_debian.yml
   when: ansible_facts.distribution == 'Devuan'

@@ -10,5 +10,5 @@
 #
 
 - name: Run sshd_config.yml
-  import_tasks: sshd_config.yml
+  include_tasks: sshd_config.yml
   when: use_sshd | default(false)

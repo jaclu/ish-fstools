@@ -13,7 +13,7 @@
   import_tasks: apps_debian.yml
 
 - name: "Deploy custom_openssh {{ ift_openssh_tgz }}"
-  import_tasks: custom_openssh.yml
+  include_tasks: custom_openssh.yml
   when:
     - use_sshd | default(false)
     - ansible_facts.distribution == 'Debian'
