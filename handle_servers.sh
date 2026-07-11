@@ -45,6 +45,15 @@ increase_verbos_lvl() {
     done
 }
 
+cleanup_custom() {
+    # This is is called from script-utils cleanup, or indirectly by err_msg,
+    # so only do final tasks and potentially local cleanup here, don't exit!
+    # $1 is the exit code that will be used, just for info, in case what happens
+    # here depends on success/error exit
+    display_app_run_time
+    date
+}
+
 load_utils() {
     _lu_d_base="${1:-$d_repo}"
     _lu_f_utils="$_lu_d_base"/tools/script-utils.sh
@@ -91,7 +100,7 @@ do_ansible
 
 [ "$quick_mode" -eq 1 ] && {
     lbl_1 "Due to quick mode, my-ish-fs is no attempted"
-    exit 0
+    script_utils_cleanup 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
@@ -101,4 +110,4 @@ do_ansible
         err_msg "my-ish-fs reported error"
     }
 }
-exit 0
+script_utils_cleanup 0

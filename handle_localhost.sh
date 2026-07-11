@@ -157,7 +157,7 @@ is_chrooted && {
 
 [ "$quick_mode" -eq 1 ] && {
     lbl_1 "Due to quick mode, my-ish-fs is no attempted"
-    exit 0
+    script_utils_cleanup 0
 }
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
