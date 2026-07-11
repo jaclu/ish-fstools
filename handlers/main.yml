@@ -2,11 +2,11 @@
 #
 #  Part of https://github.com/jaclu/ish-fstools
 #
-#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
 #
 #  License: MIT
 #
-#  Handlers
+#  All common handlers
 #
 
 #
@@ -24,13 +24,14 @@
     name: runbg
     state: restarted
   when:
-    - openrc_softlevel.stat.exists
     - is_ish | bool
+    # - openrc_softlevel.stat.exists
   listen: Restart runbg
 
 #
 #  Restart monitor-sshd
 #
+
 - name: When chrooted - fake restart monitor-sshd
   debug:
     msg: "Simulating service restart -->->   monitor-sshd   <-<--"
@@ -44,5 +45,5 @@
     state: restarted
   when:
     - is_ish | bool
-    - openrc_softlevel.stat.exists
+    # - openrc_softlevel.stat.exists
   listen: Restart monitor-sshd

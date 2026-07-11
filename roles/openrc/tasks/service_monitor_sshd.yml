@@ -11,7 +11,7 @@
 
 - name: " monitor-sshd - Install service"
   template:
-    src: monitor-sshd
+    src: monitor-sshd.js2
     dest: "{{ d_init_ift }}/monitor-sshd"
     owner: root
     group: root
@@ -25,7 +25,7 @@
     state: link
   notify: Restart monitor-sshd
 
-- name: Set runlevel for monitor-sshd
+- name: " monitor-sshd - Set runlevel"
   include_tasks: tasks/service_runlevel_set.yml # should be include
   vars:
     srvc_name: "monitor-sshd"

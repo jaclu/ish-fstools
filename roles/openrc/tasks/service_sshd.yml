@@ -12,7 +12,7 @@
 #
 #  Configure sshd
 #
-- name: Ensure /var/lib/sshd exists
+- name: " sshd - Ensure /var/lib/sshd exists"
   file:
     path: /var/lib/sshd
     state: directory
@@ -20,7 +20,7 @@
     group: root
     mode: "0755"
 
-- name: Ensure sshd user exists
+- name: " sshd - Ensure sshd user exists"
   user:
     name: sshd
     comment: "OpenSSH Daemon User"
@@ -30,7 +30,7 @@
     system: true
     create_home: true
 
-- name: Install custom /etc/init.d/sshd, supporting iSH logging
+- name: " sshd - Install custom /etc/init.d/sshd, supporting iSH logging"
   copy:
     remote_src: true
     src: "{{ d_repo_openrc_role }}/files/etc/init.d/sshd"

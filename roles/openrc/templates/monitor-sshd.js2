@@ -1,6 +1,6 @@
 #!/sbin/openrc-run
 #
-# Copyright (c) 2024: Jacob.Lundqvist@gmail.com
+# Copyright (c) 2024,2026: Jacob.Lundqvist@gmail.com
 # License: MIT
 #
 #  This service reads the GPS and discards the output to /dev/null.
@@ -38,6 +38,9 @@ monitor_sshd() {
                 log_it "sshd not responding - restarting"
                 #eerror "sshd not responding. Restarting..."
                 /etc/init.d/sshd restart
+                svc_exit="$?"
+                log_it "restart exit: $svc_exit"
+
                 #
                 #  just doing start, prevents reverse link from being broken
                 #  in case it was a false alert, and sshd was actually running
@@ -57,10 +60,10 @@ start() {
     eend 0
 }
 
-start_post() {
-    log_it started
-}
+# start_post() {
+#     log_it started
+# }
 
-stop_post() {
-    log_it stopped
-}
+# stop_post() {
+#     log_it stopped
+# }

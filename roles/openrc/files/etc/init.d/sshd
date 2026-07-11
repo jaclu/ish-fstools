@@ -131,9 +131,9 @@ checkconfig() {
         mkdir -p /var/empty || return 1
     fi
 
-    if ! yesno "$sshd_disable_keygen"; then
-        generate_host_keys || return 1
-    fi
+    # if ! yesno "$sshd_disable_keygen"; then
+    #     generate_host_keys || return 1
+    # fi
 
     [ "$pidfile" != "/run/sshd.pid" ] \
         && command_args="$command_args -o PidFile=$pidfile"

@@ -15,6 +15,10 @@
     ansible_python_interpreter: /usr/bin/python3
   gather_facts: false
 
+  handlers:
+    - name: Import all handlers
+      import_tasks: handlers/main.yml
+
   pre_tasks:
     - name: Prepare env to run playbooks
       # vars:
@@ -24,7 +28,6 @@
       tags: always
 
   roles:
-    - role: common_handlers
     - role: initial_prep
 
     # FS specific tasks
