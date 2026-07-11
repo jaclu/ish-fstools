@@ -27,3 +27,22 @@
     - openrc_softlevel.stat.exists
     - is_ish | bool
   listen: Restart runbg
+
+#
+#  Restart monitor-sshd
+#
+- name: When chrooted - fake restart monitor-sshd
+  debug:
+    msg: "Simulating service restart -->->   monitor-sshd   <-<--"
+  changed_when: true
+  when: not (is_ish | bool)
+  listen: Restart monitor-sshd
+
+- name: Restart via OpenRC - monitor-sshd
+  service:
+    name: monitor-sshd
+    state: restarted
+  when:
+    - is_ish | bool
+    - openrc_softlevel.stat.exists
+  listen: Restart monitor-sshd

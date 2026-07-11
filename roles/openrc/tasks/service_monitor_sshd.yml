@@ -1,0 +1,32 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  monitor-sshd service
+#
+
+- name: " monitor-sshd - Install service"
+  template:
+    src: monitor-sshd
+    dest: "{{ d_init_ift }}/monitor-sshd"
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart monitor-sshd
+
+- name: " monitor-sshd - Create symbolic link in /etc/init.d"
+  file:
+    src: "{{ d_init_ift }}/monitor-sshd"
+    dest: "{{ d_init_d }}/monitor-sshd"
+    state: link
+  notify: Restart monitor-sshd
+
+- name: Set runlevel for monitor-sshd
+  include_tasks: tasks/service_runlevel_set.yml # should be include
+  vars:
+    srvc_name: "monitor-sshd"
+    srvc_runlevel: "{{ ift_runlevel_autossh }}"

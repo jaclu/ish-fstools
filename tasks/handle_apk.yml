@@ -49,7 +49,7 @@
   delegate_to: localhost
   # hosts might run different versions of Alpine, so needs to be done for each
   # run_once: true
-  changed_when: ift_show_extra_status | default(false)
+  changed_when: false # ift_show_extra_status | default(false)
   when: (ift_show_extra_status | default(false))
 
 - name: Handle apk - List what will be removed
