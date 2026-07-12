@@ -24,11 +24,21 @@
         ! grep -q " / / " /proc/self/mountinfo
       }
 
-      h_name_new="{{ inventory_hostname }}"
-      is_chrooted && h_name_new="chrooted-iSH"
+      set_name() {
+        /usr/local/bin/hostname "$h_name_new" || exit 10
+      }
 
+      # --- main ---
+      is_chrooted && {
+        h_name_new="chrooted-iSH"
+        set_name
+        # will almost always be changed, even if run again in a new chroot
+        # so don't report chroot triggered hostname changes as a name change
+        exit 0
+      }
+      h_name_new="{{ inventory_hostname }}"
+      set_name
       [ "$(/usr/local/bin/hostname)" = "$h_name_new" ] && exit 0
-      /usr/local/bin/hostname "$h_name_new" || exit 30
       exit 43
   args:
     executable: /bin/sh
