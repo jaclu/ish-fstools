@@ -38,6 +38,7 @@
     owner: root
     group: root
     mode: "0755"
+  notify: Restart sshd
 
 #
 # Service tasks

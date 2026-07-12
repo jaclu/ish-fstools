@@ -10,6 +10,25 @@
 #
 
 #
+#  Restart sshd
+#
+- name: When chrooted - fake restart sshd
+  debug:
+    msg: "Simulating service restart -->->   sshd   <-<--"
+  changed_when: true
+  when: not (is_ish | bool)
+  listen: Restart sshd
+
+- name: Restart service - sshd
+  service:
+    name: sshd
+    state: restarted
+  when:
+    - is_ish | bool
+    # - openrc_softlevel.stat.exists
+  listen: Restart sshd
+
+#
 #  Restart runbg
 #
 - name: When chrooted - fake restart runbg

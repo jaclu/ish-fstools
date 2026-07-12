@@ -16,12 +16,14 @@
     owner: root
     group: root
     mode: "0755"
+  notify: Restart sshd
 
 - name: " sshd conf - Remove all unintended Port lines"
   replace:
     path: /etc/ssh/sshd_config
     regexp: '^[Pp]ort\s+(?!{{ ift_port_sshd | default(2022) }}\b).*'
     replace: ""
+  notify: Restart sshd
 
 - name: " sshd conf - Deduplicate intended Port lines"
   shell: |
@@ -50,6 +52,7 @@
   register: services_sshd_port_dupes
   changed_when: services_sshd_port_dupes.rc == 43
   failed_when: services_sshd_port_dupes.rc not in [0, 43]
+  notify: Restart sshd
 
 - name: " sshd conf - Ensure intended Port line is present once"
   lineinfile:
@@ -57,3 +60,4 @@
     line: "Port {{ ift_port_sshd | default(2022) }}"
     regexp: "^Port {{ ift_port_sshd | default(2022) }}"
     state: present
+  notify: Restart sshd
