@@ -60,10 +60,10 @@ start() {
     eend 0
 }
 
-# start_post() {
-#     log_it started
-# }
+start_post() {
+    log_it started
+}
 
-# stop_post() {
-#     log_it stopped
-# }
+stop_post() {
+    log_it stopped
+}
