@@ -105,6 +105,8 @@ do_ansible
 
 [ "$chain_my_ish_fs" -eq 1 ] && {
     [ -d "$d_my_ish_fs" ] || err_msg "Not found: $d_my_ish_fs"
+    display_app_run_time
+
     lbl_1 "Will run my-ish-fs"
     "$d_my_ish_fs"/handle_servers.sh || {
         err_msg "my-ish-fs reported error"
