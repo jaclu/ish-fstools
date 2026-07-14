@@ -24,23 +24,23 @@
   when: is_ish is not defined
 
 #
-#  Step Two - if iSH, is it the iSH-AOK variant?
+#  Step Two - if iSH, is it the iSH-AOK variant? - Not used ATM
 #
-- name: " pre-task is_ish - Check if running ish-AOK"
-  command: grep -qi ish-AOK /proc/version
-  changed_when: false
-  failed_when: false
-  register: ish_aok_check
-  when:
-    - is_ish
-    - is_ish_aok is not defined
+# - name: " pre-task is_ish - Check if running ish-AOK"
+#   command: grep -qi ish-AOK /proc/version
+#   changed_when: false
+#   failed_when: false
+#   register: ish_aok_check
+#   when:
+#     - is_ish
+#     - is_ish_aok is not defined
 
-- name: " pre-task - Set is_ish_aok fact"
-  set_fact:
-    is_ish_aok: "{{ ish_aok_check.rc == 0 }}"
-  when:
-    - is_ish
-    - is_ish_aok is not defined
+# - name: " pre-task - Set is_ish_aok fact"
+#   set_fact:
+#     is_ish_aok: "{{ ish_aok_check.rc == 0 }}"
+#   when:
+#     - is_ish
+#     - is_ish_aok is not defined
 
 - name: " pre-task is_ish - Was  iSH  detected"
   debug:

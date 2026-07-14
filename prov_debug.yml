@@ -47,11 +47,11 @@
   #     Run specific task inside a role
   #
   # ============================================================
-  # tasks:
-  #   - name: Use just one task file from the role
-  #     include_role:
-  #       name: openrc
-  #       tasks_from: service_monitor_sshd.yml
+  tasks:
+    - name: Use just one task file from the role
+      include_role:
+        name: openrc
+        tasks_from: service_monitor_sshd.yml
 
   # ============================================================
   #
