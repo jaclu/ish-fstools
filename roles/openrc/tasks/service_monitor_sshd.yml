@@ -26,7 +26,7 @@
   notify: Restart monitor-sshd
 
 - name: " monitor-sshd - Set runlevel"
-  import_tasks: tasks/service_runlevel_set.yml
+  include_tasks: tasks/service_runlevel_set.yml # must be include to pass ansible-lint
   vars:
     srvc_name: monitor-sshd
     srvc_runlevel: "{{ ift_runlevel_sshd }}"
