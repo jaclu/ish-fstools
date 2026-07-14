@@ -9,6 +9,11 @@
 #  All common handlers
 #
 
+- name: " pre-task - Detect OpenRC boot"
+  stat:
+    path: /run/openrc/softlevel
+  register: openrc_softlevel
+
 #
 #  Restart sshd
 #
@@ -25,7 +30,7 @@
     state: restarted
   when:
     - is_ish | bool
-    # - openrc_softlevel.stat.exists
+    - openrc_softlevel.stat.exists
   listen: Restart sshd
 
 #
@@ -44,5 +49,5 @@
     state: restarted
   when:
     - is_ish | bool
-    # - openrc_softlevel.stat.exists
+    - openrc_softlevel.stat.exists
   listen: Restart runbg

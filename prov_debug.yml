@@ -40,7 +40,7 @@
   # ============================================================
   # tasks:
   #   - name: Check if openrc was used during boot-up
-  #     import_tasks: tasks/was_openrc_used_to_boot_system.yml
+  #     import_tasks: tasks/update_release.yml
 
   # ============================================================
   #

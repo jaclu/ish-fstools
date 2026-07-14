@@ -9,9 +9,6 @@
 #  Services managed by openrc handling
 #
 
-- name: Check if openrc was used during boot-up
-  import_tasks: ../tasks/was_openrc_used_to_boot_system.yml
-
 - name: Run service_disabling_defaults.yml
   import_tasks: service_disabling_defaults.yml
 
@@ -35,7 +32,6 @@
 - name: Deploy service sshd if requested
   import_tasks: service_sshd.yml
   when: b_deploy_sshd | default(false)
-
 # - name: Disable service sshd if not requested
 #   include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
 #   vars:
