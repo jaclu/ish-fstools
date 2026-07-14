@@ -22,16 +22,33 @@
     state: link
   when: ansible_facts.distribution == 'Debian'
 
-- name: Run service_runbg.yml
-  include_tasks: service_runbg.yml
-  when: (ift_runlevel_runbg | default('') | trim) != ''
+- name: Deploy service runbg if requested
+  import_tasks: service_runbg.yml
+  when: b_deploy_runbg | default(false)
 
-- name: Run service_sshd.yml
-  include_tasks: service_sshd.yml
-  when: use_sshd | default(false)
+- name: Disable service runbg if not requested
+  include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
+  vars:
+    srvc_name: runbg
+  when: not b_deploy_runbg | default(false)
 
-- name: Run service_monitor_sshd.yml
-  include_tasks: service_monitor_sshd.yml
+- name: Deploy service sshd if requested
+  import_tasks: service_sshd.yml
+  when: b_deploy_sshd | default(false)
+
+- name: Disable service sshd if not requested
+  include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
+  vars:
+    srvc_name: sshd
+  when: not b_deploy_sshd | default(false)
+
+- name: Deploy service monitor-sshd if requested
+  import_tasks: service_monitor_sshd.yml
   when:
-    - (ift_port_sshd | default('') | trim) != ''
-    - (ift_runlevel_sshd | default('') | trim) != ''
+    - b_deploy_monitor_sshd | default(false)
+
+- name: Disable service monitor-sshd if not requested
+  include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
+  vars:
+    srvc_name: monitor-sshd
+  when: not b_deploy_monitor_sshd | default(false)

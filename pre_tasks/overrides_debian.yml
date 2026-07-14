@@ -96,28 +96,11 @@
 #         | union(['openssh-server'])
 #       }}
 #   when:
-#     - (ift_runlevel_sshd | default('') | trim) != ''
+#     - ift_runlevel_sshd | default([]) | length > 0
 #     - (ift_port_sshd | default('') | trim) != ''
 #   delegate_to: localhost
 #   run_once: true
 #   changed_when: false
-
-- name: Overrides Debian - Add autossh if it's env is defined
-  set_fact:
-    ift_debian_packages: >-
-      {{
-        ift_debian_packages | default([])
-        | union(['autossh'])
-      }}
-  when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
-    - (ift_port_sshd | default('') | trim) != ''
-    - (ift_runlevel_autossh | default('') | trim) != ''
-    - (ift_jump_port | default('') | trim) != ''
-    - (ift_jump_host | default('') | trim) != ''
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
 
 - name: Overrides Debian - List of what apt packages will be installed
   debug:

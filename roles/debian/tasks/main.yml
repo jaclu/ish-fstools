@@ -15,7 +15,7 @@
 - name: "Deploy custom_openssh {{ ift_openssh_tgz }}"
   include_tasks: custom_openssh.yml
   when:
-    - use_sshd | default(false)
+    - b_deploy_sshd | default(false)
     - ansible_facts.distribution == 'Debian'
 
 - name: Install custom /etc/init.d/rc

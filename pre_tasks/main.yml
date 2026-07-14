@@ -12,7 +12,7 @@
 #
 
 - name: " pre-task - Ensure Python is installed"
-  include_tasks: install_python.yml
+  import_tasks: install_python.yml
   when: not (ift_quick_deploy | default(false))
 
 - name: " pre-task - Gather facts now that Python is available, use cache if present"
@@ -26,21 +26,6 @@
   # Must be first task in order for everything else to use the variable overrides
   import_tasks: overrides.yml
 
-#
-# Repo specific configs, should happen after overrides are processed
-#
-- name: " pre-task overrides - Handle Alpine specific configs"
-  include_tasks: overrides_alpine.yml
-  when: ansible_facts.distribution == 'Alpine'
-
-- name: " pre-task overrides - Handle Debian specific configs"
-  include_tasks: overrides_debian.yml
-  when: ansible_facts.distribution == 'Debian'
-
-- name: " pre-task overrides - Handle Devuan specific configs"
-  include_tasks: overrides_devuan.yml
-  when: ansible_facts.distribution == 'Devuan'
-
 - name: " pre-task - Check if this is iSH"
   # Might depend on some overrides, so run after process_overrides
   import_tasks: is_ish.yml
@@ -48,14 +33,36 @@
 - name: " pre-task - Param Checks"
   # Make sure no params are invalid, early on, since each task run on iSH has a
   # high over head 10-20s. So better to abort before waisting time
-  include_tasks: param_checks.yml
-  when: not (ift_quick_deploy | default(false)) # should have triggered on initial deploy
+  import_tasks: param_checks.yml
 
-- name: Decide if sshd should be configured
+#
+#  Set a single boolean indicating if a service should be deployed
+#
+- name: " pre-task - Decide if service runbg should be managed"
   set_fact:
-    use_sshd: true
+    b_deploy_runbg: true
   when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
+    - ift_runlevel_runbg | default([]) | length > 0
+  delegate_to: localhost
+  run_once: true
+
+- name: " pre-task - Decide if service sshd should be managed"
+  set_fact:
+    b_deploy_sshd: true
+  when:
     - (ift_port_sshd | default('') | trim) != ''
+    - ift_runlevel_sshd | default([]) | length > 0
     - ansible_facts.distribution != 'Debian'
       or (ift_openssh_tgz | default('') | length > 0)
+  delegate_to: localhost
+  run_once: true
+
+- name: " pre-task - Decide if service monitor-sshd should be managed"
+  set_fact:
+    b_deploy_monitor_sshd: true
+  when:
+    - ift_use_service_monitor_sshd | default(false)
+    - ift_runlevel_sshd | default([]) | length > 0
+    - (ift_port_sshd | default('') | trim) != ''
+  delegate_to: localhost
+  run_once: true

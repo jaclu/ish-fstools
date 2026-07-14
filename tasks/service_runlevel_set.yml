@@ -6,39 +6,50 @@
 #
 #  License: MIT
 #
-#  Ensures service is only in the intended runlevel
+#  Ensures service is only in the intended runlevel(-s)
 #
 #  Variables required:
 #     srvc_name     - name of service
-#     srvc_runlevel - runlevel intended, if empty or unset, srvc will not be active
+#     srvc_runlevel - runlevel intended, if multiple should be used provide as a list
 #
 
-- name: "Service runlevel - Fail if srvc_name is not defined"
+- name: "Service runlevel - Param check"
   fail:
-    msg: "No service defined. Please set srvc_name variable."
-  when: srvc_name is not defined or srvc_name | length == 0
+    msg: "Both srvc_name & srvc_runlevel must be defined"
+  when:
+    - srvc_name is not defined or srvc_name | length == 0
+    - srvc_runlevel is not defined or srvc_runlevel | length == 0
 
 - name: "Ensure desired service runlevel for {{ srvc_name }}"
   shell: |
     set -o pipefail
     ex_code=0
 
+    srvc_name=$(basename {{ srvc_name }})
+    desired_runlevels="{{ srvc_runlevel | join(' ') }}"
+
     # Remove from undesired runlevels
     for rl in $(rc-status -l); do
-        [ "$rl" = "{{ srvc_runlevel }}" ] && continue
-        if rc-status "$rl" | grep -qw "{{ srvc_name }}"; then
-            rc-update del "{{ srvc_name }}" "$rl" || exit 30
+        case " $desired_runlevels " in
+            *" $rl "*) continue ;;
+        esac
+
+        if rc-status "$rl" | grep -qw "$srvc_name"; then
+            rc-update del "$srvc_name" "$rl" || exit 30
             echo "removed from: $rl"
             ex_code=43
         fi
     done
 
-    # Ensure in desired runlevel
-    if ! rc-update show "{{ srvc_runlevel }}" | grep -q "$(basename {{ srvc_name }})"; then
-        rc-update add "{{ srvc_name }}" "{{ srvc_runlevel }}" || exit 31
-        echo "added to {{ srvc_runlevel }}"
-        ex_code=43
-    fi
+    # Ensure in desired runlevels
+    for rl in $desired_runlevels; do
+        echo "already in [$rl]?"
+        if ! rc-update show "$rl" | grep -q " $srvc_name"; then
+            rc-update add "$srvc_name" "$rl" || exit 31
+            echo "added to $rl"
+            ex_code=43
+        fi
+    done
 
     exit $ex_code
   args:

@@ -50,7 +50,7 @@
     state: link
 
 - name: " sshd - Set runlevel"
-  include_tasks: tasks/service_runlevel_set.yml # should be include
+  include_tasks: tasks/service_runlevel_set.yml # must be include to pass ansible-lint
   vars:
-    srvc_name: "{{ d_init_d }}/sshd"
+    srvc_name: sshd
     srvc_runlevel: "{{ ift_runlevel_sshd }}"

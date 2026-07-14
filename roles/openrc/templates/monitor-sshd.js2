@@ -25,6 +25,13 @@ log_it() {
 }
 
 monitor_sshd() {
+    # shellcheck disable=SC2157 # string is not actually always defined
+    if [ -n "{{ ift_monitor_sshd_key_file }}" ]; then
+        key_file="-i {{ ift_monitor_sshd_key_file }}"
+    else
+        key_file=""
+    fi
+
     while true; do
         _sysload="$(uptime | awk -F'average:' '{print $2}' \
             | awk -F, '{print $1}' | tr -d ' ' | cut -d. -f 1)"
@@ -33,7 +40,7 @@ monitor_sshd() {
             log_it "skipping check due to high sysload: $(uptime)"
         else
             if ! ssh -o StrictHostKeyChecking=no -p "{{ ift_port_sshd }}" \
-                -i /home/jaclu/.ssh/id_ish jaclu@localhost exit >/dev/null 2>&1; then
+                "$key_file" "{{ user_name }}@localhost" exit >/dev/null 2>&1; then
 
                 log_it "sshd not responding - restarting"
                 #eerror "sshd not responding. Restarting..."

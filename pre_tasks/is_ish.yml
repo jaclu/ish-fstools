@@ -12,13 +12,13 @@
 #
 #  Step One - is this running on iSH
 #
-- name: " pre-task - Check for /proc/ish"
+- name: " pre-task is_ish - Check for /proc/ish"
   stat:
     path: /proc/ish
   register: ish_proc
   when: is_ish is not defined
 
-- name: " pre-task - Set is_ish fact"
+- name: " pre-task is_ish - Set is_ish fact"
   set_fact:
     is_ish: "{{ ish_proc.stat.exists | default(false) }}"
   when: is_ish is not defined
@@ -26,7 +26,7 @@
 #
 #  Step Two - if iSH, is it the iSH-AOK variant?
 #
-- name: " pre-task - Check if running ish-AOK"
+- name: " pre-task is_ish - Check if running ish-AOK"
   command: grep -qi ish-AOK /proc/version
   changed_when: false
   failed_when: false
@@ -42,14 +42,14 @@
     - is_ish
     - is_ish_aok is not defined
 
-- name: " pre-task - Was  iSH  detected"
+- name: " pre-task is_ish - Was  iSH  detected"
   debug:
     msg: "         is_ish: {{ is_ish }}"
   delegate_to: localhost
   changed_when: ift_show_extra_status | default(false)
   when: is_ish or (ift_show_extra_status | default(false))
 
-- name: " pre-task - Ensure iSH can run in the background"
+- name: " pre-task is_ish - Ensure iSH can run in the background"
   #
   #  On iSH run this as early as possible to avoid iSH suspending
   #  before getting to this point

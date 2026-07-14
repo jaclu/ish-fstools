@@ -25,14 +25,36 @@
     - user_name | default('') | length > 0
     - (ift_shell is not defined) or ift_shell | default('') | length == 0
 
-- name: Run param_checks_alpine.yml
-  include_tasks: param_checks_alpine.yml
+- name: Param checks - Verify ift_runlevel_runbg is a list
+  ansible.builtin.assert:
+    that:
+      - ift_runlevel_runbg is not none
+      - ift_runlevel_runbg is sequence
+      - ift_runlevel_runbg is not string
+    fail_msg: "ift_runlevel_runbg must be a list, not null or another type"
+    quiet: true
+  delegate_to: localhost
+  run_once: true
+
+- name: Param checks - Verify ift_runlevel_sshd is a list
+  ansible.builtin.assert:
+    that:
+      - ift_runlevel_sshd is not none
+      - ift_runlevel_sshd is sequence
+      - ift_runlevel_sshd is not string
+    fail_msg: "ift_runlevel_sshd must be a list, not null or another type"
+    quiet: true
+  delegate_to: localhost
+  run_once: true
+
+- name: Param checks - Run param_checks_alpine.yml
+  import_tasks: param_checks_alpine.yml
   when: ansible_facts.distribution == 'Alpine'
 
-- name: Run param_checks_debian.yml
-  include_tasks: param_checks_debian.yml
+- name: Param checks - Run param_checks_debian.yml
+  import_tasks: param_checks_debian.yml
   when: ansible_facts.distribution == 'Debian'
 
-- name: Run param_checks_devuan.yml
-  include_tasks: param_checks_debian.yml
+- name: Param checks - Run param_checks_devuan.yml
+  import_tasks: param_checks_debian.yml
   when: ansible_facts.distribution == 'Devuan'

@@ -1,0 +1,43 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2025-2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Disable named service, this does not remove stop the service or remove it's
+#  configuration. Ut only removes it from services being handled by the system
+#
+#  Variables required:
+#     srvc_name     - name of service
+
+- name: "Service disable - Param check"
+  fail:
+    msg: "srvc_name must be defined"
+  when:
+    - srvc_name is not defined or srvc_name | length == 0
+
+- name: "Disable service {{ srvc_name }}"
+  shell: |
+    set -o pipefail
+    ex_code=0
+
+    srvc_name=$(basename {{ srvc_name }})
+    # cur_run_lvl=$(rc-status -r)
+
+    # Remove from undesired runlevels
+    for rl in $(rc-status -l); do
+        if rc-status "$rl" | grep -qw " $srvc_name"; then
+            rc-update del "$srvc_name" "$rl" || exit 30
+            echo "removed from: $rl"
+            ex_code=43
+        fi
+    done
+
+    exit $ex_code
+  args:
+    executable: /bin/bash
+  register: srvc_disable
+  changed_when: srvc_disable.rc == 43
+  failed_when: srvc_disable.rc not in [0,43]

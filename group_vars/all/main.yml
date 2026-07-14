@@ -22,39 +22,57 @@ ift_pkgs_man: false # se to true if man pages for everything installed should be
 #  Create a user account (will be given no password sudo privs)
 user_name: ish # set to "" to disable
 
-#  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
-#  set to "" if no system timezone should be defined, then UTC will be used
-ift_timezone: ""
-
-# show some info about detected env, what will be installed etc
-ift_show_extra_status: true
-
 #  Be aware that only Alpine supports the /bin/ash shell, on other file systems,
 #  /bin/ash will be changed into /bin/bash
 #  If a shell is defined root will also use this shell
 ift_shell: /bin/ash # set to "" to disable
 
-ift_port_sshd: 2022 # set to "" if sshd should not be configured
+#  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
+#  set to "" if no system timezone should be defined, then UTC will be used
+ift_timezone: ""
 
-#  Runlevels for services
-ift_runlevel_sshd: default # set to "" if this service is not wanted
-ift_runlevel_runbg: default # set to "" if this service is not wanted
+ift_locales:
+  - en_US.UTF-8
+  - en_GB.UTF-8 # for those of us using 24h time :)
+
+# show some info about detected env, what will be installed etc
+ift_show_extra_status: true
 
 #
-#  Alpine only settings!
+#  ===  Services  ===
 #
 
-# When the sshd service is first started, host keys will be generated if absent
-# on iSH this takes a while... By enabling this option they can be pre-generated
-# during deploy. Debian always generates them when openssh-server is installed.
-ift_alpine_generate_sshd_host_keys: true
+#  ---  runbg  ---
+ift_runlevel_runbg: # if set to [] runbg will noet be configured
+  - sysinit
+  - nonetwork
+  - default
+
+#  ---  sshd --
+
+# both of these must always be defined for sshd  to be configured
+ift_port_sshd: 2022
+ift_runlevel_sshd: # if set to [] sshd will noet be configured
+  - default
+
+# Since Debian 10 is so old, its openssh can no longer be used without
+# triggering an enormous amount of security warnings. The recommended option is
+# to compile openssh to be installed in /opt/openssh
+# if such a tarball is available, point to it here, and it will be used
+ift_openssh_tgz: "{{ ift_prebuilds_deb }}/openssh/openssh-10.2p1-ish-deb10.tgz"
+
+#  ---  monitor-sshd  ---
+# does ssh {{ user_name }}@localhost once per minute, and restarts sshd service
+# if not responsive
+ift_use_service_monitor_sshd: true
+ift_monitor_sshd_key_file: "" # define if a public key file is needed to connect
+
+#
+#  ===  Alpine only settings  ===
+#
 
 #  Indicates if mtr-0.92-r0 (From Alpine 3.10) should be used. This was the last
 #  version that supports both DNS and IP# (and thus hosts defined in /etc/hosts)
 #  If set to true, and mtr was included in ift_alpine_packages it will trigger
 #  an error due to incompatible package selection
 ift_alpine_use_old_mtr: true # set to false if not desired
-
-ift_locales:
-  - en_US.UTF-8
-  - en_GB.UTF-8 # for those of us using 24h time :)

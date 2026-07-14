@@ -40,11 +40,6 @@ ift_timezone: Europe/Amsterdam
 # ift_pkgs_linting: true # set to true if linting packages should be used
 ift_pkgs_man: true # se to true if man pages for everything installed should be used
 
-# When the sshd service is first started, host keys will be generated if absent
-# on iSH this takes a while... By enabling this option they can be pre-generated
-# during deploy. Debian always generates them when openssh-server is installed.
-ift_alpine_generate_sshd_host_keys: true
-
 ift_extra_alpine_packages:
   #
   #  Shells
@@ -154,16 +149,13 @@ ift_extra_debian_packages:
 #   # Sample for a minimal install, without these the deploy will fail.
 #   # Each lists what options depend on them, if the corresponding option(-s) are
 #   # set to "" that package is not needed
-#   - openrc # Needed for: ift_runlevel_runbg, ift_runlevel_sshd
 #   - shadow # Needed for: ift_shell
 #   - tzdata # Needed for: ift_timezone
 
 #
-# If services are set to runlevel "", they will not be installed / activated.
+# If service runlevels are set to [], they will not be installed / activated.
 # If already installed, they will just be disabled.
 #
-# ift_runlevel_runbg: ""
-# ift_runlevel_sshd: ""
 
 # Min version of Alpine Linux when edge/testing repositories will be added.
 # ift_alpine_testing_repo_minv: 3.22

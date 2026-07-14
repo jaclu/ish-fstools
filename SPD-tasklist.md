@@ -2,9 +2,9 @@ pre_tasks
 
 - name: Decide if sshd should be configured
   set_fact:
-  use_sshd: true
+  b_deploy_sshd: true
   when:
-  - (ift_runlevel_sshd | default('') | trim) != ''
+  - ift_runlevel_sshd | default([]) > 0
   - (ift_port_sshd | default('') | trim) != ''
   - ansible_facts.distribution != 'Debian'
     or (ift_openssh_tgz | default('') | length > 0)
