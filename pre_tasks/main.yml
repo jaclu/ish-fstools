@@ -24,22 +24,8 @@
 
 - name: " pre-task - Handle vars/overrides.yml"
   # Must be first task in order for everything else to use the variable overrides
-  import_tasks: overrides.yml
-
-#
-# Repo specific configs, should happen after overrides are processed
-#
-- name: " pre-task overrides - Handle Alpine specific configs"
-  include_tasks: overrides_alpine.yml
-  when: ansible_facts.distribution == 'Alpine'
-
-- name: " pre-task overrides - Handle Debian specific configs"
-  include_tasks: overrides_debian.yml
-  when: ansible_facts.distribution == 'Debian'
-
-- name: " pre-task overrides - Handle Devuan specific configs"
-  include_tasks: overrides_devuan.yml
-  when: ansible_facts.distribution == 'Devuan'
+  include_tasks: overrides.yml
+  when: not (ift_quick_deploy | default(false)) # should have triggered on initial deploy
 
 - name: " pre-task - Check if this is iSH"
   # Might depend on some overrides, so run after process_overrides
@@ -51,11 +37,28 @@
   include_tasks: param_checks.yml
   when: not (ift_quick_deploy | default(false)) # should have triggered on initial deploy
 
+#
+#  Set a single boolean indicating if a service should be deployed
+#
+- name: Decide if runbg should be configured
+  set_fact:
+    b_deploy_runbg: true
+  when:
+    - ift_runlevel_runbg | default([]) | length > 0
+
 - name: Decide if sshd should be configured
   set_fact:
-    use_sshd: true
+    b_deploy_sshd: true
   when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
     - (ift_port_sshd | default('') | trim) != ''
+    - ift_runlevel_sshd | default([]) | length > 0
     - ansible_facts.distribution != 'Debian'
       or (ift_openssh_tgz | default('') | length > 0)
+
+- name: Decide if monitor-sshd should be configured
+  set_fact:
+    b_deploy_monitor_sshd: true
+  when:
+    - ift_use_service_monitor_sshd | default(false)
+    - ift_runlevel_sshd | default([]) | length > 0
+    - (ift_port_sshd | default('') | trim) != ''

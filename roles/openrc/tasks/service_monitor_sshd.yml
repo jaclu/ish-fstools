@@ -26,7 +26,7 @@
   notify: Restart monitor-sshd
 
 - name: " monitor-sshd - Set runlevel"
-  include_tasks: tasks/service_runlevel_set.yml # should be include
+  import_tasks: tasks/service_runlevel_set.yml
   vars:
-    srvc_name: "monitor-sshd"
-    srvc_runlevel: "{{ ift_runlevel_autossh }}"
+    srvc_name: monitor-sshd
+    srvc_runlevel: "{{ ift_runlevel_sshd }}"

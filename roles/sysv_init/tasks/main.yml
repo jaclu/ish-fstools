@@ -11,11 +11,17 @@
 
 - name: Run service_runbg.yml
   include_tasks: service_runbg.yml
-  when: (ift_runlevel_runbg | default('') | trim) != ''
+  when: b_deploy_runbg | default(false)
 
 - name: Run service_sshd.yml
   include_tasks: service_sshd.yml
-  when: use_sshd | default(false)
+  when: b_deploy_sshd | default(false)
+
+# to be added...
+# - name: Run service_monitor_sshd.yml
+#   import_tasks: service_monitor_sshd.yml
+#   when:
+#     - b_deploy_monitor_sshd | default(false)
 
 - name: Remove dependency cache files
   file:

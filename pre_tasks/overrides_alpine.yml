@@ -109,37 +109,6 @@
   delegate_to: localhost
   run_once: true
   changed_when: false
-
-- name: Overrides Alpine - Add openssh-server if it's env is defined
-  set_fact:
-    ift_alpine_packages: >-
-      {{
-        ift_alpine_packages | default([])
-        | union(['openssh-server'])
-      }}
-  when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
-    - (ift_port_sshd | default('') | trim) != ''
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
-
-- name: Overrides Alpine - Add autossh if it's env is defined
-  set_fact:
-    ift_alpine_packages: >-
-      {{
-        ift_alpine_packages | default([])
-        | union(['autossh'])
-      }}
-  when:
-    - (ift_runlevel_sshd | default('') | trim) != ''
-    - (ift_port_sshd | default('') | trim) != ''
-    - (ift_runlevel_autossh | default('') | trim) != ''
-    - (ift_jump_port | default('') | trim) != ''
-    - (ift_jump_host | default('') | trim) != ''
-  delegate_to: localhost
-  run_once: true
-  changed_when: false
 #
 # The custom apk handler lists packages to be added / removed, so skip this for Alpine
 #

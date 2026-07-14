@@ -11,8 +11,11 @@
 
 - name: " sshd conf - Check if this is my-ish-fs config"
   shell: |
-    grep -qv "My-ish-fs Custom settings" /etc/ssh/sshd_config && exit 0
-    exit 43
+    if grep -q "My-ish-fs Custom settings" /etc/ssh/sshd_config; then
+      exit 43
+    else
+      exit 0
+    fi
   args:
     executable: /bin/sh
   register: services_is_my_ish_fs_conf
@@ -20,7 +23,7 @@
   failed_when: services_is_my_ish_fs_conf.rc not in [0, 43]
 
 - name: Run sshd_config.yml
-  include_tasks: sshd_config.yml
+  import_tasks: sshd_config.yml
   when:
-    - use_sshd | default(false)
-    - services_is_my_ish_fs_conf.rc == 43
+    - b_deploy_sshd | default(false)
+    - services_is_my_ish_fs_conf.rc == 0
