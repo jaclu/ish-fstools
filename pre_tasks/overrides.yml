@@ -44,18 +44,3 @@
   run_once: true
   loop: "{{ __override_vars | dict2items }}"
   when: __override_vars is defined
-
-#
-# Repo specific configs, should happen after overrides are processed
-#
-- name: Overrides - Handle Alpine specific configs
-  import_tasks: overrides_alpine.yml
-  when: ansible_facts.distribution == 'Alpine'
-
-- name: Overrides - Handle Debian specific configs
-  import_tasks: overrides_debian.yml
-  when: ansible_facts.distribution == 'Debian'
-
-- name: Overrides - Handle Devuan specific configs
-  import_tasks: overrides_devuan.yml
-  when: ansible_facts.distribution == 'Devuan'

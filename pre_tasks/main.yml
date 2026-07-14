@@ -26,6 +26,21 @@
   # Must be first task in order for everything else to use the variable overrides
   import_tasks: overrides.yml
 
+#
+# Repo specific configs, should happen after overrides are processed
+#
+- name: Overrides - Handle Alpine specific configs
+  import_tasks: overrides_alpine.yml
+  when: ansible_facts.distribution == 'Alpine'
+
+- name: Overrides - Handle Debian specific configs
+  import_tasks: overrides_debian.yml
+  when: ansible_facts.distribution == 'Debian'
+
+- name: Overrides - Handle Devuan specific configs
+  import_tasks: overrides_devuan.yml
+  when: ansible_facts.distribution == 'Devuan'
+
 - name: " pre-task - Param Checks"
   # Make sure no params are invalid, early on, since each task run on iSH has a
   # high over head 10-20s. So better to abort before waisting time
