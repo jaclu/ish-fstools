@@ -88,4 +88,4 @@
   failed_when: preparational_steps_backgrounding_task.rc not in [0, 43]
   when:
     - is_ish
-    - not (ift_quick_deploy | default(false))
+    - not (do_quick_deploy | default(false))

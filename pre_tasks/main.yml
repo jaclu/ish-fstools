@@ -13,7 +13,7 @@
 
 - name: " pre-task - Ensure Python is installed"
   import_tasks: install_python.yml
-  when: not (ift_quick_deploy | default(false))
+  when: not (do_quick_deploy | default(false))
 
 - name: " pre-task - Gather facts now that Python is available, use cache if present"
   setup:

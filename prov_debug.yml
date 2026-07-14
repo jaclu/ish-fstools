@@ -13,6 +13,8 @@
   hosts: "{{ target_hosts | default('localhost') }}"
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    do_quick_deploy: true
+    skip_cloning: true
   gather_facts: false
 
   handlers:
@@ -28,9 +30,6 @@
   # ============================================================
   pre_tasks:
     - name: Prepare env to run playbooks
-      vars:
-        ift_quick_deploy: true
-        skip_cloning: true
       import_tasks: pre_tasks/main.yml
       tags: always
 
