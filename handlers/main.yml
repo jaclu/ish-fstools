@@ -9,11 +9,6 @@
 #  All common handlers
 #
 
-- name: " pre-task - Detect OpenRC boot"
-  stat:
-    path: /run/openrc/softlevel
-  register: openrc_softlevel
-
 #
 #  Restart sshd
 #
