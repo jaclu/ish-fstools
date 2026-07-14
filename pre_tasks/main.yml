@@ -26,10 +26,6 @@
   # Must be first task in order for everything else to use the variable overrides
   import_tasks: overrides.yml
 
-- name: " pre-task - Check if this is iSH"
-  # Might depend on some overrides, so run after process_overrides
-  import_tasks: is_ish.yml
-
 - name: " pre-task - Param Checks"
   # Make sure no params are invalid, early on, since each task run on iSH has a
   # high over head 10-20s. So better to abort before waisting time
@@ -56,3 +52,7 @@
       or (ift_openssh_tgz | default('') | length > 0)
   delegate_to: localhost
   run_once: true
+
+- name: " pre-task - Check if this is iSH"
+  # Might depend on some overrides, so run after process_overrides
+  import_tasks: is_ish.yml
