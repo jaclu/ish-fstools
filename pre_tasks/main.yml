@@ -56,13 +56,3 @@
       or (ift_openssh_tgz | default('') | length > 0)
   delegate_to: localhost
   run_once: true
-
-- name: " pre-task - Decide if service monitor-sshd should be managed"
-  set_fact:
-    b_deploy_monitor_sshd: true
-  when:
-    - ift_use_service_monitor_sshd | default(false)
-    - ift_runlevel_sshd | default([]) | length > 0
-    - (ift_port_sshd | default('') | trim) != ''
-  delegate_to: localhost
-  run_once: true

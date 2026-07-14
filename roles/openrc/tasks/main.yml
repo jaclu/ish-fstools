@@ -36,19 +36,8 @@
   import_tasks: service_sshd.yml
   when: b_deploy_sshd | default(false)
 
-- name: Disable service sshd if not requested
-  include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
-  vars:
-    srvc_name: sshd
-  when: not b_deploy_sshd | default(false)
-
-- name: Deploy service monitor-sshd if requested
-  import_tasks: service_monitor_sshd.yml
-  when:
-    - b_deploy_monitor_sshd | default(false)
-
-- name: Disable service monitor-sshd if not requested
-  include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
-  vars:
-    srvc_name: monitor-sshd
-  when: not b_deploy_monitor_sshd | default(false)
+# - name: Disable service sshd if not requested
+#   include_tasks: tasks/disable_service.yml # must be include to pass ansible-lint
+#   vars:
+#     srvc_name: sshd
+#   when: not b_deploy_sshd | default(false)
