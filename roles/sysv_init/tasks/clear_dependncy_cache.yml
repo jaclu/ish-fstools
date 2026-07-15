@@ -1,0 +1,25 @@
+---
+#
+#  Part of https://github.com/jaclu/ish-fstools
+#
+#  Copyright (c) 2026: Jacob.Lundqvist@gmail.com
+#
+#  License: MIT
+#
+#  Extras for SysV init (init.d) handling
+#
+
+- name: Remove dependency cache files
+  # Despite sysv_init role is only used by platodms using this iniit
+  # if this task is in main.yml, it thwows this warning despite being platform-ignored
+  # for now resolved by moving it to an include_tasks file....
+  #
+  # TASK [sysv_init : Remove dependency cache files] ***********************
+  # [WARNING]: Unable to find '/etc/init.d' in expected paths (use -vvvvv to see paths)
+  # skipping: [jacmac-ish]
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - /etc/init.d/.depend.*
+  when: ansible_facts.distribution == 'Devuan'
