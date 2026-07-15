@@ -1,5 +1,10 @@
 # TODO
 
+## ish-AOK boot
+
+boot lvl service - if ish-aok change sshd port from ish-default to ish-aok default
+and vice versa if not ish-aok
+
 ## Deb10
 
 setup role/deb10_custom_openssh
