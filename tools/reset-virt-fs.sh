@@ -45,11 +45,8 @@ create_empty_fs() {
     # miniroot_fs="alpine-minirootfs-3.18.12-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.19.9-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.20.8-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.21.5-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.22.2-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.23.0-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.23.2-x86.tar.gz"
-    # miniroot_fs="alpine-minirootfs-3.23.3-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.21.7-x86.tar.gz"
+    # miniroot_fs="alpine-minirootfs-3.22.5-x86.tar.gz"
     miniroot_fs="alpine-minirootfs-3.23.5-x86.tar.gz"
     # miniroot_fs="alpine-minirootfs-3.24.1-x86.tar.gz" # python doesn't work
     lbl_1 "create_empty_fs()"
@@ -276,14 +273,9 @@ prepare_shell_env() {
         case "$deploy_mthd" in
 
             ish-fstools)
-                # echo "/root/ish-fstools/tools/fs_cleanup.sh total"
-                echo ./ish-fstools/tools/fs_cleanup.sh
+                echo /root/ish-fstools/tools/fs_cleanup.sh
                 echo "$cmd_2"
                 echo "$cmd_1 c"
-                # echo "$cmd_2 q"
-                # echo "$cmd_1 q"
-                # s="[ -f /etc/alpine-release ] && apk add bash"
-                # echo "$s ; ./ish-fstools/tools/fs_cleanup.sh"
                 ;;
             spd)
                 #echo "/root/spd/tasks/FileSystem-Debian.sh"

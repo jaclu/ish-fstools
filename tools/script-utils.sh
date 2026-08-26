@@ -471,7 +471,7 @@ _do_safe_remove() {
             rm -rf -- "$_sr_item" || {
                 err_msg "Failed to remove directory: $_sr_item" "$_sr_err_ex_code"
             }
-            $_sr_display_removal && lbl_3 "Removed directory: $_sr_item"
+            $_sr_display_removal && lbl_4 "Removed directory: $_sr_item"
         else
             # shellcheck disable=SC2115 # _sr_item is already checked for being empty
             rm -rf -- "$_sr_item"/* "$_sr_item"/.??* 2>/dev/null || {

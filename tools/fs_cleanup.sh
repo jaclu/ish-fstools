@@ -19,9 +19,24 @@ delete_items() {
     done
 }
 
-deploy_cleanup() {
-    local items
+load_utils() {
+    local d_base="${1:-$d_repo}"
+    local f_utils="$d_base"/tools/script-utils.sh
 
+    # source a POSIX file
+    # shellcheck source=tools/script-utils.sh disable=SC1091,SC2317
+    source "$f_utils" || {
+        printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
+        exit 1
+    }
+}
+
+#
+#  Actions
+#
+
+uninstall_ansible() {
+    lbl_3 "Uninstall ansible"
     # shellcheck disable=SC2154 # is sourced
     if fs_is_alpine; then
         apk del ansible
@@ -31,11 +46,40 @@ deploy_cleanup() {
     else
         err_msg "Unknown distro, failed to remove ansible"
     fi
+}
 
-    # suitable for post all install step
-    lbl_1 "Deploy cleanup"
+uninstall_aok() {
+    local items
+
+    lbl_3 "Uninstall AOK"
     items=(
-        /.chroot_default_cmd
+        /opt/AOK
+        /etc/opt/AOK
+    )
+    delete_items --remove-dir --ignore-sys-path
+}
+
+uninstall_ish_fstols() {
+    lbl_3 "Uninstall ish-fstools"
+    safe_remove --remove-dir /root/ish-fstools
+    lbl_2 "post it"
+}
+
+cleanup_iCloud() {
+    local items
+
+    lbl_3 "Cleanup /iCloud"
+    items=(
+        /iCloud
+    )
+    delete_items # Keep folder just clear it
+}
+
+cleanup_root_home() {
+    local items
+
+    lbl_3 "Cleanup root home"
+    items=(
         /root/.ansible
         /root/.ash_history
         /root/.bash_history
@@ -46,27 +90,20 @@ deploy_cleanup() {
         /root/.viminfo
         /root/.vimrc
         /root/.wget-hsts
-        /root/ish-fstools
         /root/tmp
     )
     delete_items --remove-dir
-
-    items=(
-        /iCloud
-    )
-    delete_items # Keep folder just clear it
-
-    items=(
-        /opt/AOK
-        /etc/opt/AOK
-    )
-    delete_items --remove-dir --ignore-sys-path
 }
 
-all_caches_etc() {
+cleanup_chroot_default_cmd() {
+    lbl_3 "Remove chroot default cmd"
+    safe_remove /.chroot_default_cmd
+}
+
+clear_caches_n_tmp() {
     local items
 
-    lbl_1 "Total cleanup cache and tmp folders"
+    lbl_3 "Cleanup caches & tmp folders"
     items=(
         /var/cache
         /var/lib/apt
@@ -78,21 +115,27 @@ all_caches_etc() {
 
 }
 
-total_cleanup() {
-    deploy_cleanup
-    all_caches_etc
+#
+#  Tasks
+#
+
+deploy_cleanup() {
+    # suitable for post all install step
+    lbl_2 "Deploy cleanup"
+
+    uninstall_aok
+    cleanup_iCloud
+    cleanup_chroot_default_cmd
+    cleanup_root_home
+    uninstall_ish_fstols
 }
 
-load_utils() {
-    local d_base="${1:-$d_repo}"
-    local f_utils="$d_base"/tools/script-utils.sh
+total_cleanup() {
+    lbl_1 "Total cleanup"
 
-    # source a POSIX file
-    # shellcheck source=tools/script-utils.sh disable=SC1091,SC2317
-    source "$f_utils" || {
-        printf '\nERROR: Failed to source: %s\n' "$f_utils" >&2
-        exit 1
-    }
+    deploy_cleanup
+    uninstall_ansible
+    clear_caches_n_tmp
 }
 
 #===============================================================
@@ -107,10 +150,8 @@ load_utils
 
 { is_ish || is_chrooted_ish; } || err_msg "Can only run on iSH or chrooted iSH"
 
-if [[ "$1" = "total" ]]; then
-    total_cleanup
-elif [[ "$1" = "most" ]]; then
-    all_caches_etc
-else
-    deploy_cleanup
-fi
+case "$1" in
+    ? | -h) echo "$app_name  [total]" ;;
+    total) total_cleanup ;;
+    *) deploy_cleanup ;;
+esac

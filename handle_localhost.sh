@@ -11,10 +11,11 @@
 #
 
 install_ansible() {
+    # Also installs bash, since it will be needed to run tools/fs_cleanup.sh
     lbl_1 "Install Ansible"
     if ! command -v ansible >/dev/null 2>&1; then
         if fs_is_alpine; then
-            apk add ansible || err_msg "Failed to: apk add ansible"
+            apk add bash ansible || err_msg "Failed to: apk add ansible"
             # bail-out to save the image with ansible
             err_msg "Ansible was installed"
         elif fs_is_debian; then
@@ -32,7 +33,7 @@ install_ansible() {
         apt update
         apt upgrade
 
-        apt -y install ansible || err_msg "Ansible install failed"
+        apt -y install bash ansible || err_msg "Ansible install failed"
 
         # bail-out to save the image with ansible
         err_msg "Ansible was installed"
