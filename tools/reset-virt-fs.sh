@@ -273,7 +273,7 @@ prepare_shell_env() {
         case "$deploy_mthd" in
 
             ish-fstools)
-                echo /root/ish-fstools/tools/fs_cleanup.sh
+                echo "/root/ish-fstools/tools/fs_cleanup.sh total"
                 echo "$cmd_2"
                 echo "$cmd_1 c"
                 ;;
