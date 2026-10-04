@@ -71,7 +71,9 @@ ift_alpine_packages:
   #
   # File managers
   #
-  - ranger # VIM-inspired filemanager for the console
+  # lf - doesn't work on iSH
+  - vifm # ncurses vi-like file manager
+  # ranger - doesn't work on iSH
   # yazi - doesn't work on iSH
 
   #
