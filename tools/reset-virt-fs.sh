@@ -22,7 +22,7 @@ unpack_saved_fs() {
     #
     # - 49/29.6s /root/ish-fstools/handle_localhost.sh
     #
-    # imings on hetz2
+    # imings on hetz1
     # - 0.3s [creating empty fs] ~/cloud/Uni/iSH-conf/tools/reset_ish_fstools.sh clear
     # -   9s apk add ansible
     # -   9s /opt/AOK/tools/aok_fs-save alpine

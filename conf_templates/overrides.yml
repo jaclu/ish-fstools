@@ -21,11 +21,11 @@
 #  to both must be present!
 #
 # ish-fstools
-#   hetz2 chroot: install 49s   update  38s
+#   hetz1 chroot: install 49s   update  38s
 #   iPad 7th:     update 13 min
 #   iPhone 14th:  update  7 min
 # my-ish-fs
-#   hetz2 chroot: install 15s   update  11s
+#   hetz1 chroot: install 15s   update  11s
 #   iPad 7th:     update  4 min
 #   iPhone 14th:  update  3 min
 #
