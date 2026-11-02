@@ -756,10 +756,7 @@ time_span() { # display_menu() / check_speed_cutoff()
             -v t1="$_ts_start" \
             -v decimals="$_usu_decimals" '
                 BEGIN {
-                    factor = 1
-                    while (decimals--)
-                        factor *= 10
-
+                    factor = 10 ^ decimals
                     print int((t2 - t1) * factor) / factor
                 }')
     fi
