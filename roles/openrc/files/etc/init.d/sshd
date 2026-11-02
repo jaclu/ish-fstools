@@ -102,7 +102,8 @@ depend() {
         done
         if [ -n "$warn_addr" ]; then
             need net
-            ewarn "You are binding an interface in ListenAddress statement in your sshd_config!"
+            _msg="ListenAddress statement in your sshd_config!"
+            ewarn "You are binding an interface in $_msg"
             ewarn "You must add rc_need=\"net.FOO\" to your /etc/conf.d/sshd"
             ewarn "where FOO is the interface(s) providing the following address(es):"
             ewarn "$warn_addr"
@@ -111,7 +112,9 @@ depend() {
 }
 
 update_command() {
-    if conf_enabled KerberosAuthentication || conf_enabled GSSAPIAuthentication && [ -r /usr/sbin/sshd.krb5 ]; then
+    if conf_enabled KerberosAuthentication \
+        || conf_enabled GSSAPIAuthentication && [ -r /usr/sbin/sshd.krb5 ]; then
+
         command="${SSHD_BINARY:-"/usr/sbin/sshd.krb5"}"
     elif conf_enabled UsePAM && [ -r /usr/sbin/sshd.pam ]; then
         command="${SSHD_BINARY:-"/usr/sbin/sshd.pam"}"
