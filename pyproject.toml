@@ -4,4 +4,3 @@ plugins.line-length.line_length = 92
 plugins.line-length.code_block_line_length = 92
 
 # plugins.line-length.enabled = false
-
