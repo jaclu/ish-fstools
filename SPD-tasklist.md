@@ -1,4 +1,4 @@
-pre_tasks
+# pre_tasks
 
 - name: Decide if sshd should be configured
   set_fact:
