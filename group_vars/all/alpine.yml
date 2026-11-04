@@ -147,6 +147,7 @@ ift_alpine_pkgs_devel:
   - autoconf # GNU tool for automatically configuring source code
   - bison # The GNU general-purpose parser generator
   - cmake # Cross-platform, open-source make system
+  - ed # Line-oriented text editor
   - libtool # A generic library support script
   - bzip2-dev # A high-quality data compression program
   - libbsd-dev # commonly-used BSD functions not implemented by all libcs
