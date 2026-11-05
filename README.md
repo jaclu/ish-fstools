@@ -55,7 +55,9 @@ cp conf_templates/overrides.yml vars/
 
 ## Display ansible_facts
 
+```sh
 ansible localhost -m ansible.builtin.setup | less
+```
 
 ### Remote Deployment via Deploy Host
 
