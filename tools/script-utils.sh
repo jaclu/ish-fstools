@@ -141,6 +141,7 @@ script_utils_cleanup() {
 
     usu_suc_allready_called=1
 
+
     [ "$_suc_no_custom" = 0 ] && {
         if command -v cleanup_custom >/dev/null 2>&1; then
             #

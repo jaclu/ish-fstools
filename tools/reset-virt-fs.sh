@@ -353,7 +353,7 @@ d_spd_base="$d_real_home"/git_repos/mine/spd
 load_utils
 # tmp file that can be used during the run of the app, will be auto removed on exit
 # if it still exists
-tmp_file_create # defaults to f_tmp
+f_tmp=$(tmp_file_create)
 
 # lbl_1 "Initial  AOK_TMPDIR: $AOK_TMPDIR"
 if [ -d "$d_orig_aok_tmpdir" ]; then
