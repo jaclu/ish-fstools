@@ -221,5 +221,5 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-tmp_file_create
+f_tmp=$(tmp_file_create)
 is_installed

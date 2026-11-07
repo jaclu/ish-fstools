@@ -567,7 +567,7 @@ always_use_time_stamp() {
 
 create_f_tmp() {
     # compatibility func name
-    tmp_file_create
+    f_tmp=$(tmp_file_create)
 }
 
 tmp_file_create() {
@@ -585,7 +585,7 @@ tmp_file_create() {
     # To ensure a file is removed unless other exit handlers is used:
     #   trap 'rm -f "$f_tmp"' EXIT HUP INT TERM
     #
-    _tfc_tmp_file_variable="${1:-f_tmp}"
+    _tfc_tmp_file_variable="${1:-}"
 
     _tfc_f_tmp=$(mktemp "${TMPDIR:-/tmp}/${app_name:-script-utils.sh}.XXXXXX") || {
         err_msg "mktemp failed for: $_tfc_f_tmp"
@@ -593,8 +593,12 @@ tmp_file_create() {
     msg_dbg "Created tmp file: $_tfc_f_tmp" 1
     tmp_file_list="$tmp_file_list $_tfc_f_tmp" # for tracking and cleanup in err_msg()
 
-    # assign tmpfile name to selected variable name
-    eval "$_tfc_tmp_file_variable=\$_tfc_f_tmp"
+    if [ -n "$_tfc_tmp_file_variable" ]; then
+        # assign tmpfile name to selected variable name
+        eval "$_tfc_tmp_file_variable=\"\$_tfc_f_tmp\""
+    else
+        printf '%s' "$_tfc_f_tmp" # classical for and print approach
+    fi
 }
 
 tmp_file_remove() {
