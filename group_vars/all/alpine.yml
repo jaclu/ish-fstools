@@ -165,11 +165,12 @@ ift_alpine_pkgs_linting:
   - checkbashisms # really slow in iSH
   - cppcheck
   - shfmt
+  - py3-pycodestyle
+  - py3-pyflakes
+  # on older repos, might be better to install via pip install
   - py3-flake8
   - py3-isort
   - py3-mypy
-  - py3-pycodestyle
-  - py3-pyflakes
   - py3-pylint
   - yamllint
 

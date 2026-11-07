@@ -25,6 +25,7 @@ user_name: ish # set to "" to disable
 #  Be aware that only Alpine supports the /bin/ash shell, on other file systems,
 #  /bin/ash will be changed into /bin/bash
 #  If a shell is defined root will also use this shell
+#  If none is defined, the default shell for the target system will be used
 ift_shell: /bin/ash # set to "" to disable
 
 #  Use tzdata for timezone naming, such as Europe/Amsterdam, America/New_York
@@ -55,11 +56,11 @@ ift_port_sshd: 2022
 ift_runlevel_sshd: # if set to [] sshd will noet be configured
   - default
 
-# Since Debian 10 is so old, its openssh can no longer be used without
-# triggering an enormous amount of security warnings. The recommended option is
-# to compile openssh to be installed in /opt/openssh
+# Since Debian 10 is so old, its openssh can no longer be used without triggering
+# an enormous amount of security warnings. The recommended option is to compile
+# openssh to be installed in /opt/openssh
 # if such a tarball is available, point to it here, and it will be used
-ift_openssh_tgz: "{{ ift_prebuilds_deb }}/openssh/openssh-10.2p1-ish-deb10.tgz"
+ift_openssh_tgz: ""
 
 #
 #  ===  Alpine only settings  ===

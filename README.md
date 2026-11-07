@@ -51,7 +51,8 @@ cp conf_templates/overrides.yml vars/
   address templates.
   For chroot-based deployment, this file must be present but typically does not require
   modification.
-- `vars/overrides.yml` Edit this file to customize deployment parameters.
+- `vars/overrides.yml` Edit this file to customize deployment parameters, overriding
+  settings in group_vars/
 
 ## Display ansible_facts
 
@@ -140,3 +141,20 @@ not with the result logic.
 
 qemu-img create -f qcow2 debian10.qcow2 20G
 qemu-system-x86_64 -cdrom ~/cloud/Dropbox/aok_images/debian10.iso -hda debian10.qcow2 -m 1024
+
+## Overrides
+
+If local changes are desired, without messing with the repo, all variables defined
+in `group_vars/` can be overridden in `vars/overrides.yml`.
+
+There are a few helper variables, if some packages shpuld just be added, avoiding
+having to duplicate the entire content, typically defined in
+
+- ift_extra_alpine_packages - adds to ift_alpine_packages
+- ift_extra_devuan_packages - adds to ift_debian_packages
+- ift_extra_debian_packages - adds to ift_devuan_packages
+
+If defined, these are added to their respective base contents, making it simpler
+to add a few extra packages, without having to entirely redefine the base list
+and trying to keep it in sync.
+Obviously the base variables can be replaced directly.
