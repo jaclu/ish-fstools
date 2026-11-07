@@ -646,7 +646,9 @@ select_safe_now_method() { # local usage by safe_now()
     # Select and save the time method for future use.
     # Using milliseconds when possible
     #
-    # Provides: usu_selected_safe_now_mthd
+    # Provides:
+    #  usu_selected_safe_now_mthd
+    #  usu_t_max_digits
     #
     [ -n "$usu_selected_safe_now_mthd" ] && {
         err_msg "Recursive call to: select_safe_now_method"
@@ -738,21 +740,22 @@ time_span() { # display_menu() / check_speed_cutoff()
     is_int "$_usu_decimals" || {
         err_msg "time_span() - decimals requested not a number: $_usu_decimals"
     }
-    safe_now
+    safe_now _usu_t_now
     [ "$_usu_decimals" -gt "$usu_t_max_digits" ] && {
         _s="time_span() - requested $_usu_decimals digite,"
         _s="$_s only $usu_t_max_digits available, will be rounded down"
         dbg_msg "$_s"
         _usu_decimals="$usu_t_max_digits"
     }
-    _usu_t2=$(date +%s)
     if [ "$_usu_decimals" = 0 ]; then
         _usu_t1=$(int_part "$_ts_start")
+        _usu_t2=$(date +%s)
         # simple seconds notation
         t_usu_time_span=$((_usu_t2 - _usu_t1))
     else
+        # shellcheck disable=SC2154 # _usu_t_now assigned by safe_now
         t_usu_time_span=$(awk \
-            -v t2="$_usu_t2" \
+            -v t2="$_usu_t_now" \
             -v t1="$_ts_start" \
             -v decimals="$_usu_decimals" '
                 BEGIN {
