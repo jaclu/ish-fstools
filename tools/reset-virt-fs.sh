@@ -177,13 +177,23 @@ sync_fs_tools() {
     case "$deploy_mthd" in
 
         ish-fstools)
-
+            d_dest_ish_fs="$d_aok_fs/root/ish-fstools"
             sync_something ish-fstools "$my_rsync \
                 --exclude=.git/ \
                 --exclude=.cache.olint \
                 --exclude=.ansible/ \
                 --delete-delay \
                 $d_repo $d_aok_fs/root"
+            [ -f "$d_dest_ish_fs"/ansible.cfg ] || {
+                # lbl_1 "><> conf_templates/ansible.cfg"
+                sync_something "conf_templates/ansible.cfg" "$my_rsync \
+                    $d_repo/conf_templates/ansible.cfg $d_dest_ish_fs"
+            }
+            [ -f "$d_dest_ish_fs"/inventory.ini ] || {
+                # lbl_1 "><> conf_templates/inventory.ini"
+                sync_something "conf_templates/inventory.ini" "$my_rsync \
+                    $d_repo/conf_templates/inventory.ini $d_dest_ish_fs"
+            }
             ;;
         spd)
             d_spd_base_dest="$d_aok_fs"/root/spd
