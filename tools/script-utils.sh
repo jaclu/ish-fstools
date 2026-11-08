@@ -8,17 +8,28 @@
 # Part of https://github.com/jaclu/helpful-scripts
 #
 #  common posix utils I use in my helpful-scripts, usable both for posix and bash
+#  Function names starting with ubu_ are internal functions, not
+#  expected to be used by other scripts.
 #
-#  Variables that can be set before sourcing this
+#  Variables that can be set before sourcing this:
 #
-#  usu_ignore_ctrl_c - Set this to 1 if scrip-utils.sh should not handle Ctrl-C
 #  app_name - will be set to basename "$0" if unset
-#  usu_current_dbg_lvl - will be set to 0 if unset
+#  usu_current_dbg_lvl - will be set to 0 if unset - initial debug level.
+#    debug level can be changed at any time by calling set_debug_lvl
 #  usu_exit_func - Per default just before exit, even on errors runtime and date is printed
-#  This can be overridden, by setting this in two ways, by setting it to "skip"
-#  runtime/date will not be printed, by naming a supplied function, this will be
-#  called instead,
+#    This can be overridden, by setting this in two ways, by setting it to "skip"
+#    runtime/date will not be printed, by naming a supplied function, this will be
+#    called instead,
+#  usu_ignore_ctrl_c - Set this to 1 if scrip-utils.sh should not handle Ctrl-C
+#  usu_show_date_at_exit - Set this to 1 if date should be disaplayed, in addition to
+#    runtime at exit. This only has meaning if usu_exit_func is not skipped,
+#    and if alterered, the alternate calls usu_default_exit_func()
 #
+# If cleanup_custom() is defined, it will be called early on in the termination sequence.
+# Next each remaining tmpfile is checked. If it has content, it is displayed
+# before being deleted. To avoid this tmpfile dump if tmpfiles are used,
+# define a cleanup_custom() where any remaining tmpfiles are cleared via
+# a call to tmp_file_remove.
 #
 # Suggestion how to source this
 #
@@ -33,7 +44,7 @@
 #         exit 1
 #     }
 # }
-# call load_utils early on in your script
+# Call this or similar snippet early on in your script, to enable this
 #
 
 #---------------------------------------------------------------
@@ -58,20 +69,15 @@ usu_check_ctrl_c() {
     }
 }
 
-script_utils_trap_handler() {
+usu_script_utils_trap_handler() {
     # Since we got here via our own trap, it should be safe to disable
     # our own trap handling. Since err_msg wasn't called, assume no error exit
-    dbg_msg "script_utils_trap_handler()" 1
+    dbg_msg "usu_script_utils_trap_handler()" 1
     script_utils_cleanup 0
 }
 
-usu_default_exit_func() {
-    display_app_run_time
-    date
-}
-
 no_trap_exit() {
-    # Call this instead of exit, to avoid risking triggering script_utils_trap_handler
+    # Call this instead of exit, to avoid risking triggering usu_script_utils_trap_handler
     trap - EXIT
     exit_code="${1:-0}"
     dbg_msg "no_trap_exit() $exit_code" 4
@@ -103,9 +109,7 @@ script_utils_cleanup() {
     # it would be better to call this with exit code 0, to make it clear that
     # cleanup is requested, instead of just doing exit 0, but both do the same.
     #
-    # If cleanup_custom() is defined, it will be called early on. If it is not defined,
-    # the default is to display app run-time (if -s was given also print date).
-    #
+    # If cleanup_custom() is defined, it will be called early on.
     # Next each remaining tmpfile is checked. If it has content, it is displayed
     # before being deleted. To avoid this tmpfile dump if tmpfiles are used,
     # define a cleanup_custom() where any remaining tmpfiles are cleared via
@@ -205,11 +209,11 @@ script_utils_cleanup() {
     #  tmpfile cleanup from happening
     #
     [ -n "$_suc_ex_code" ] || {
-        _display_error "script_utils_cleanup() no exit-code param"
+        usu_display_error "script_utils_cleanup() no exit-code param"
         no_trap_exit "$usu_exit_suc_no_exit_code"
     }
     is_int "$_suc_ex_code" || {
-        _display_error "script_utils_cleanup() exit-code is not int: $_suc_ex_code"
+        usu_display_error "script_utils_cleanup() exit-code is not int: $_suc_ex_code"
         no_trap_exit "$usu_exit_not_int_exit_code"
     }
     [ "$_suc_ex_code" -gt -1 ] && no_trap_exit "$_suc_ex_code"
@@ -242,8 +246,6 @@ err_msg() {
     _em_msg="$1"
     _em_exit_code="${2:-1}" # script_utils_cleanup will evaluate valid exit code
     _em_label="${3:-ERROR}"
-    # is used  both by script_utils_cleanup and _display_error
-    [ -z "$app_name" ] && app_name=$(basename "$0")
 
     dbg_msg "err_msg() -s:$_skip_custom ex: $_em_exit_code msg:$_em_msg" 9
     #
@@ -290,7 +292,7 @@ err_msg() {
         _em_exit_code=31 # Ensure this is exited
     fi
 
-    _display_error "$_em_msg" "$_em_label"
+    usu_display_error "$_em_msg" "$_em_label"
 
     [ -n "$_abort_due_to_suc_recursion" ] && {
         printf 'ERROR %s[%s] err_msg() exits due to script_utils_cleanup() recursion\n' \
@@ -315,7 +317,7 @@ show_timestamp() {
     printf "%s" "$(date +'%F %T')"
 }
 
-_display_error() {
+usu_display_error() {
     # Actually display an error msg, should normally not be called by other code
     _dm_msg="$1"
     _dm_label="${2:-ERROR}"
@@ -517,12 +519,7 @@ tmp_file_create() {
         shift
     done
 
-    if [ -n "$app_name" ]; then
-        _tfc_template_label="$(basename "$app_name")"
-    else
-        _tfc_template_label="script-utils.sh"
-    fi
-    _tfc_template="${TMPDIR:-/tmp}/${_tfc_template_label}.tmp-XXXXXX"
+    _tfc_template="${TMPDIR:-/tmp}/${usu_app_name_actual}.tmp-XXXXXX"
 
     if $_tfc_is_dir; then
         _tfc_tmp_file=$(mktemp -d "$_tfc_template") || {
@@ -641,7 +638,7 @@ cancel_log_file() {
 #
 #---------------------------------------------------------------
 
-select_safe_now_method() { # local usage by safe_now()
+usu_select_safe_now_method() { # local usage by safe_now()
     #
     # Select and save the time method for future use.
     # Using milliseconds when possible
@@ -651,9 +648,9 @@ select_safe_now_method() { # local usage by safe_now()
     #  usu_t_max_digits
     #
     [ -n "$usu_selected_safe_now_mthd" ] && {
-        err_msg "Recursive call to: select_safe_now_method"
+        err_msg "Recursive call to: usu_select_safe_now_method"
     }
-    # log_it "select_safe_now_method()"
+    # log_it "usu_select_safe_now_method()"
 
     if is_linux || is_termux; then
         usu_t_max_digits=9
@@ -692,7 +689,7 @@ safe_now() {
                 'printf "%.3f\n", time()*100000 /100000')"
             ;;
         *)
-            select_safe_now_method
+            usu_select_safe_now_method
 
             # to prevent infinite recursion, eunsure a valid timing method is now selected
             case "$usu_selected_safe_now_mthd" in
@@ -763,14 +760,7 @@ time_span() { # display_menu() / check_speed_cutoff()
                     print int((t2 - t1) * factor) / factor
                 }')
     fi
-    [ "$_usu_display_result" = 1 ] && {
-        _ts_int=${t_usu_time_span%%.*}
-        if [ "$_ts_int" -gt 59 ]; then
-            display_time_elapsed "$_ts_int"
-        else
-            printf '%ss\n' "$t_usu_time_span"
-        fi
-    }
+    [ "$_usu_display_result" = 1 ] && display_time_elapsed "$t_usu_time_span"
 }
 
 display_time_elapsed() {
@@ -787,13 +777,18 @@ display_time_elapsed() {
     # t_duration="$(($(date +%s) - t1))"
     # s_time_elapsed=$(display_time_elapsed "$t_duration)")
     #
-    _dte_duration="${1:-$t_usu_time_span}"
+    _dte_duration="$1"
+    [ -z "$_dte_duration" ] && err_msg "display_time_elapsed() - no param"
+    _dte_duration_i=${_dte_duration%%.*}
+    is_int "$_dte_duration_i" || {
+        err_msg "display_time_elapsed() - not int: $_dte_duration_i"
+    }
 
-    if [ "$_dte_duration" -gt 59 ]; then
-        _dte_hours=$((_dte_duration / 3600))
+    if [ "$_dte_duration_i" -gt 59 ]; then
+        _dte_hours=$((_dte_duration_i / 3600))
         _dte_days=$((_dte_hours / 24))
-        _dte_minutes=$(((_dte_duration % 3600) / 60))
-        _dte_seconds=$((_dte_duration - _dte_hours * 3600 - _dte_minutes * 60))
+        _dte_minutes=$(((_dte_duration_i % 3600) / 60))
+        _dte_seconds=$((_dte_duration_i - _dte_hours * 3600 - _dte_minutes * 60))
         if [ "$_dte_days" -gt 0 ]; then
             printf "%d days %02d:%02d:%02d" \
                 "$_dte_days" \
@@ -810,12 +805,20 @@ display_time_elapsed() {
 
 display_app_run_time() {
     # additional notices can be added in $1
-    _dart_msg="${1:-}" # linting safe way to handle "optional" parameters...
-    # _dart_te=$(display_time_elapsed "$(($(date +%s) - t_start))")
-    echo
-    log_it "Time elapsed: $(
-        time_span --display --digits 1 "$t_start"
-    ) - $app_name $_dart_msg"
+    _dart_msg="${1:-}"
+    time_span --digits 1 "$t_start"
+    [ "${t_usu_time_span%%.*}" -ge 5 ] && {
+        echo
+        log_it "Time elapsed: $(
+            display_time_elapsed "$t_usu_time_span"
+        ) - $app_name $_dart_msg"
+    }
+}
+
+usu_default_exit_func() {
+    # Displays app run-time and date
+    display_app_run_time
+    [ "$usu_show_date_at_exit" = 1 ] && date
 }
 
 #---------------------------------------------------------------
@@ -838,9 +841,9 @@ was_sys_path() {
     return 1
 }
 
-_do_safe_remove() {
+usu_do_safe_remove() {
     _dsr_item=$1
-    # dbg_msg "_do_safe_remove($_dsr_item)" 4
+    # dbg_msg "usu_do_safe_remove($_dsr_item)" 4
 
     [ -z "$_dsr_item" ] && err_msg "safe_remove() missing path" "$usu_exit_safe_remove"
 
@@ -917,7 +920,7 @@ safe_remove() {
                 continue
             fi
         }
-        _do_safe_remove "$f"
+        usu_do_safe_remove "$f"
     done
     return 0
 }
@@ -928,7 +931,7 @@ source_it() {
     _si_inspect_variable="$2"
 
     # dbg_msg "[$0] source_it($_si_f)"
-    [ "$app_name_full_path" = "$_si_f" ] && {
+    [ "$usu_app_name_full_path" = "$(realpath "$_si_f")" ] && {
         echo
         echo "WARNING: Attempt at self sourcing ignored: $_si_f"
         echo
@@ -1079,28 +1082,41 @@ is_musl_lib() {
     ldd /bin/sh 2>&1 | grep -qi musl
 }
 
+#---------------------------------------------------------------
+#
+#   Initialization
+#
+#---------------------------------------------------------------
+
+usu_parse_defined_init_variables() {
+    #
+    #  Optional variables that can be set before sourcing this
+    #
+    app_name="${app_name:-$usu_app_name_actual}"
+
+    # In case usu_current_dbg_lvl is set as int, use it as initial debug level
+    set_debug_lvl "${usu_current_dbg_lvl:-0}"
+
+    # Defaults to show runtime and date, if nothing is desired set it to "skip"
+    # If custeom exit msg is desired set it to a function doing this
+    case "${usu_exit_func:-}" in
+        "") usu_exit_func="usu_default_exit_func" ;; # use default
+        skip) usu_exit_func="" ;;                    # do not use
+        *) ;;                                        # override function defined
+    esac
+
+    [ "${usu_ignore_ctrl_c:-0}" != 1 ] && {
+        dbg_msg "${app_name}[$$] usu handles ctrl-c" 1
+        trap 'usu_ctrl_c_pressed' INT
+    }
+    usu_show_date_at_exit="${usu_show_date_at_exit:-0}"
+}
+
 #===============================================================
 #
 #   Main
 #
 #===============================================================
-
-# these must be done before local variables assignments,
-# since some of them depend on variables defined by them
-# read_config
-# check_if_host_or_dest_fs
-
-#
-#  Optional params to be set before calling this:
-#
-# Defaults to show runtime and date, if nothing is desired set it to "skip"
-# if custeom exit msg is desired set it to a function doing this
-case "${usu_exit_func:-}" in
-    "") usu_exit_func="usu_default_exit_func" ;;
-    skip) usu_exit_func="" ;;
-    *) ;; # already assigned
-
-esac
 
 #
 #  Locations for various stuff
@@ -1108,17 +1124,14 @@ esac
 TMPDIR="${TMPDIR:-/tmp}"
 TMPDIR="${TMPDIR%/}" # strip trailing slah, mostly for MacOS
 
-app_name_full_path=$(realpath "$0")
-[ -z "$app_name" ] && app_name=$(basename "$0")
 t_start="$(date +%s)" # is used in display_app_run_time()
-
-[ -z "$usu_current_dbg_lvl" ] && {
-    # In case usu_current_dbg_lvl has been exported to the env, do not override it
-    set_debug_lvl 0
-}
+usu_app_name_full_path=$(realpath "$0")
+# For tmp file creation etc, this ensure an actual basename, avoiding issues
+# if user provided app_name contains path or other odd characters
+usu_app_name_actual=${0##*/} # same but faster than "$(basename "$0")"
 
 usu_ctrl_c_was_pressed=0
-usu_current_dbg_lvl=0
+# Holds all monitored tmp files
 f_usu_tmp_file_index="$TMPDIR/$app_name-tmpfile-list-$$"
 
 #
@@ -1137,14 +1150,11 @@ usu_exit_suc_recursion=108
 usu_exit_suc_no_exit_code=109
 
 # Create traps in order to be able to kill of any tmp files
-# this would normally run at the very start, so if the app sets its own
-# traps, it will override this
-trap 'script_utils_trap_handler' EXIT HUP TERM
+# If the calling app later sets its own traps, it will override this
+trap 'usu_script_utils_trap_handler' EXIT HUP TERM
 
-[ -z "$usu_ignore_ctrl_c" ] && {
-    dbg_msg "${app_name}[$$] usu handles ctrl-c" 1
-    trap 'usu_ctrl_c_pressed' INT
-}
+# Need to be done after rest of env is setup, handles supplied env variables
+usu_parse_defined_init_variables
 
 # ensures the above doesn't indicate sourcing failed
 return 0
